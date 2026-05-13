@@ -22,7 +22,7 @@ function HomepageHeader() {
             className="button button--secondary button--lg"
             to="/docs/category/aws-certified-developer-associate-2026-dva-c02"
           >
-            Read the notes - 5min ⏱️
+            Read the notes 📝
           </Link>
         </div>
       </div>

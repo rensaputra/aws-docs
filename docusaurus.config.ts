@@ -6,7 +6,7 @@ import type * as Preset from "@docusaurus/preset-classic";
 
 const config: Config = {
   title: "Rendy's AWS Notes",
-  tagline: "Because AWS is a spagheti ball",
+  tagline: "Because AWS is a spaghetti ball",
   favicon: "img/favicon.ico",
 
   // Future flags, see https://docusaurus.io/docs/api/docusaurus-config#future
