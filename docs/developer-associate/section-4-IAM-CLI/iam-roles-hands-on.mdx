@@ -1,0 +1,14 @@
+---
+sidebar_position: 13
+---
+
+# IAM Roles Hands-On
+
+Role is a way to give AWS entities permissions to do stuff on AWS.
+
+The lecture focues on the practical applicatio of creating IAM roles in the AWS Management Console. Understanding IAM roles is critical, especially for granting permissions to AWS entities to perform action on AWS resources.
+
+## Key takeaways
+
+- **Creating IAM Roles**: To create an IAM role, go to the IAM console and click on `Roles` in the left sidebar. Click create role, and then select the type of trusted entity. In this course, we will focus on `AWS service` as the trusted entity. Then select the specific AWS service that will use this roles, such as `EC2`. After that, attach the necessary permissions, in this hands-on we are attaching the `IAMReadOnlyAccess` policy.
+- **Naming and Trust**: The role is named `DemoRoleForEC2`, and it's important to confirm that the role can be assumed by the EC2 service.
