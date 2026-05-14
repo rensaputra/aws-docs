@@ -1,0 +1,31 @@
+---
+sidebar_position: 2
+---
+
+# EC2 Basics
+
+EC2 is one of the most popular AWS' offering. It stands for Elastic Compute Cloud (ECC -> EC2) and it's Infrastructure as a Service (IaaS) offering.
+
+## Key takeaways
+
+- As a IaaS, we aren't just getting a platform, we are renting the raw virtual hardware.
+  - **Main Components**:
+    - **Instances**: The Virtual Machines (VMs) themselves.
+    - **EBS Volume**: Virtual drives for our data.
+    - **Elastic Load Balancer (ELB)**: Spread the traffic so one machine doesn't get overwhelmed.
+    - **Auto Scaling Group (ASG)**: Automatically adds or removes machines based on how much traffic we have.
+- **EC2 sizing & configuration options**:
+  - **OS**: Linux (most popular), Windows or even macOS.
+  - **Power**: How many **CPU cores** and how much **RAM** we need.
+  - **Storage**: Netwrok-attached (**EBS/EFS**) or straight-up hardware-attached (**Instance Store**).
+  - **Network**: Choosing our speed and public IP.
+  - **Firewall rules**: Setting up security groups to control who can talk to our instances.
+  - **Bootstrap script**: to configure the instance at first launch.
+- **The Boostrap (EC2 User Data)**:
+  - **What it is**: A script that runs **only once** the very first time the instance boots up.
+  - **Use cases**: EC2 User Data is used to automate boot tasks such as:
+    - Installing updates
+    - Grabbing software from remote repositories
+    - Downloading files from the internet
+  - **Permissions**: The script runs as the **root user**, so it has full `sudo` power by defaul.
+  - **Trade off**: Be mindful, the more stuff we put in the script, the longer it takes for the instance to become "Running".
