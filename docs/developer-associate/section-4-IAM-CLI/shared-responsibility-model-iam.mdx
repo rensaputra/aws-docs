@@ -1,0 +1,19 @@
+---
+sidebar_position: 16
+---
+
+# Shared Responsibility Model for IAM
+
+What I am responsible for and what AWS is responsible for when it comes to IAM.
+
+## Key takeaways
+
+| ![AWS](https://img.icons8.com/material-outlined/48/amazon-web-services.png) | ![You](https://img.icons8.com/ios/50/user--v1.png)       |
+| --------------------------------------------------------------------------- | -------------------------------------------------------- |
+| Infrastructure (global network security)                                    | Users, Groups, Roles, Policies management and monitoring |
+| Configuration and vulnerability analysis                                    | Enable MFA on all accounts                               |
+| Compliance validation                                                       | Rotate all your keys often                               |
+|                                                                             | Use IAM tools to apply appropriate permissions           |
+|                                                                             | Analyze access patterns & review permissions             |
+
+This is a very simple example, but an obvious one. AWS is responsible for all the infrastructure, and you are responsible for how you use that infrastructure.
