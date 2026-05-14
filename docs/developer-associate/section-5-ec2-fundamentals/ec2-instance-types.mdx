@@ -1,0 +1,27 @@
+---
+sidebar_position: 4
+---
+
+# EC2 Instance Types - Overview
+
+EC2 instance types are like different flavors of virtual machines, each designed for [specific use cases](https://aws.amazon.com/ec2/instance-types/). Choosing the right instance type is crucial for optimizing performance and cost.
+
+## Key takeaways
+
+- **Decoding the Name**: Every instance name is like a little sentence that tells you about its life story: (e.g, `m5.2xlarge`):
+  - **M (Instance Class)**: The family name. Tells you what it's optimized for (e.g., M = General Purpose)
+  - **5 (Generation)**: The version of the hardware. Higher number mean newer, faster, and usually more cost-effective hardware.
+  - **2xlarge (Size)**: How "beefy" the instance is. As you from from `small` to `large` to `2xlarge`, the CPU and RAM typically double.
+- **The Big Four Instace Families**:
+  |Family| Key Resource | Use Cases | Mnemonic |
+  |---|---|---|---|
+  |General Purpose|Balanced|"Web servers, small databases, code repos."|M is for Middle (Balanced)
+  |Compute Optimized|CPU|"Batch processing, media transcoding, gaming servers, machine learning."|C is for Compute
+  |Memory Optimized|RAM|"In-memory databases (Redis), real-time big data processing."|R is for RAM
+  |Storage Optimized|Local Disk I/O|"NoSQL databases, data warehousing, high-frequency OLTP."|I is for I/O
+- **The "Burstable" Family (T-Series)**:
+  - The **T-Series** (like the `t3.micro`) is unique. These are **Burstable Performance Instances**.
+  - They provide a baseline level of CPU but can "burst" to higher performance when our app gets hit with sudden traffic.
+  - **Pro tip**: This is the go-to for the free tier and small workloads, but if you have consistent traffic, consider a non-burstable instance for better performance.
+- **Stephane tips**
+  - If you ever feel overwhelmed by the options, Stephance recommends using [ec2instances.info](https://ec2instances.info). It's a community-driven site that lets you filter and compare costs, memory, and vCPUs much faster than the official AWS console.
