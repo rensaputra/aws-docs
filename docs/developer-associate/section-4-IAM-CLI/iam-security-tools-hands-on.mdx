@@ -1,0 +1,15 @@
+---
+sidebar_position: 15
+---
+
+# IAM Security Tools Hands-On
+
+Let's practice using the IAM security tools, including the IAM Credentials Report and the IAM Access Advisor.
+
+## Key takeaways
+
+- **Credential Report**: To generate this report, go the IAM console and click on `Credential Report` in the left sidebar. Click on `Download Report` to get a CSV file.
+  - This report contains information about all users in the AWS account, including when the user was created, if the password was enabled, when the password was last used and changed, when is the next rotation to be expected, is MFA active, if user has access keys, when the access keys were last used and so on.
+  - This report is useful for auditing and monitoring.
+- **Access Advisor/Last Accessed**: Access advisor has been renamed to `Last Accessed`. To access this tool, go to IAM console, click on `IAM users`, select a user, and then click on the `Last Accessed` tab. This tool is going to show me which services were accessed by my users and when.
+  - By using `Last Accessed` tool, I can identity whether user has the correct permissions, or maybe the user needs access only to a few services. On top of it, the UI allows you to drill down into the details of each service, showing which action were performed and when.
