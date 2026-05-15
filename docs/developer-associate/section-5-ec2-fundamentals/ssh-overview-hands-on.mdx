@@ -40,9 +40,38 @@ This is where we get to fun part, some people say it's notorious for being a hea
   ```
 
   You'll likely see "The authenticity of host..." for the first time when you connect. Just type `yes` to add it to you `known_hosts` file.
-
-![SSH Connection](./img/ssh-ec2.png)
+  ![SSH Connection](./img/ssh-ec2.png)
 
 - **Confirming You're In**: You know you're in when your terminal prompt changes to something like `[ec2-user@ip-1721-31-xx-xx ~]$`
   - `whoami` should return `ec2-user`
   - `exit` to kill the session and return to your local terminal.
+
+## SSH using PuTTY (Windows)
+
+For Windows older than 10, you need to use PuTTY. The process is almost similar to Linux/Mac, but with a few extra steps to convert the key file and configure PuTTY.
+
+- **Convert the Key**: PuTTY doesn't understand `.pem` files, so you need to convert it to `.ppk` using PuTTYgen.
+  - Open PuTTYgen, load your `.pem` file, and then save it as `.ppk`. Or if you downloaded thr `.ppk` file directly from AWS, you can skip this step.and under "Connection > SSH > Auth", browse to your `.ppk` file.
+- **Configure PuTTY**: Open the PuTTY app, set the **Host Name** to `ec2-user@<Your-Public-IP>`, **Port** keep it as **22**, and under "Connection > SSH > Auth", browse to your `.ppk` file.
+- **Connect**: Click "Open" to start the SSH session. Just like with Linux/Mac, you'll see a security alert the first time. Click "Yes" to continue.
+
+## SSH in Windows 10+
+
+Windows 10 and later have a native SSH client built right into PowerShell and Command Prompt. The process is very similar to Linux/Mac, but with a few Windows-specific quirks, such as file permissions and the path to the key file. Follow along Stephan's video for the guide.
+
+## Troubleshooting
+
+- **The "Timeout" vs. "Refused" Distinction**:
+  - **Connection Timeout**: This is 99% a **Security Group** issue. The bouncer isn't even lettng you reach the door.
+    - Pro-tip: If the SG looks right, but you still get a timeout, it's likely another firewall blocking port 22 (e.g., corporate, or home).
+  - **Connection Refused**: The bouncer let you in, but there's nobody home. The SSH service isn't running on the instance.
+    - The Fix: Restart the instance or terminate and start a new one with AL2023.
+- **The "Permision Denied" Error**: If you see `permission denied (publickey)`, it usually one of the two user errors:
+  - **Wrong User**: You forgot to use `ec2-user`.
+  - **Wrong Key**: You're trying to use a .pem file that wasn't the one assigned to that specific instance at launch.
+- **The "Moving Target" (Public IPs)**:
+  - If your connection worked yesterday but fails today, check your IP.
+- **Windows Quirks**:
+  - If your PowerShell says `ssh command not found`, you don't have the native client installed.
+  - The Fix: Go back to the PuTTY method or EC2 Instance Connect.
+- **The "final" Option**: If you've spent 20 minutes fighting with your terminal, just stop, and use the EC2 Instance Connect button in the AWS console.
