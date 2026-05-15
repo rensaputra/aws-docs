@@ -20,4 +20,7 @@ Where we basically break our website on purpose to show how much power security 
 - **Source Selection: "Anywhere" vs. "My IP"**:
   - **Anywhere (`0.0.0.0/0`)**: Opens the door to the entire internet. Great for web servers, terrible for SSH.
   - **My IP**: A shortcut in the console that detects your current public IP.
-  - **Pro tip**: If you choose "My IP" but your IP changes (e.g., I need to pay extra for a static IP in my case or I access from different networks/locations), you will get a **Timeout**. You have to update the rule from the console. -** Outbound is "Wide Open"**: - By default, the **Outbound rules** allow all traffic to go anywhere. - This is how our User Data script was able to download the `httpd` package from the internet during bootstrapping, the instance was allowed to talk to the outside world.
+  - **Pro-tip**: If you choose "My IP" but your IP changes (e.g., I need to pay extra for a static IP in my case or I access from different networks/locations), you will get a **Timeout**. You have to update the rule from the console.
+- **Outbound is "Wide Open"**:
+  - By default, the **Outbound rules** allow all traffic to go anywhere.
+  - This is how our User Data script was able to download the `httpd` package from the internet during bootstrapping, the instance was allowed to talk to the outside world.

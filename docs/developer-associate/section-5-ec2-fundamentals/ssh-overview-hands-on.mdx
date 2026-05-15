@@ -1,0 +1,27 @@
+---
+sidebar_position: 7
+---
+
+# SSH
+
+This is where we get to fun part, some people say it's notorious for being a headache, but I am confident that after this, you'll be SSHing with your eyes closed.
+
+## Overview
+
+- **The SSH Landscape**: Your computer OS dictates the SSH client you use.
+  | OS | SSH | Putty | EC2 Instance Connect|
+  |---|---|---|---|
+  |Linux|✅| | ✅|
+  |Mac|✅| | ✅|
+  |Windows >= 10|✅|✅| ✅|
+  |Older Windows| |✅|✅|
+
+  Mac/Linux/Windows 10+ have built-in SSH CLI. Older Windows, you'll need to install PuTTY.  
+  EC2 Instance Connect is browser-based tool. It's the easiest way because it works on everything and doesn't require any setup.
+
+- **Troubleshooting**: Stephane said a lot of student struggle to get this working, here are some tips:
+  - **SGs**: Did you actually open port 22?
+  - **IP Whitelisting**: If you used "My IP" option, did your internet connection change?
+  - **The Key File**: are you using the correct `.pem` or `.ppk` file you downloaded during instance creation?
+  - **Typos**: One wrong character in the IP address or username can cause connection issues.
+- **The "One is Enough" Rule**: You don't need to make all three working. Find the one that works for you (Likely SSH or EC2 Instance Connect) and stick with it. If you can get a shell prompt, you've won.
