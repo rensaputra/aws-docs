@@ -25,3 +25,24 @@ This is where we get to fun part, some people say it's notorious for being a hea
   - **The Key File**: are you using the correct `.pem` or `.ppk` file you downloaded during instance creation?
   - **Typos**: One wrong character in the IP address or username can cause connection issues.
 - **The "One is Enough" Rule**: You don't need to make all three working. Find the one that works for you (Likely SSH or EC2 Instance Connect) and stick with it. If you can get a shell prompt, you've won.
+
+## SSH using Linux or Mac
+
+- **Directory Matters**: You must be in the same folder as your `.pem` file when you run the command, or you have to provide the full path to the file. For example, I have created a special directory `.ssh` in my home folder to store all my SSH keys.
+- **No Spaces**: Stephane's tip: Remove any spaces from the file name of the key pair.
+- **Double check SG**: Just to be sure, check that port **22** is open to your IP.
+- **Permission Denied**: SSH is very strict about file permission. If your key file is "too open", SSH will refuse to use it for security reason. Change the permission to `chmod 400 your-key.pem` to make it readable only by you.
+- **Instance IP Address**: Find your instance's public IP address from the EC2 console. We will need it shortly.
+- **The Command**: Once your permission is set and you're in the right directory, the magic command is:
+
+  ```bash title="SSH Command"
+  ssh -i your-key.pem ec2-user@<Your-Public-IP>
+  ```
+
+  You'll likely see "The authenticity of host..." for the first time when you connect. Just type `yes` to add it to you `known_hosts` file.
+
+![SSH Connection](./img/ssh-ec2.png)
+
+- **Confirming You're In**: You know you're in when your terminal prompt changes to something like `[ec2-user@ip-1721-31-xx-xx ~]$`
+  - `whoami` should return `ec2-user`
+  - `exit` to kill the session and return to your local terminal.
