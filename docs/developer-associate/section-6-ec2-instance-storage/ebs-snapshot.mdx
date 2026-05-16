@@ -13,6 +13,7 @@ If an EBS volume is a "USB stick", a snapshot is like taking a full digital back
 - **Point-in-Time Backup**: A snapshot captures the exact state of your EBS volume at a specific moment.
 - **Live Snapshots**: You do _not_ have to detach the volume from a running instance to take a snapshot, though doing so is recommended to esnure data consistency.
 - **Bypassing the AZ Lock**: Because EBS volumes are locked to a single AZ, taking snapshot is te standard method to clone or move volume's data to a diferent AZ or an entirely different AWS region.
+  ![Copy Snapshot to Another Region](./img/copy-snapshot-to-another-region.png)
 
 ### EBS Snapshot Archive Tier
 
