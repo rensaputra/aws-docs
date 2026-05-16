@@ -4,7 +4,7 @@ sidebar_position: 7
 
 # SSH
 
-This is where we get to fun part, some people say it's notorious for being a headache, but I am confident that after this, you'll be SSHing with your eyes closed.
+This is where we get to the fun part, some people say it's notorious for being a headache, but I am confident that after this, you'll be SSHing with your eyes closed.
 
 ## Overview
 
@@ -31,7 +31,7 @@ This is where we get to fun part, some people say it's notorious for being a hea
 - **Directory Matters**: You must be in the same folder as your `.pem` file when you run the command, or you have to provide the full path to the file. For example, I have created a special directory `.ssh` in my home folder to store all my SSH keys.
 - **No Spaces**: Stephane's tip: Remove any spaces from the file name of the key pair.
 - **Double check SG**: Just to be sure, check that port **22** is open to your IP.
-- **Permission Denied**: SSH is very strict about file permission. If your key file is "too open", SSH will refuse to use it for security reason. Change the permission to `chmod 400 your-key.pem` to make it readable only by you.
+  - **Permission Denied**: SSH is very strict about file permission. If your key file is "too open", SSH will refuse to use it for security reasons. Change the permission to `chmod 400 your-key.pem` to make it readable only by you.
 - **Instance IP Address**: Find your instance's public IP address from the EC2 console. We will need it shortly.
 - **The Command**: Once your permission is set and you're in the right directory, the magic command is:
 
@@ -39,7 +39,7 @@ This is where we get to fun part, some people say it's notorious for being a hea
   ssh -i your-key.pem ec2-user@<Your-Public-IP>
   ```
 
-  You'll likely see "The authenticity of host..." for the first time when you connect. Just type `yes` to add it to you `known_hosts` file.
+  You'll likely see "The authenticity of host..." for the first time when you connect. Just type `yes` to add it to your `known_hosts` file.
   ![SSH Connection](./img/ssh-ec2.png)
 
 - **Confirming You're In**: You know you're in when your terminal prompt changes to something like `[ec2-user@ip-1721-31-xx-xx ~]$`
@@ -51,22 +51,22 @@ This is where we get to fun part, some people say it's notorious for being a hea
 For Windows older than 10, you need to use PuTTY. The process is almost similar to Linux/Mac, but with a few extra steps to convert the key file and configure PuTTY.
 
 - **Convert the Key**: PuTTY doesn't understand `.pem` files, so you need to convert it to `.ppk` using PuTTYgen.
-  - Open PuTTYgen, load your `.pem` file, and then save it as `.ppk`. Or if you downloaded thr `.ppk` file directly from AWS, you can skip this step.and under "Connection > SSH > Auth", browse to your `.ppk` file.
+  - Open PuTTYgen, load your `.pem` file, and then save it as `.ppk`. Or if you downloaded the `.ppk` file directly from AWS, you can skip this step and under "Connection > SSH > Auth", browse to your `.ppk` file.
 - **Configure PuTTY**: Open the PuTTY app, set the **Host Name** to `ec2-user@<Your-Public-IP>`, **Port** keep it as **22**, and under "Connection > SSH > Auth", browse to your `.ppk` file.
 - **Connect**: Click "Open" to start the SSH session. Just like with Linux/Mac, you'll see a security alert the first time. Click "Yes" to continue.
 
 ## SSH in Windows 10+
 
-Windows 10 and later have a native SSH client built right into PowerShell and Command Prompt. The process is very similar to Linux/Mac, but with a few Windows-specific quirks, such as file permissions and the path to the key file. Follow along Stephan's video for the guide.
+Windows 10 and later have a native SSH client built right into PowerShell and Command Prompt. The process is very similar to Linux/Mac, but with a few Windows-specific quirks, such as file permissions and the path to the key file. Follow along Stephane's video for the guide.
 
 ## Troubleshooting
 
 - **The "Timeout" vs. "Refused" Distinction**:
-  - **Connection Timeout**: This is 99% a **Security Group** issue. The bouncer isn't even lettng you reach the door.
+  - **Connection Timeout**: This is 99% a **Security Group** issue. The bouncer isn't even letting you reach the door.
     - Pro-tip: If the SG looks right, but you still get a timeout, it's likely another firewall blocking port 22 (e.g., corporate, or home).
   - **Connection Refused**: The bouncer let you in, but there's nobody home. The SSH service isn't running on the instance.
     - The Fix: Restart the instance or terminate and start a new one with AL2023.
-- **The "Permision Denied" Error**: If you see `permission denied (publickey)`, it usually one of the two user errors:
+  - **The "Permission Denied" Error**: If you see `permission denied (publickey)`, it usually one of the two user errors:
   - **Wrong User**: You forgot to use `ec2-user`.
   - **Wrong Key**: You're trying to use a .pem file that wasn't the one assigned to that specific instance at launch.
 - **The "Moving Target" (Public IPs)**:

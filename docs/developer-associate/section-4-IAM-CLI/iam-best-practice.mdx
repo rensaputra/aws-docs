@@ -11,8 +11,8 @@ Maarek highlights some best practices for managing IAM in AWS
 - **Limit Root Account Usage**: Use the root account only for initial setup tasks to minimize security risks. Create individual IAM accounts for each user.
 - One Physical User = One IAM User. Do not share IAM user credentials among multiple people.
 - **User Management**: Assign user to groups and assign permission to groups. This makes it easier to apply policies and manage security at the group level rather than individually.
-- **Strong Password Polices**: Implement strict password policies and enforce multi-factor authentication (MFA) to secure accounts against unauthorized access.
+- **Strong Password Policies**: Implement strict password policies and enforce multi-factor authentication (MFA) to secure accounts against unauthorized access.
 - **Use of Roles**: Create roles for granting permissions to AWS services (like EC2) to ensure that permissions are correctly allocated based on the services used.
-- **Access Keys for Programmtic Access (CLI/SDK)**: For programmatic access through the AWS CLI or SDKs, generate access keys carefully, ensuring they remain confidential.
+- **Access Keys for Programmatic Access (CLI/SDK)**: For programmatic access through the AWS CLI or SDKs, generate access keys carefully, ensuring they remain confidential.
 - **Management tools**: Utilize IAM credentials reports and IAM access advisor (Last Accessed) to audit permissions and monitor access.
 - **Never share IAM users & Access keys**

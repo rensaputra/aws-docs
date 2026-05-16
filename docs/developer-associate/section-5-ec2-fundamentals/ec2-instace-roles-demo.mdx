@@ -13,7 +13,7 @@ One thing to remember from this section is **Never, ever bake hardcoded API keys
   - **The Right Way**: You create an IAM Role, with the specific permissions needed, then attach that role directly to the EC2 instance via the AWS Console. (Actions > Security > Modify IAM Role).
     ![Attaching IAM Role to EC2](./img/attach-iam-role.png)
 - **How the Instance Retrieve Credentials**:
-  - Zero configuration: You notice that you didn't need to restart the machine or SSH session. The AWS CLI automatically knows to look at the **Instance Metadata Service** to grab temporary security crdentials provided by that role.  
+  - Zero configuration: You notice that you didn't need to restart the machine or SSH session. The AWS CLI automatically knows to look at the **Instance Metadata Service** to grab temporary security credentials provided by that role.  
     ![IAM Role attached to EC2](./img/attached-iam-role-to-ec2-instance.png)
 - **Permissions are Dynamic**:
   - **Real-time Changes**: Permissions are linked directly to the role, not hard-coded into the machine. When you add/remove permissions from the role, the instance immediately gets those changes without needing a reboot or reconfiguration.

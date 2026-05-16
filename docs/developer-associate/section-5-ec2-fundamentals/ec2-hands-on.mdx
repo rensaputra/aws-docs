@@ -12,7 +12,7 @@ Okay, time to level up our EC2 knowledge with launching our first instance, it i
   - **AMI (Amazon Machine Image)**: Think of this as our OS template. Stephane used Amazon Linux 2, however when I'm doing this course, Amazon Linux 2023 is the default, so I went with that one. Amazon Linux is AWS-optimized flavor of Linux and free tier eligible.
   - **Instance Type**: Choosing the "size" of the VM. The **t2.micro** or **t3.micro** is the MVP of the free tier.
     ![Instance type](./img/instance-type.png)
-  - **Key Pairs**: Essential for SSH access. It's like a password, but way more secure. You create a key pair, download the private key, and AWS keeps the public key. When you SSH into your instance, it checks if you have the right private key. Download the `.pem` file (Linux/Max/Win10) or `.ppk` file (older windows).
+  - **Key Pairs**: Essential for SSH access. It's like a password, but way more secure. You create a key pair, download the private key, and AWS keeps the public key. When you SSH into your instance, it checks if you have the right private key. Download the `.pem` file (Linux/Mac/Windows 10) or `.ppk` file (older Windows).
 - **Networking & Security**:
   - **Public vs Private IP**: Public IP allows you to access your instance from the internet, while Private IP is for internal communication within AWS. For our first instance, we want a public IP so we can SSH into it.
   - **Security Groups (Firewalls)**: You have to explicitly open "ports" to let traffic in.
@@ -33,7 +33,7 @@ Okay, time to level up our EC2 knowledge with launching our first instance, it i
     ```
 
   - **Rule**: The Script runs **once and only once** at the very first boot
-  - **What it does**: It automatically updated the sustem, installed a webserver (`httpd`), started it, and created "Hello World" page. This is called **bootstrapping**.
+  - **What it does**: It automatically updated the system, installed a webserver (`httpd`), started it, and created "Hello World" page. This is called **bootstrapping**.
 
 ![Instance summary](./img/instance-summary.png)  
 Summary of the instance before launching it.

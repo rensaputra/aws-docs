@@ -9,14 +9,14 @@ Where we basically break our website on purpose to show how much power security 
 ## Key takeaways
 
 - **The "Timeout" Rule of Thumb**:
-  - **The Symptom**: If you refresh your browser and see te "infinite loading" spinner, that is a Timeout.
+  - **The Symptom**: If you refresh your browser and see the "infinite loading" spinner, that is a Timeout.
   - **The Cause**: We learn that this is **100% a Security Group issue**. When we deleted the Port 80 (HTTP) rule, the instance didn't say "Go Away", it just ignored the request. The browser kept waiting for a response that never came, resulting in a timeout.
-    **The Fix**: Add back the rile (Port 80 for HTTP) and the site instantly reachable again.
+    **The Fix**: Add back the rule (Port 80 for HTTP) and the site is instantly reachable again.
     ![Security Group Dashboard](./img/security-group-dashboard.png)
 - **SGs are Many-to-Many**:
-  - **Multipe SGs per Instance**: You can stack them. If you have an SG for "Web Traffic" and another for "Admin SSH" you can attach both to one instance.
-  - **Multiple Instances per SG**: One "Launch Wizard" group can be reused for 50 difference servers.
-  - **Additive Logic**: The ruls simply add up. If SG-A allows port 80 and SG-B allows port 22, the instance now allows both.
+  - **Multiple SGs per Instance**: You can stack them. If you have an SG for "Web Traffic" and another for "Admin SSH" you can attach both to one instance.
+  - **Multiple Instances per SG**: One "Launch Wizard" group can be reused for 50 different servers.
+  - **Additive Logic**: The rules simply add up. If SG-A allows port 80 and SG-B allows port 22, the instance now allows both.
 - **Source Selection: "Anywhere" vs. "My IP"**:
   - **Anywhere (`0.0.0.0/0`)**: Opens the door to the entire internet. Great for web servers, terrible for SSH.
   - **My IP**: A shortcut in the console that detects your current public IP.

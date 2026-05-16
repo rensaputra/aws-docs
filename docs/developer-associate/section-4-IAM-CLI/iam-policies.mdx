@@ -12,7 +12,7 @@ This lecture focuses on IAM policies in AWS.
 
 - **Group Level Policies**: IAM policies can be applied to user groups, allowing members to share the same permissions.
 - **Inline Policies**: These policies are specific to individual users regardless of their group memberships.
-- **Mutltiple Group Membership**: Users can belong to more than one group and inhert multiple policies, leading to layered approach in policy assignment.
+- **Multiple Group Membership**: Users can belong to more than one group and inherit multiple policies, leading to layered approach in policy assignment.
 
 ```json title="IAM Policy Structure"
 {
@@ -40,6 +40,6 @@ This lecture focuses on IAM policies in AWS.
     - **Effect**: Defines whether the action is allowed or denied.
     - **Principal**: Identifies the user or role the policy applies to.
     - **Action**: Specifies the allowed or denied API calls.
-    - **Resource**: Details the specific resouces affected.
+    - **Resource**: Details the specific resources affected.
     - **Conditions**: Optional constrains to apply.
 - **Importance of Understanding Components**: Familiarity with components like effect, principal, action, and resource is crucial for effective IAM management in AWS.

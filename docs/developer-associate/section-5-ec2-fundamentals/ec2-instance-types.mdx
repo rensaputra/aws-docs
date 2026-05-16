@@ -10,9 +10,9 @@ EC2 instance types are like different flavors of virtual machines, each designed
 
 - **Decoding the Name**: Every instance name is like a little sentence that tells you about its life story: (e.g, `m5.2xlarge`):
   - **M (Instance Class)**: The family name. Tells you what it's optimized for (e.g., M = General Purpose)
-  - **5 (Generation)**: The version of the hardware. Higher number mean newer, faster, and usually more cost-effective hardware.
-  - **2xlarge (Size)**: How "beefy" the instance is. As you from from `small` to `large` to `2xlarge`, the CPU and RAM typically double.
-- **The Big Four Instace Families**:
+  - **5 (Generation)**: The version of the hardware. Higher number means newer, faster, and usually more cost-effective hardware.
+  - **2xlarge (Size)**: How "beefy" the instance is. As you go from `small` to `large` to `2xlarge`, the CPU and RAM typically double.
+- **The Big Four Instance Families**:
   |Family| Key Resource | Use Cases | Mnemonic |
   |---|---|---|---|
   |General Purpose|Balanced|"Web servers, small databases, code repos."|M is for Middle (Balanced)
@@ -24,4 +24,4 @@ EC2 instance types are like different flavors of virtual machines, each designed
   - They provide a baseline level of CPU but can "burst" to higher performance when our app gets hit with sudden traffic.
   - **Pro tip**: This is the go-to for the free tier and small workloads, but if you have consistent traffic, consider a non-burstable instance for better performance.
 - **Stephane tips**
-  - If you ever feel overwhelmed by the options, Stephance recommends using [ec2instances.info](https://ec2instances.info). It's a community-driven site that lets you filter and compare costs, memory, and vCPUs much faster than the official AWS console.
+  - If you ever feel overwhelmed by the options, Stephane recommends using [ec2instances.info](https://ec2instances.info). It's a community-driven site that lets you filter and compare costs, memory, and vCPUs much faster than the official AWS console.
