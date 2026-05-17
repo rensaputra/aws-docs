@@ -1,0 +1,38 @@
+---
+sidebar_position: 5
+---
+
+# AMI Overview
+
+AMIs (Amazon Machine Images) are the ultimate blueprint templates for your servers. It's a mechanism for packing application setup so you can spin up identical machines in seconds.
+
+## Key Takeaways
+
+### What is an AMI?
+
+- **The Customization Layer**: An AMI represents a fully customized snapshot of an EC2 instance, containiing your specific operating system (OS), software stack, configuration files, and monitoring agents.
+- **Performance Optimization**: Using custom AMIs drastically reduces **boot time and configuration time**. Instead of installing dependencies at launch using slow user data bootstrap script, all software comes **pre-packaged** and ready to go.
+
+### The Scope and Movemnet of AMIs
+
+- **Region-Locked by Default**: When you build a custom AMI, it is bound to the specific **AWS Region** where it was created.
+- **Global Replication**: To use that same blueprint in another part of the world, you must explicitly **copy the AMI across the regions** using the AWS global infrastructure.
+- **The Three Flavors of AMIs**:
+  - **Public AMIs**: Free, base operating system images provided directly by AWS (e.g., Amazon Linux 2023 image we have been using so far in the course).
+  - **Custom AMIs**: Images you build, optimize, and maintain yourself based on your specific application needs.
+  - **AWS Marketplace AMIs**: Specialized, pre-configured images built by third-party vendors (e.g., pre-baked security appliances or database setups) that you can buy or subscribe to. You can aso build a business selling your own custom AMIs here.
+
+### The Creation & Cloning Workflow
+
+The technical process of cloning an instance across AZ (like `ap-southeast-2a` to `ap-southeast-2b`) follows this sequence:
+
+1. Launch a base EC2 instance and fully customize it with your code and tools.
+2. **Stop the instance** to guarantee complete data integrity.
+3. Trigger the AMI creation process (which automatically cuts **EBS Snapshots** of the underlying drives behind the scenes).
+4. Use that newly minted Custom AMI to launch an exact replica instance in any other target AZ.
+
+## Exam Tips
+
+**The Golden Image Pattern**: If an exam scenario asks how to optimize an Auto Scaling Group (ASG) that scales slowly because it spends 10 minutes running user data scripts to download npm packages and updates at boot time, the correct answer is always to **bake a "Golden" Custom AMI** with those dependencies pre-installed.
+
+**Data Integrity Rule**: When creating an AMI from a running instance, AWS will temporarily reboot or stop the instance by default to ensure file systems are flushed and snapshots are consistent. Keep this lifecycle step in mind for production environments!
