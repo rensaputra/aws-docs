@@ -1,0 +1,57 @@
+---
+sidebar_position: 7
+---
+
+# EC2 Instance Store
+
+**EC2 Instance Store** is the ultimate "speed demon" of the AWS storage world. If EBS is like plugging in a network-attached USB stick, an Instance Store is like soldering a blazing-fast NVMe SSD directly onto the physical motherboard of the server host.
+
+## Key Takeaways
+
+### The Core Performance Advantage
+
+- **Physical Attachment**: Unlike EBS (which sends data back and forth over a network wire), an instance store is physically connected to the underlying hardware server hosting your virtual machine.
+- **Raw Power** It delivers insanely high I/O perfomance. Stephane points out that an Instance Store can hit **millions of IOPS** (e.g., 3.3 million reads), while a standard `gp2` EBS volume maxes out around 32,000 IOPS.
+
+| Instance type | Instance store volumes | Instance store type | 100% random read IOPS / Write IOPS |
+| ------------- | ---------------------- | ------------------- | ---------------------------------- |
+| i3.large      | 1 x 475 GB             | NVMe SSD            | 103,125 / 35,000                   |
+| i3.xlarge     | 1 x 950 GB             | NVMe SSD            | 206,250 / 70,000                   |
+| i3.2xlarge    | 1 x 1900 GB            | NVMe SSD            | 412,500 / 180,000                  |
+| i3.4xlarge    | 2 x 1900 GB            | NVMe SSD            | 825,000 / 360,000                  |
+| i3.8xlarge    | 4 x 1900 GB            | NVMe SSD            | 1,650,000 / 720,000                |
+| i3.16xlarge   | 8 x 1900 GB            | NVMe SSD            | 3,300,000 / 1,440,000              |
+| i3.metal      | 8 x 1900 GB            | NVMe SSD            | 3,300,000 / 1,440,000              |
+| i3en.large    | 1 x 1250 GB            | NVMe SSD            | 42,500 / 32,500                    |
+| i3en.xlarge   | 1 x 2500 GB            | NVMe SSD            | 85,000 / 65,000                    |
+| i3en.2xlarge  | 2 x 2500 GB            | NVMe SSD            | 170,000 / 130,000                  |
+| i3en.3xlarge  | 1 x 7500 GB            | NVMe SSD            | 250,000 / 200,000                  |
+| i3en.6xlarge  | 2 x 7500 GB            | NVMe SSD            | 500,000 / 400,000                  |
+| i3en.12xlarge | 4 x 7500 GB            | NVMe SSD            | 1,000,000 / 800,000                |
+| i3en.24xlarge | 8 x 7500 GB            | NVMe SSD            | 2,000,000 / 1,600,000              |
+| i3en.metal    | 8 x 7500 GB            | NVMe SSD            | 2,000,000 / 1,600,000              |
+
+Subset of i3 and i3en instance types with instance store volumes and their performance specs. For the full list, see [AWS Documentation](https://docs.aws.amazon.com/ec2/latest/instancetypes/so.html).
+
+---
+
+### The Catch: Ephemeral Storage
+
+- **The Wipe Rule**: This storage is strictly **ephemeral** (temporary).
+- **The Danger Zone**: If you **STOP** or **TERMINATE** the instance, or if the underlying physical hardware suffers a hardware failure, **the data is gone forever**. You cannot get it back. -**Survival Mode**: The data _only_ survives a standard OS reboot.
+
+### Ideal Use Cases
+
+Because it's fast but fragile, you only use it for data that can be lost without causing a production disaster.
+
+- High-performance **caches** and buffers.
+- **Scratch space** or temporary file processing directories.
+- Distributed file systems or databases that handle replication at the _software level_ (where losing one node doesn't kill the cluster).
+
+## Exam Tips
+
+**The "Stop" Limitation**: For EC2 instances backed by _only_ by an Instance Store, \*\*the "Stop" action is completely disabled in the AWS Console/CLI". You can only "Reboot" or "Terminate" them. Why? Because stopping them means moving them to a different physical host, which would wipe the drive anyway.
+
+**Keyword Association**: On the exam, if you see phrases like **maximum I/O performance**, **Lowest Latency**, **local storage**, or "non-persistent data", your mind should immediately skip EBS and choose **Instance Store**.
+
+**The Backup Responsibility**: If a question asks who is responsbile for backing up instance store data, it **100% on the developer**. AWS will not snapshot or replicate this data for you. You have to write scripts to copy it to S3 or EBS manually.
