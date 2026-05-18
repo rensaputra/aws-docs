@@ -1,0 +1,53 @@
+---
+sidebar_position: 10
+---
+
+# Amazon EFS
+
+If EBS is a local USB stick, **Amazon EFS (Elastic File Sytem)** is like a giant, shared corporate network drive (like Dropbox or Google Drive for servers) that thousands of machines can plug into at the exact same time across different AZs.
+
+## Key Takeaways
+
+### The Core Architecture (Multi-AZ Sharing)
+
+- **What it is**: A fully managed **Network File System (NFS)** built strictly for **Linux-based instances** (no Windows support natively).
+- **The Big Flex**: Unlike EBS (which is locked to a single AZ), a single EFS drive can be mounted concurrently onto **thousands of EC2 instances across multiple AZs**.
+- **No Provisioning**: You don't have to guess your size ahead of time. It dynamically scales up to petabytes as you add files, and scales back down wen you delete them. You only pay for what you use.
+- **The Catch**: It's expensive, roughly **three times the cost** of standard `gp2` EBS block storage.
+
+### Performance & Throughput Modes
+
+Picking the right performance mode is crucial to optimizing both cost and application performance:
+
+- **Performance Modes**:
+  - **General Purpose (default)**: Low-latency, best for standard application stacks (Web servers, Content Management Systems like WordPress)
+  - **Max I/O**: Higher latency per operation, but massively parallelized with huge overall throughput. Perfect for **Big Data processing or media transcoding pipelines** where you have thousands of concurrent operations and can tolerate some latency.
+- **Throughput Modes**:
+  - **Bursting**: Throughput scales up naturally as your file system gets bigger.
+  - **Provisioned**: You lock in a specific speed (e.g., 1 GB/s) regardless how little data you have stored.
+  - **Elastic**: The modern developer favorite. It automatically ramps throughput up or down based on your app's actual I/O workload. Best for **highly unpredictable traffic**.
+
+### Cost Optimization: Storage Tiers & Lifecycle Policies
+
+Because EFS is pricey, you must use Lifecycle Management to move old files automatically into cheaper tiers:
+
+- **Standard Tier**: For frequently accessed active files.
+- **Infrequent Access (EFS-IA)**: Lower storage cost, but you pay a fee every time you read/write a file.
+- **Archive Tier**: The lowest cost tier, designed for data you only touch a few times a year.
+- **Lifecycle Policies**: You set a rule (e.g., "If a file hasn't been modified or read in 60 days, dump into the IA tier"). This can cut your storage costs by up to 90%.
+
+### Deployment Strategies: Multi-AZ vs One Zone
+
+- **Standard EFS**: Replicates your data across multiple AZs. This is the gold standard for high availability in production environments.
+- **One Zone EFS**: Keeps data locked inside a single AZ. It's significantly cheaper, making it perfect for **development, testing or caching environments** where multi-AZ redundancy isn't worth the cost.
+
+## Exam Tips
+
+**EFS vs EBS**:
+
+- Choose **EFS** if the question mentions: **POSIX-compliant, standard file hierarchy, mounting accross multiple AZs, or sharing files among hundreds/thousands of instances**
+- Choose **EBS Multi-Attach** _only_ if the question specifically highlights: **Clustered Linux apps (like Teradata), raw block-level storage, sub-milisecond latency requirements, and explicitly keep everything within a SINGLE AZ**.
+
+**The Security Element**: To let an EC2 instance connect to an EFS mount point, you must configure **Security Groups** correctly. The EC2 instance's security group needs an outbound rule allowing traffic, and the EFS security group must have an inbound rule allowing **NFS traffic on Port 2049** from the EC2 instance's security group.
+
+**The OS Trap**: If a question describes a fleet of **Windows Server** EC2 instances that needs a shared network file system, EFS is an immediate wrong answer, you would choose **Amazon FSx for Windows File Server**.

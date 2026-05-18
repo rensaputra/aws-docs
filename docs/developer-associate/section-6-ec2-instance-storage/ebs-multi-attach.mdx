@@ -32,8 +32,12 @@ To use multi-attach, your architecture must check some incredibly strict boxes:
 
 - Clustered Linux Applications (e.g., Teradata setups)
 - Active-active or active-standby application architectures require rapid, zero-delay storage failover.
-- Applicaitons explicitly engineered to handle concurrent write operations at the software layer.
+- Applications explicitly engineered to handle concurrent write operations at the software layer.
 
 ## Exam Tips
 
 - If the question says **"Clustered Linux Application", "Concurrent raw block storage writes"** or **"lowest block-level latency"** look for **EBS Multi-Attach (`io1`/ `io2`)**.
+
+- If the question says **Standard shared file network access**, **file system hierarchy (POSIX)** or **sharing accross multiple AZs**, pick **Amazon Elastic File System (EFS)** instead, we will talk about EFS in the next section, however something to memorize is that Multi-Attach cannot cross AZs; EFS can!
+
+- **The Boot Volume Rule**: You cannot use a Multi-Attach enabled volume as an OS boot/root volume. It can only be attached as a secondary data volume.
