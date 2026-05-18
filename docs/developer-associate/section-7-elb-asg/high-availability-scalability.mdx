@@ -21,3 +21,17 @@ Let's establish the core terminology of **High Availability** and **Scalability*
   - **Scale Out**: Adding more instances to handle an increasing workloads.
   - **Scale In**: Terminating excess instances when traffic drops to save cash.
 - **Best For**: Distributed architectures, modern web applications, and stateless microservices. It is infinitely scalable because you aren't capped by a single motherboard's physical constraints.
+
+### High Availability (HA)
+
+- **The Mechanic**: Running your application infrastructure across **at least two distinct data centers (AZs)** inside an AWS region.
+- **The Goal**: Pure **disaster resilience**. High availability is engineered specifically to ensure your system can survive a full data center failure or a massive network outage in one zone without crashing your entire application.
+- **Active vs. Passive HA**:
+  - **Active HA**: Multiple instances are handling live client traffic across different AZs simultaneously (e.g., an Auto Scaling Group behind an Application Load Balancer).
+  - **Passive HA**: A secondary system sits idly in a separate AZ as a standby backup. It doesn't take active traffic unless the primary master server fails (e.g., an RDS Multi-AZ deployment).
+
+## Exam Tips
+
+- **The Database Limit Clue**: If an exam scenario states that a monolithic application or a specialized stateful relational database is experiencing extreme processing lag during peak hours and _cannot handle data replication across multiple active writing nodes_, look for an answer that advises **Vertical Scaling (upgrading the instance class/family)**.
+
+- **The Resiliency Requirement**: If a question says an application is highly scalable but must be engineered to withstand a **"zonal failure** or an **"AZ outage with zero downtime"**, your answer _must_ involve a **Multi-AZ layout** using an Auto Scaling Group (ASG) or an Elastic Load Balancer (ELB). Scaling a machine up to 12TB of RAM does absolutely nothing if that specific data center catches fire!
