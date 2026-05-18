@@ -1,0 +1,23 @@
+---
+sidebar_position: 1
+---
+
+# High Availability & Scalability
+
+Let's establish the core terminology of **High Availability** and **Scalability** before we dive into the specific AWS services that help us achieve these goals.
+
+## Key Takeaways
+
+### Vertical Scalability (Scale Up/Down).
+
+- **The Mechanic**: You don't add more machines; you just make the existing machine **bigger** by swapping its instance type (e.g., migrating an EC2 app from a `t3.micro` to a `m5.large`).
+- **The Bound**: You can go from a tiny `t2.nano` (0.5 GB RAM) all the way up to a massive bare-metal instance (`u-t12tb1.metal`) with 12 TB of RAM. However, you will eventually hit a **hard hardware limit** where a bigger physical server simply doesn't exist.
+- **Best For**: Non-distributed systems that can't easily partition their state across multiple servers. The absolute classic example is a relational database (like standard RDS or ElastiCache clusters).
+
+### Horizontal Scalability (Scale Out/In).
+
+- **The Mechanic**: You add or remove more **instances of the same size** to absorb traffic spikes.
+- **The Terminology**:
+  - **Scale Out**: Adding more instances to handle an increasing workloads.
+  - **Scale In**: Terminating excess instances when traffic drops to save cash.
+- **Best For**: Distributed architectures, modern web applications, and stateless microservices. It is infinitely scalable because you aren't capped by a single motherboard's physical constraints.
