@@ -46,3 +46,5 @@ Because the ALB intercepts and terminates the incoming client connection, a majo
 ## Exam Tips
 
 - **The Client IP Tracking Clue**: If an exam question describes a scenario where an application behind an ALB needs to block or log bad users based on their geolocation or actual public IP, but the application logs are only showing internal AWS private IPs, the correct developer fix is to **modify the application code to read the `X-Forwarded-For` HTTP header** instead of socket's default remote IP.
+
+- **Health Check Levels**: Remember that health checks are always configured and evaluated at the **Target Group level**, not the overall ALB level. This allows your User target group to have completely different health checking routes (e.g., `HTTP:80/health`) than your Admin target group (e.g., `HTTP:8080/admin-health`).
