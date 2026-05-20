@@ -12,6 +12,7 @@ NLB operates at **Layer 4** (Transport Layer) and us designed for ultimate perfo
 
 - **Protocol Focus**: The NLB operates exclusively at the transport layer, handing raw **TCP and UDP** traffic. It doesn't look at HTTP headers, cookies, or URL paths.
 - **Massive Throughput**: It is built for raw speed, capable of scaling to handle **millions of requests per second** automatically while maintaining ultra-low, sub-millisecond latency.
+  ![NLB Diagram](./img/nlb-diagram.png)
 
 ### Static and Elastic IP Support
 
@@ -25,6 +26,7 @@ An NLB target group can point to three distinct types of backends:
 - **EC2 Instances**: Routing raw TCP/UDP streams direcly to a fleet of compute servers/
 - **Private IP Addresses**: Hardcoded private IPs. These can target internal VPC resources or connect over a VPN/Direct Connect to route traffic straight to **on-premises physical servers** in your own data center.
 - **ALB Chaining (NLB in front of ALB)**: You can place an NLB directly in front of an ALB. This hybrid layout gives your architecture the absolute best of both worlds: the fixed, whitelisted static IPs of the NLB combined with the complex, layer 7 path-based routing rules of the ALB.
+  ![NLB target options](./img/NLB-target-options.png)
 
 ### Flexible Health Checking
 
