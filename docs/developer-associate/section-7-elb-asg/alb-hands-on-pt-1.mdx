@@ -35,5 +35,5 @@ Three tiers of AWS load balancers:
 
 - **The Network Mapping Blueprint**: When creating an internet-facing ALB, you must select **at least two AZs (subnets)** in the region to launch it. This ensures the load balancer itself is highly available and can route traffic even if an entire AWS data center goes down completely offline.
 
-- **The Security Group Lockdown**: It's not being shown in the lecture, but the ideal security group configuration for an ALB is to have the EC2 instance's security group only allow inbound traffic from the ALB's security group. This ensures that all traffic to the backend servers must pass through the ALB, preventing users from bypassing the load balancer and hitting the servers directly. This is a common exam question scenario, so make sure to understand this pattern.
+- **The Security Group Lockdown**: This will be touched in the next lecture, but the ideal security group configuration for an ALB is to have the EC2 instance's security group only allow inbound traffic from the ALB's security group. This ensures that all traffic to the backend servers must pass through the ALB, preventing users from bypassing the load balancer and hitting the servers directly. This is a common exam question scenario, so make sure to understand this pattern.
   ![ALB Security Group Pattern](./img/elb-security-group-lockdown.png)
