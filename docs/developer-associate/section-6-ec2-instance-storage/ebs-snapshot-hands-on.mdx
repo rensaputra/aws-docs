@@ -4,14 +4,14 @@ sidebar_position: 4
 
 # EBS Snapshot - Hands-on
 
-This hands-on session cover the steps for managing EBS sapshots, as well introduces the practical setup for the **Recycle Bin**.  
+This hands-on session cover the steps for managing EBS snapshots, as well introduces the practical setup for the **Recycle Bin**.  
 ![Create a snapshot](./img/create-snapshot.png)
 
 ## Key Takeaways
 
 ### Cross-Region Copying & Disaster Recovery (DR)
 
-- **The Action**: Snapshots can be copied direcly to any destination AWS region via the console/API.
+- **The Action**: Snapshots can be copied directly to any destination AWS region via the console/API.
 - **The Use Case**: This is a fundamental mechanic for building **Cross-region Disaster Recovery (DR)** strategies, ensuring data durability outside of your primary operating region.
   ![Copy Snapshot to Another Region](./img/copy-snapshot-to-other-region.png)
 
@@ -24,8 +24,8 @@ This hands-on session cover the steps for managing EBS sapshots, as well introdu
 ### Recycle Bin and Retention Rules
 
 - **The Feature**: The Recycle Bin aces as a buffer layer against accidental deletion for both **EBS Snapshots** and **AMIs (AMazon Machine Images)**.
-- **Configuration**: You must create a **retention rule** (e.g., settign a retention period like 1 day) and apply it to your resources.
-- **Rule Lock Setting**: Leaving a rule "unlocked" means you retain the administrative previlege to delete the rule itself later.
+- **Configuration**: You must create a **retention rule** (e.g., setting a retention period like 1 day) and apply it to your resources.
+- **Rule Lock Setting**: Leaving a rule "unlocked" means you retain the administrative privilege to delete the rule itself later.
 - **The Recovery Workflow**: Deleting a snapshot while a rule is active moves it to the Recycle Bin instead of vaporizing it. From there, you can issue a `Recover` command to restore it instantly to your active EC2 snapshot list.
 
 ## ![Create Recycle Bin Retention Rule](./img/create-recycle-bin-retention-rule.png)

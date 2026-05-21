@@ -34,7 +34,7 @@ An ALB can forward requests to multiple types of downstream targets grouped into
 
 ### Connection Termination & The Forwarded Headers
 
-Because the ALB intercepts and terminates the incoming client connection, a major procy masking effect occurs:
+Because the ALB intercepts and terminates the incoming client connection, a major proxy masking effect occurs:
 
 - **The Masking Effect**: The backend EC2 instances _only_ see the private IP address of the load balancer as the source of incoming traffic.
 - **The Solution**: To help your application code read the real client data for logging or security tracking, the ALB automatically injects three critical headers into the forwarded request:

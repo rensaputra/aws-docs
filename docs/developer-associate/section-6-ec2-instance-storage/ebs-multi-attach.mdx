@@ -10,7 +10,7 @@ sidebar_position: 9
 
 ### The Core Mechanic
 
-- **Breaking the Rule**: Normally, an EBS volume is stricty tied 1:1 to a single EC2 isntance. Multi-Attach completely shatters this constraint by letting you hook up the **exact same EBS volume to multiple EC2 instances at the same time**.
+- **Breaking the Rule**: Normally, an EBS volume is strictly tied 1:1 to a single EC2 instance. Multi-Attach completely shatters this constraint by letting you hook up the **exact same EBS volume to multiple EC2 instances at the same time**.
 - **Full Permissions**: Every single attached instance get concurrent, full **Read and Write** access to raw volume block simultaneously.
 
 ### Strict Limitations (The Filter Criteria)
@@ -38,6 +38,6 @@ To use multi-attach, your architecture must check some incredibly strict boxes:
 
 - If the question says **"Clustered Linux Application", "Concurrent raw block storage writes"** or **"lowest block-level latency"** look for **EBS Multi-Attach (`io1`/ `io2`)**.
 
-- If the question says **Standard shared file network access**, **file system hierarchy (POSIX)** or **sharing accross multiple AZs**, pick **Amazon Elastic File System (EFS)** instead, we will talk about EFS in the next section, however something to memorize is that Multi-Attach cannot cross AZs; EFS can!
+- If the question says **Standard shared file network access**, **file system hierarchy (POSIX)** or **sharing across multiple AZs**, pick **Amazon Elastic File System (EFS)** instead, we will talk about EFS in the next section, however something to memorize is that Multi-Attach cannot cross AZs; EFS can!
 
 - **The Boot Volume Rule**: You cannot use a Multi-Attach enabled volume as an OS boot/root volume. It can only be attached as a secondary data volume.

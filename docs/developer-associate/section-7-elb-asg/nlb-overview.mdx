@@ -16,14 +16,14 @@ NLB operates at **Layer 4** (Transport Layer) and us designed for ultimate perfo
 
 ### Static and Elastic IP Support
 
-- **The Network Identity**: Unlike an ALB (which uses dynamic IP addresses that constantly change under its DNS record), an NLB alocates exactly **one static IP address per AZ**.
+- **The Network Identity**: Unlike an ALB (which uses dynamic IP addresses that constantly change under its DNS record), an NLB allocates exactly **one static IP address per AZ**.
 - **Whitelisting Advantage**: You can manually assign a permanent **Elastic IP (EIP)** to each AZ target for the NLB. This allows downstream clients or corporate firewalls to easily whitelist a fixed set of IP addresses to communicate with your application safely.
 
 ### Target Group Options & Chaining
 
 An NLB target group can point to three distinct types of backends:
 
-- **EC2 Instances**: Routing raw TCP/UDP streams direcly to a fleet of compute servers/
+- **EC2 Instances**: Routing raw TCP/UDP streams directly to a fleet of compute servers/
 - **Private IP Addresses**: Hardcoded private IPs. These can target internal VPC resources or connect over a VPN/Direct Connect to route traffic straight to **on-premises physical servers** in your own data center.
 - **ALB Chaining (NLB in front of ALB)**: You can place an NLB directly in front of an ALB. This hybrid layout gives your architecture the absolute best of both worlds: the fixed, whitelisted static IPs of the NLB combined with the complex, layer 7 path-based routing rules of the ALB.
   ![NLB target options](./img/NLB-target-options.png)

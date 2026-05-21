@@ -13,7 +13,7 @@ sidebar_position: 2
 ### Why Leverage an ELB?
 
 - **Single Point of Entry**: Users only one unified DNS endpoint. They never touch or see the private, changing IP addresses of your individual backend EC2 instances.
-- **Seamless Failure Handling**: The ELB constantly vets your downstream instances using **Health Checks** (pingin a specific protocol, port, and route like `HTTP:80/health`).
+- **Seamless Failure Handling**: The ELB constantly vets your downstream instances using **Health Checks** (pinging a specific protocol, port, and route like `HTTP:80/health`).
   ![Health Check Diagram](./img/elb-health-check-diagram.png)
 - **The Vetting Rule**: If a backend instance returns anything other than a **200 OK** status code, the ELB marks it as unhealthy and immediately stops routing user traffic to it.
 - **Managed Scalability**: AWS handles all the underlying server updates, high availability, and scaling for the load balancer itself. It integrates natively with Auto Scaling Groups (ASGs), Route 53, and ACM (SSL Certificate Manager).
@@ -34,10 +34,10 @@ Stephane maps out the ideal security design that prevents users from bypassing y
 
 - **The ELB Security Group**: Open to the world (`0.0.0.0/0`) on port 80 (HTTP) or 443 (HTTPS) so clients can connect
 - **The EC2 Instance Security Group**: Instead of whitelisting an IP address range, the **Instance's security group explicitly references the ELB's Security Group ID as its inbound source** on Port 80.
-- **The Payoff**: This ensures the EC2 instances _only_ accept traffc that has been successfully filtered and forwarded from your ELB.
+- **The Payoff**: This ensures the EC2 instances _only_ accept traffic that has been successfully filtered and forwarded from your ELB.
 
 ![ELB Security Group Config](./img/elb-security-group-config.png)
 
 ## Exam Tips
 
-**The IP vs SG Trap**: Look out for questions asking how to lock down backend web servers. The incorrect answer will suggest restricting ingress to the public IP of the load balancer (which can dynamically change). **The correct developer answer is alwaus to configure the backend EC2 Security Group to only allow inbound traffic where the source is the ELB's SG**.
+**The IP vs SG Trap**: Look out for questions asking how to lock down backend web servers. The incorrect answer will suggest restricting ingress to the public IP of the load balancer (which can dynamically change). **The correct developer answer is always to configure the backend EC2 Security Group to only allow inbound traffic where the source is the ELB's SG**.

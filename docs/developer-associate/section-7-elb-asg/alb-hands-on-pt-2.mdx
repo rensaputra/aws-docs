@@ -15,7 +15,7 @@ Before this step, your backend EC2 instances were exposed to the public internet
 By removing that rule and replacing the source with the **Load Balancer's Security Group ID**, you achieved a massive security win:
 
 - **The Result**: Trying to access the EC2 instance directly via its public IPv3 address now completely **times out**. The front door is officially locked to the public.
-- **The Magic**: The ALB can still talk to the instances perfectly fine. The isntances now implicitly trust _only_ traffic that has passed through and originated from the ALB.
+- **The Magic**: The ALB can still talk to the instances perfectly fine. The instances now implicitly trust _only_ traffic that has passed through and originated from the ALB.
   ![Security Group Chaining](./img/sg-chaining.png)
 
 ### Advanced Listener Rules (Layer 7 Routing)

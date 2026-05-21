@@ -4,7 +4,7 @@ sidebar_position: 6
 
 # AMI Hands-On
 
-Stephane explicitly demonstrates the massive performance difference between bootstrapping a raw machine versus launching from a pre-baed image.
+Stephane explicitly demonstrates the massive performance difference between bootstrapping a raw machine versus launching from a pre-baked image.
 
 ## Key Takeaways
 
@@ -40,7 +40,7 @@ When launching a brand-new instance using your newly minted image, the workflow 
 
 - **Where to find it**: In the launch console, you skip the default Quick Starts and Click the "My AMIs" tab to select your template.
 - **Lean User Data**: In the advanced details, you only include the code to echo the "Hello World" index file. You **do not** write the commands to reinstall `httpd`.
-- **The Speed-Up**: Because Apache is already backed directly into the AMI's file system, the new instance skips the installtion download entirey. The moment the instance hits the `running` state, the web server is live immediately.
+- **The Speed-Up**: Because Apache is already backed directly into the AMI's file system, the new instance skips the installation download entirely. The moment the instance hits the `running` state, the web server is live immediately.
 
 ---
 
@@ -62,5 +62,5 @@ We don't need to include the installation commands in the user data script anymo
 
 **Bootstrapping vs Golden AMI**: The exam will constantly test your understanding of this trade-off.
 
-- **User Data (Bootstrapping)**: Slow boot times (waiting 2+ minutes for updates/packages to install). Bad for rapid scalling.
+- **User Data (Bootstrapping)**: Slow boot times (waiting 2+ minutes for updates/packages to install). Bad for rapid scaling.
 - **Custom AMI (Golden Image)**: Fast boot times (everything is pre-installed). **This is the correct architectural choice for Auto Scaling Group (ASG) that needs to react quickly to traffic spikes.**

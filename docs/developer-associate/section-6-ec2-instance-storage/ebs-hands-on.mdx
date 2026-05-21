@@ -27,10 +27,10 @@ Show and tell for how Elastic Block Store (EBS) volume behave in the real world.
 
 - **Delete on Termination**: This is the most important part of the hands-on.
   - **Root Volume**: Had `Delete on Termination` enabled by default. This is AWS default for root drive. The second the instance terminates, this volume is permanently deleted from the account.
-  - **Secondary Volume**: Had `Delete on Termination` disabled by default. When the instance dies, this drive survives, detaches itseld, and change its status to `available`.
+  - **Secondary Volume**: Had `Delete on Termination` disabled by default. When the instance dies, this drive survives, detaches itself, and change its status to `available`.
 - **The "Ghost Volume" Financial Trap**:
   - **Beware**: After the instance is terminated, that secondary EBS volume is still floating around in the console.
-  - **The Rule**: AWS charges you for provisioned storate whether it's attached to an instance or not.
+  - **The Rule**: AWS charges you for provisioned storage whether it's attached to an instance or not.
 
 ## Exam Tips
 

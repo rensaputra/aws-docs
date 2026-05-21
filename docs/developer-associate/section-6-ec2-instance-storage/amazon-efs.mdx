@@ -45,8 +45,8 @@ Because EFS is pricey, you must use Lifecycle Management to move old files autom
 
 **EFS vs EBS**:
 
-- Choose **EFS** if the question mentions: **POSIX-compliant, standard file hierarchy, mounting accross multiple AZs, or sharing files among hundreds/thousands of instances**
-- Choose **EBS Multi-Attach** _only_ if the question specifically highlights: **Clustered Linux apps (like Teradata), raw block-level storage, sub-milisecond latency requirements, and explicitly keep everything within a SINGLE AZ**.
+- Choose **EFS** if the question mentions: **POSIX-compliant, standard file hierarchy, mounting across multiple AZs, or sharing files among hundreds/thousands of instances**
+- Choose **EBS Multi-Attach** _only_ if the question specifically highlights: **Clustered Linux apps (like Teradata), raw block-level storage, sub-millisecond latency requirements, and explicitly keep everything within a SINGLE AZ**.
 
 **The Security Element**: To let an EC2 instance connect to an EFS mount point, you must configure **Security Groups** correctly. The EC2 instance's security group needs an outbound rule allowing traffic, and the EFS security group must have an inbound rule allowing **NFS traffic on Port 2049** from the EC2 instance's security group.
 

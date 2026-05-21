@@ -16,7 +16,7 @@ A guide to picking the right storage drive based on performance needs and cost c
 
 ### General Purpose SSDs: gp2 vs. gp3
 
-- **gp2 (Older gen)**: Storage size and perforance are **linked**. If you want more IOPS, you are forced to pay for a bigger volume size (you get 3 IOPS per GB up to a max of 16,000 IOPS).
+- **gp2 (Older gen)**: Storage size and performance are **linked**. If you want more IOPS, you are forced to pay for a bigger volume size (you get 3 IOPS per GB up to a max of 16,000 IOPS).
 - **gp3 (Newer gen)**: Storage size and performance are **decoupled**. It gives you a baseline of 3,000 IOPS and 125 MB/s throughput out of the box, and you can scale those performance numbers up independently without buying more gigabytes.
 - _Use Cases_: Dev/test environment, virtual desktop, low-latency web server backends.
 
@@ -43,7 +43,7 @@ These are completely focused on **Throughput (MB/s)** rather than IOPS (speed of
 
 ## Exam Tips
 
-**The Database Clue**: If an exam question descibes a high-performance database cluster running on EC2 that needs consistent, ulra-low latency and maximum storage performance, skip `gp3` and look for **provisioned IOPS** (`io1` or `io2`).
+**The Database Clue**: If an exam question describes a high-performance database cluster running on EC2 that needs consistent, ultra-low latency and maximum storage performance, skip `gp3` and look for **provisioned IOPS** (`io1` or `io2`).
 
 **The Big Data Clue**: If the scenario mentions streaming massive log files, running Apache Kafka/Hadoop clusters, or streaming big data processing workloads where _cost efficiency_ for _large streams_ matters most, look for **Throughput Optimized HDD (`st1`)**.
 

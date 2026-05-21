@@ -11,7 +11,7 @@ sidebar_position: 7
 ### The Core Performance Advantage
 
 - **Physical Attachment**: Unlike EBS (which sends data back and forth over a network wire), an instance store is physically connected to the underlying hardware server hosting your virtual machine.
-- **Raw Power** It delivers insanely high I/O perfomance. Stephane points out that an Instance Store can hit **millions of IOPS** (e.g., 3.3 million reads), while a standard `gp2` EBS volume maxes out around 32,000 IOPS.
+- **Raw Power** It delivers insanely high I/O performance. Stephane points out that an Instance Store can hit **millions of IOPS** (e.g., 3.3 million reads), while a standard `gp2` EBS volume maxes out around 32,000 IOPS.
 
 | Instance type | Instance store volumes | Instance store type | 100% random read IOPS / Write IOPS |
 | ------------- | ---------------------- | ------------------- | ---------------------------------- |
@@ -54,4 +54,4 @@ Because it's fast but fragile, you only use it for data that can be lost without
 
 **Keyword Association**: On the exam, if you see phrases like **maximum I/O performance**, **Lowest Latency**, **local storage**, or "non-persistent data", your mind should immediately skip EBS and choose **Instance Store**.
 
-**The Backup Responsibility**: If a question asks who is responsbile for backing up instance store data, it **100% on the developer**. AWS will not snapshot or replicate this data for you. You have to write scripts to copy it to S3 or EBS manually.
+**The Backup Responsibility**: If a question asks who is responsible for backing up instance store data, it **100% on the developer**. AWS will not snapshot or replicate this data for you. You have to write scripts to copy it to S3 or EBS manually.

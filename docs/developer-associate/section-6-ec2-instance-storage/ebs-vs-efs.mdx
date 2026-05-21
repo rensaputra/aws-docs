@@ -18,7 +18,7 @@ Let's reiterate the key differences between EBS and EFS
   - On `gp2`, your IOPS are chained to the disk size (bigger disk = faster drive).
   - On `gp3` and `io1/io2`, you can scale your IOPS independently without buying more storage space.
 - **Backup Caution**: Taking an EBS backup **consumes I/O capacity**. Avoid triggering snapshots during peak production traffic hours, or your app's performance could catch a massive lag.
-- **Lifecycle Default**: When an isntance is terminated, its **root EBS is deleted by default**, though you can manually change this behavior.
+- **Lifecycle Default**: When an instance is terminated, its **root EBS is deleted by default**, though you can manually change this behavior.
 
 ### Amazon EFS (Elastic File System)
 

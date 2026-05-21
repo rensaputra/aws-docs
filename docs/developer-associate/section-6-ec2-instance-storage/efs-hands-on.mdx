@@ -8,9 +8,9 @@ sidebar_position: 11
 
 ### The Core Lifecycle Setup
 
-- **The Restorative Logic**: Stephane demonstrates setting up policies to transition files into **Infrequent Access (IA)** or **Arhive** tiers bsed on age (e.g., 30 or 90 days of no activity). Critically, you can set an option to transition files **back to Standard on first access** if you expect them to be heavily reused once woken up.  
+- **The Restorative Logic**: Stephane demonstrates setting up policies to transition files into **Infrequent Access (IA)** or **Archive** tiers based on age (e.g., 30 or 90 days of no activity). Critically, you can set an option to transition files **back to Standard on first access** if you expect them to be heavily reused once woken up.  
   ![EFS Lifecycle Management](./img/efs-lifecycle-management.png)
-- **Throughput Decoupling**: Stephance clarifies the layout of the three modes: **Bursting** (scales with storage size), **Provisioned** (you pay to lock in a specific baseline speed), and **Elastic** (the modern recommended default that scales instantly from 0 to hundreds MB/s - perfect for unpredicable I/O).
+- **Throughput Decoupling**: Stephane clarifies the layout of the three modes: **Bursting** (scales with storage size), **Provisioned** (you pay to lock in a specific baseline speed), and **Elastic** (the modern recommended default that scales instantly from 0 to hundreds MB/s - perfect for unpredictable I/O).
   ![EFS Throughput Modes](./img/efs-throughput-modes.png)
 
 ### The Security Group Setup
@@ -50,4 +50,4 @@ Stephane reminds us to clean up resources to avoid stray costs:
 
 1. Termnate both EC2 instances (`instance-a` and `instance-b`).
 2. Delete the EFS file system
-3. Delete any security groups that were automatically created for EFS (e.g., `efs-sg-x` and `instace-sg-x`)
+3. Delete any security groups that were automatically created for EFS (e.g., `efs-sg-x` and `instance-sg-x`)
