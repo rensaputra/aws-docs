@@ -25,7 +25,7 @@ The Console exposes a dedicated dropdown for your **SSL Security Policy**.
 Unfortunately, Stephane doesn't bring a live domain or pre-bought certificates during the quick demo, however he highligts the three pathways AWS gives you to srouce your X.509 keys:
 - **From ACM (Amazon Certificate Manager)**: The absolute gold standard best practice. You just pick your domain's managed certificate out of a dropdown meny, and AWS handles auto-renewal for your completely free.
 - **From IAM**: An older legacy repository method. AWS explicitly tells you in the console that hosting public certificates inside IAM is **not recommended**.
-- **Direct Import**: If you bought an SSL certificate from an outside third-party vendor (like GoDaddy, Comodo, or DigiCert), you can click "import" and psate your raw PEM-encoded text blocks (Certificate Private key, Certificate Body and Certificate Chain) right into the text boxes. The console will instantly bundle them up and import them straight into ACM for you.
+- **Direct Import**: If you bought an SSL certificate from an outside third-party vendor (like GoDaddy, Comodo, or DigiCert), you can click "import" and paste your raw PEM-encoded text blocks (Certificate Private key, Certificate Body and Certificate Chain) right into the text boxes. The console will instantly bundle them up and import them straight into ACM for you.
 
 ### The Layer 4 Equivalent (NLB TLS Listeners)
 The process for a NLB mirros the ALB, but with Layer 4 terminology:

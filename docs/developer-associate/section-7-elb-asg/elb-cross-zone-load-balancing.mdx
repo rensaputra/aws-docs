@@ -14,7 +14,7 @@ Imagine your DNS splits incoming traffic 50/50 between two AZs nodes.
 
 - AZ-A has **2 instances**
 - AZ-B has **8 instances**
-- **WITHOUT Cross-Zone LB**: The load balancer node in AZ-A can _only_ talk to the 2 istances in its own zone. This means those 2 lucky instances are taking a massive **25% of total global traffic each**. Meanwhile, the node in AZ-B spreads it 50% across its 8 instances, meaning they only take **6.25% of traffic each**. Your AZ-A instances are getting absolutely slammed.
+- **WITHOUT Cross-Zone LB**: The load balancer node in AZ-A can _only_ talk to the 2 instances in its own zone. This means those 2 lucky instances are taking a massive **25% of total global traffic each**. Meanwhile, the node in AZ-B spreads it 50% across its 8 instances, meaning they only take **6.25% of traffic each**. Your AZ-A instances are getting absolutely slammed.
 - **With Cross-Zone LB**: Each load balancer node pools all **10 instances** together globally. It will route traffic across AZ boundaries to ensure every single server across the entire region takes an exact, perfectly equal **10% share of total traffic**.
   ![Cross-Zone Load Balancing](./img/cross-zone-lb.png)
 
