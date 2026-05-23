@@ -10,5 +10,10 @@
     "IAM",
     "Stephane"
   ],
-  "ignorePaths": ["node_modules/**", "build/**", ".docusaurus/**"]
+  "ignorePaths": [
+    "node_modules/**",
+    "build/**",
+    ".docusaurus/**",
+    "static/img/**"
+  ]
 }
