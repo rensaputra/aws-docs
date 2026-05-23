@@ -4,7 +4,7 @@ sidebar_position: 1
 
 # Amazon RDS Overview
 
-**Amazon Relational Database Serviec (RDS)** is a fully managed, relational database service that uses SQL as its query language. Instead of manually installing a database engine on an EC2 instance, patching the OS, and scripting backups, RDS automates the entire infrastructure lifecycle. Because it is a managed service, **AWS blocks all SSH access to the underlying server**, so we can only interact with the database via client applications.
+**Amazon Relational Database Service (RDS)** is a fully managed, relational database service that uses SQL as its query language. Instead of manually installing a database engine on an EC2 instance, patching the OS, and scripting backups, RDS automates the entire infrastructure lifecycle. Because it is a managed service, **AWS blocks all SSH access to the underlying server**, so we can only interact with the database via client applications.
 
 ## Key Takeaways
 
@@ -32,7 +32,7 @@ This is an elegant feature designed to prevent your database from locking up due
 **The 3-Part Trigger Blueprint**: For RDS to rigger an automatic storage scale-up, the volume must breach three specific structural threshold simultaneously:
 
 1. **The Capacity Gate**: Available free storage drops to **less than 10%** of the currently allocated volume size.
-2. **The Duration Gate**: This low stroage condition must persist for **at least 5 minutes**.
+2. **The Duration Gate**: This low storage condition must persist for **at least 5 minutes**.
 3. **The Cooldown Gate**: At least **6 hours** must have passed since the last storage modification action (to prevent rapid back-to-back volume extensions).
 
 To prevent your storage costs from running wild under this auto-scaling mechanism, you _must_ configure a **Maximum Storage Threshold** ceiling when turning this on.

@@ -1,0 +1,17 @@
+{
+  "version": "0.2",
+  "words": [
+    "Cooldown",
+    "Docusaurus",
+    "AWS",
+    "RDS",
+    "EC2",
+    "S3",
+    "IAM"
+  ],
+  "ignorePaths": [
+    "node_modules/**",
+    "build/**",
+    ".docusaurus/**"
+  ]
+}
