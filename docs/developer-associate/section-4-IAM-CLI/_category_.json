@@ -1,7 +1,4 @@
 {
   "label": "4. IAM & AWS CLI",
-  "position": 4,
-  "link": {
-    "type": "generated-index"
-  }
+  "position": 4
 }
