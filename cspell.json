@@ -1,14 +1,12 @@
 {
   "version": "0.2",
+  "language": "en-GB",
+  "dictionaries": ["aws", "en-gb", "typescript"],
   "words": [
     "Cooldown",
     "Docusaurus",
-    "AWS",
-    "RDS",
-    "EC2",
-    "S3",
-    "IAM",
-    "Stephane"
+    "Stephane",
+    "autoscales"
   ],
   "ignorePaths": [
     "node_modules/**",
