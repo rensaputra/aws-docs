@@ -7,11 +7,8 @@
     "RDS",
     "EC2",
     "S3",
-    "IAM"
+    "IAM",
+    "Stephane"
   ],
-  "ignorePaths": [
-    "node_modules/**",
-    "build/**",
-    ".docusaurus/**"
-  ]
+  "ignorePaths": ["node_modules/**", "build/**", ".docusaurus/**"]
 }
