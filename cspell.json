@@ -1,13 +1,16 @@
 {
   "version": "0.2",
   "language": "en-GB",
-  "dictionaries": ["aws", "en-gb", "typescript"],
-  "words": [
-    "Cooldown",
-    "Docusaurus",
-    "Stephane",
-    "autoscales"
+  "dictionaries": [
+    "aws",
+    "en-gb",
+    "en_us",
+    "typescript",
+    "softwareTerms",
+    "cpp",
+    "cpp-compound-words"
   ],
+  "words": ["Cooldown", "Docusaurus", "Stephane"],
   "ignorePaths": [
     "node_modules/**",
     "build/**",
