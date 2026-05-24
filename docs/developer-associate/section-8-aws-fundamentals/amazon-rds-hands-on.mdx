@@ -8,6 +8,29 @@ The lab demonstrates the deployment, connectivity, and lifecycle management of a
 
 ## Key takeaways
 
+### The RDS Creation Workflow
+
+1. **Engine Configuration**
+   - **The Blueprint**: For this lab select the **MySQL** engine and **Full configuration** creation method.
+   - **The Environment**: To keep everything completely free, select "Free tier" template. This automatically restricts the database architecture to a **Single-AZ instance deployment** (no passive standby) and provisions a baseline `db.t4g.micro` (or `db.t3.micro`) instance with **20GB of GP2 EBS Storage**.
+     ![Free Tier RDS Configuration](./img/rds-free-tier-config.png)
+2. **Credentials**
+   - **The Credentials**: Stick to self-managed **Password authentication** (bypassing the paid AWS Secrets Manager tier for the lab) and sets a basic master password.
+     ![Credentials Configuration](./img/rds-credentials-config.png)
+3. **Storage**
+   - **Storage Automation**: He ensures **Storage Auto Scaling** is explicitly turned on with a maximum ceiling of 1000 GB to precent disk-full panics.
+     ![Storage Auto Scaling](./img/rds-storage-config.png)
+4. **Connectivity**
+   - **The Network Pathway**: Selects the default VPC, selects **Publicly Accessible: Yes** and commands RDS to **Create a New Security Group** named `demo-rds`.
+     ![Connectivity Configuration](./img/rds-connectivity-config.png)
+   - **The Firewall Isolation**: AWS automatically configs the new `demo-rds` security group to open **Inbound Port 3306 (MySQL)**, locking it down so it _only_ accepts traffic originating directly from your personal IP address.
+     ![Security Group Isolation](./img/rds-security-group.png)
+5. **External Client Connectivity & Validation**
+   - **The Connection Handshake**: Once the RDS console marks the database status as `Available`, grabs the unique **Endpoint string** and port (`3306`).
+   - **The Client Query**: Boots an an external GUI SQL client (I use dbeaver), injects the endpoint connection string, and authenticate using the master admin credentials.
+   - **Data Insertion**: Once the connection is established, I create a new database schema (`e.g. mystore`), create a new table (`e.g., customers`), and insert a single row of data to validate the read/write functionality of the database.
+     ![External Client Connection](./img/rds-client-connect.png)
+
 ### Live Provisioning & Security Isolation Attributes
 
 During creation, the RDS console requires you to make critical security, scale, and authentication structural decisions:
@@ -22,3 +45,22 @@ Once the instance status shifts to `Available`, the console populate the **Monit
 
 - `CPUUtilization`: Tracks the compute strain on the database engine. If your queries are missing indices and forcing full table scans, this line will stay at 100%.
 - `DBConnections`: The count of active client connections. This is crucial for developers because relational databases have a hard limit on open connections; if your application server pool autoscales up too aggressively, it can exhaust this pool.
+- **Snapshots vs. Backups**: Stephane highlights the ability to take manual **Snapshots** (which persist forever until you explicitly delete them) and utilize **Point-in-Time Restore** (automated transaction logging allowing you to clone the database state back to any exact second within your retention window).
+
+### The Administrative Deletion Chain
+
+To protect against catastrophic accidental deletions in a production environment, AWS implements a multi-layer safety sequence that you must execute in order:
+
+```
+[Active Database] ──> (Attempt Delete: BLOCKED by Protection) ──> [Action: Modify Instance]
+                                                                            │
+[Database Deleted] <── (Run Delete: Uncheck Final Snapshot) <── [Disable Deletion Protection]
+```
+
+You cannot simply hit delete on an active production database. You must explicitly modify the instance attributes, un-toggle the **Deletion Protection** flag, choose "Apply Immediately" to force structural metadata change, and then initiate the final deletion command while acknowledging that you are opting out of a final automated safety snapshot.
+
+## Exam Tips
+
+- **The "Connection Timed Out" Scenario**: If an exam question says, "A developer has deployed a frontend application on an EC2 instance and a backend MySQL database on Amazon RDS within the same VPC. The database has public access enabled, but when the application attempts to initiate a connection string handshake on port 3306, it results in a 'Connection Timed Out' error", you are looking at a firewall blockage. **The correct fix is to go into the RDS Security Group and add inbound rule allowing TCP Port 3306 traffic originating from the security group attached to the EC2 instance**.
+
+- **The Secret Storage Best Practice**: If a question demands a solution for an application that must connect to an RDS database without any passwords being stored in the app's git repository, **the correct architecture pattern is to store the RDS credentials in AWS Secrets Manager and use the AWS SDK inside your code to retrieve them at runtime**.
