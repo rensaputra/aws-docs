@@ -87,8 +87,8 @@ const config: Config = {
           position: "left",
           label: "Docs",
         },
-                {
-          href: "https://github.com/facebook/docusaurus",
+        {
+          href: "https://github.com/rensaputra/aws-docs",
           label: "GitHub",
           position: "right",
         },
@@ -101,34 +101,25 @@ const config: Config = {
           title: "Docs",
           items: [
             {
-              label: "Tutorial",
+              label: "Intro",
               to: "/docs/intro",
             },
-          ],
-        },
-        {
-          title: "Community",
-          items: [
             {
-              label: "Stack Overflow",
-              href: "https://stackoverflow.com/questions/tagged/docusaurus",
-            },
-            {
-              label: "Discord",
-              href: "https://discordapp.com/invite/docusaurus",
-            },
-            {
-              label: "X",
-              href: "https://x.com/docusaurus",
+              label: "DVA-C02",
+              to: "/docs/category/aws-certified-developer-associate-2026-dva-c02",
             },
           ],
         },
         {
-          title: "More",
+          title: "Hyperlinks",
           items: [
+            {
+              label: "LinkedIn",
+              href: "https://www.linkedin.com/in/rendyekasaputra/",
+            },
             {
               label: "GitHub",
-              href: "https://github.com/facebook/docusaurus",
+              href: "https://github.com/rensaputra",
             },
           ],
         },
