@@ -12,7 +12,15 @@
     "companies",
     "npm"
   ],
-  "words": ["Stephane", "Maarek", "dbeaver", "Marcey", "Lorber"],
+  "words": [
+    "Stephane",
+    "Maarek",
+    "dbeaver",
+    "Marcey",
+    "Lorber",
+    "HSET",
+    "LPUSH"
+  ],
   "ignorePaths": [
     "node_modules/**",
     "build/**",
