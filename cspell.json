@@ -13,13 +13,14 @@
     "npm"
   ],
   "words": [
-    "Stephane",
-    "Maarek",
+    "awsdns",
     "dbeaver",
-    "Marcey",
-    "Lorber",
     "HSET",
-    "LPUSH"
+    "Lorber",
+    "LPUSH",
+    "Maarek",
+    "Marcey",
+    "Stephane"
   ],
   "ignorePaths": [
     "node_modules/**",
