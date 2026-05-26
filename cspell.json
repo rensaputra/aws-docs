@@ -12,7 +12,16 @@
     "companies",
     "npm"
   ],
-  "words": ["Stephane", "Maarek", "dbeaver", "Marcey", "Lorber"],
+  "words": [
+    "awsdns",
+    "dbeaver",
+    "HSET",
+    "Lorber",
+    "LPUSH",
+    "Maarek",
+    "Marcey",
+    "Stephane"
+  ],
   "ignorePaths": [
     "node_modules/**",
     "build/**",
