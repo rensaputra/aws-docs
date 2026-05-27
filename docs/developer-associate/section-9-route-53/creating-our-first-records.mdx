@@ -1,0 +1,32 @@
+---
+sidebar_position: 4
+---
+
+# Creating our First Records
+
+The lab demonstrates the creation of an `A` **Record (Address Record)** inside a Route 53 Public Hosted Zone container to bind a subdomain text string to a static IPv4 placeholder target. To verify that the authoritative AWS name servers are publishing this record to the internet, you can use the `dig` command to query the NS records.
+
+## Key Takeaways
+
+### Network Troubleshooting tools
+
+When testing if your newly registered paths are lie, you don't rely on browser refreshes. You call the command line using standard client lookup packages. If they aren't pre-installed inside your system, you can drop the package manager command (e.g., `sudo apt install -y dnsutils` for Debian-based Linux).
+
+### 🛡️ Tool 1: `nslookup` (name server lookup)
+
+A classic cross-platform networking utility available on Windows, Linux and Mac. It queries the local DNS cache or a specified target server and spits back a highly clean, minimal key-value pair string showing exactly what IP address is bound to the hostname.
+
+### 🏎️ Tool 2: `dig` (domain information groper)
+
+The industry favorite tool for deep packet inspections on Mac and Linux. It exposes the raw, comprehensive DNS transmission payload.
+
+```
+;; ANSWER SECTION:
+res.id.au.              340     IN      A       185.199.108.153
+```
+
+Unlike `nslookup`, `dig` explicitly displays the current remaining **Time-to-Liv (TTL)** counter along with the explicit record type descriptor flag, letting you debug caching expiration timers instantly.
+
+## Exam Tips
+
+**the Subdomain Wildcard Architecture**: If an exam question says, "You are building a multi-tenant SaaS application on AWS where every new company signup gets their own custom subdomain text tracking string (e.g., `tenant1.app.com`, `tenant2.app.com`). Management demands that you configure Route 53 so that you don't have to programmatically create a brand-new, independent record set for every single registration transaction", look for the wildcard play. **The textbook cloud solution is to create a single `A` record using an asterisk wildcard as the host fix (`*.app.com`) pointing directly to your primary Application Load Balancer IP pool`.** Route 53 will match any dynamic substring variant straight to that single target node automatically.
