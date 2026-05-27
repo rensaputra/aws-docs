@@ -1,0 +1,42 @@
+---
+sidebar_position: 5
+---
+
+# EC2 Setup
+
+The lab demonstrates the deployment of an isolated, multi-region compute matrix consisting of three standalone **EC2 Instances** across independent global AWS regions (Frankfurt, N.Virginia and Singapore). To simulate regional load aggregation, an internet-facing **Application Load Balancer (ALB)** is provisioned locally in Frankfurt (`eu-central-1`) to intercept public traffic and reverse-proxy request down to a managed local compute target group.
+
+## Key Takeaways
+
+### The Global Infrastructure Layout
+
+By executing these sequential launch wizards, Stephane construct a geo-distributed topology that tracks its own regional runtime metadata:
+
+```
+[ Global Client Request Plane ]
+ ├─── Traffic hitting Frankfurt   ───> [ ALB (eu-central-1) ] ───> [ EC2 Instance (AZ: b) ]
+ ├─── Traffic hitting N. Virginia ────────────────────────────────> [ EC2 Instance (AZ: a) ]
+ └─── Traffic hitting Singapore   ────────────────────────────────> [ EC2 Instance (AZ: b) ]
+```
+
+- **The Security Profile Matrix**: The newly generated security groups across all three regions implement matching, wide-open firewall perimeters. They allow inbound administrative access on **Port 22 (SSH)** alongside open web server delivery capabilities on **Port 80 (HTTP)** from anywhere (`0.0.0.0/0`).
+- **The Load Balancer Intersect**: The Application Load Balancer in Frankfurt is configured across three local AZs to ensure high availability. It routes queries to a custom TG (`demo-tg-route-53`) on Port 80, which continuously evaluates the operational status of the local Frankfurt EC2 node.
+
+### Dynamic User Data & The Metadata Loop
+
+Stephane passes a shell script in to the **EC2 User Data** fields at lunch to convert the plain linux machine into active web server running Apace (`httpd`).
+
+What makes this script special is its ability to scrape the instance's own runtime coordinate. Under the hood, the script call the internal link-local address pool to dynamically inject the machine's active AZ into the index page.
+
+```bash
+# How the script fetches the live AZ under the hood
+curl -s http://169.254.169.254/latest/meta-data/placement/availability-zone
+```
+
+When you hit the public IPs or the ALB's DNS name, the browser prints distinct strings like:
+
+- `hello world from AZ eu-central-1b` for Frankfurt
+- `hello world from AZ us-east-1a` for N. Virginia
+- `hello world from AZ ap-southeast-1b` for Singapore
+
+## Exam Tips

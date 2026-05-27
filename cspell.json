@@ -27,5 +27,8 @@
     "build/**",
     ".docusaurus/**",
     "static/img/**"
+  ],
+  "ignoreWords": [
+    "mybrand"
   ]
 }
