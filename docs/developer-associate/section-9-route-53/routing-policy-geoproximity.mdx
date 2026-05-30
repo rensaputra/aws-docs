@@ -1,0 +1,47 @@
+---
+sidebar_position: 15
+---
+
+# Routing Policy: Geoproximity
+
+The **Geoproximity Routing Policy** directs user traffic to your infrastructure endpoints based strictly on the absolute physical, mathematical distance between the user and the resource. Unlike Latency routing (which measure real-time network speeds) or Geolocation routing (which maps the rigid geopolitical borders like countries), Geoproximity calculates straight-line coordinates. By applying a mathematical property called a **Bias**, engineer can artificially expand or shrink a data center's traffic attraction zone.
+
+## Key Takeaways
+
+### The Core Mechanics of Bias (1 to 99 vs. -1 to -99)
+
+Think of Geoproximity as a global tug-of-war map. If you have a server in Singapore (`ap-southeast-1`) and a server in Sydney (`ap-southeast-2`) with a bias of 0, Route 53 draws a perfect dividing line right down the middle of Indonesia.
+
+```
+[ Singapore Server ] ──── Bias 0 ──── [ Sydney Server ]
+         |                             |
+         |                             |
+         |                             |
+         |                             |
+         └────────────┬────────────────┘
+                      │
+                      │
+                      │
+                      │
+                 Indonesia (Split Zone)
+```
+
+- **Positive Bias (1 to 99)**: Expands the size of that resource's geographic footprint. It acts like a massive gravitational pull, forcing Route 53 to route users to this data center even if they are physically sitting closer to a neighboring region.
+- **Negative Bias (-1 to -99)**: Shrinks the resource's geographic footprint. It repels traffic away, deflecting incoming queries to adjacent, surrounding regions instead.
+
+### AWS Regions vs. On-Premises Coordinates
+
+Geoproximity is uniquely designed to seamlessly bridge hybrid-cloud deployments because it calculates positions using raw coordinates:
+
+- **AWS Targets**: You simply select the explicit AWS Region from a dropdown menu (e.g., `ap-southeast-2` for Sydney). Route 53 already knows the exact physical latitude and longitude coordinates of its own global data centers.
+- **Non-AWS/On-Premises Targets**: If you are routing traffic to a private corporate data center sitting in downtown Melbourne, you choose **Custom Endpoint** and manually input the exact **Latitude and Longitude** parameters of your building. Route 53 plugs those numbers straight into its distance mapping equations.
+
+## Exam Tips
+
+The exam loves to trap developers by throwing all three location-based routing options into a single scenario.
+
+| If the primary technical requirement says...                                                                     | ──> The Definitive Exam Answer Is: |
+| ---------------------------------------------------------------------------------------------------------------- | ---------------------------------- |
+| "Optimize global application performance based on lowest round-trip ping time."                                  | Latency-Based Routing              |
+| "Enforce legal data compliance, GDPR constraints, or display localized language translations."                   | Geolocation Routing                |
+| "Gradually shift or drain traffic from one region to another by altering a relative geographic boundary matrix." | Geoproximity Routing               |
