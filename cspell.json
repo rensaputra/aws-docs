@@ -12,23 +12,21 @@
     "companies",
     "npm"
   ],
-  "words": [
-    "architecting",
-    "awsdns",
-    "dbeaver",
-    "Geoproximity",
-    "HSET",
-    "Lorber",
-    "LPUSH",
-    "Maarek",
-    "Marcey",
-    "Stephane"
-  ],
+  "words": ["architecting", "Geoproximity", "HSET", "LPUSH"],
   "ignorePaths": [
     "node_modules/**",
     "build/**",
     ".docusaurus/**",
     "static/img/**"
   ],
-  "ignoreWords": ["mybrand"]
+  "ignoreWords": [
+    "mybrand",
+    "RumahWeb",
+    "stephane",
+    "maarek",
+    "marcey",
+    "lorber",
+    "dbeaver",
+    "awsdns"
+  ]
 }
