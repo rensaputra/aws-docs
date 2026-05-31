@@ -13,8 +13,10 @@
     "npm"
   ],
   "words": [
+    "architecting",
     "awsdns",
     "dbeaver",
+    "Geoproximity",
     "HSET",
     "Lorber",
     "LPUSH",
@@ -28,7 +30,5 @@
     ".docusaurus/**",
     "static/img/**"
   ],
-  "ignoreWords": [
-    "mybrand"
-  ]
+  "ignoreWords": ["mybrand"]
 }
