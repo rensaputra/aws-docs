@@ -12,7 +12,14 @@
     "companies",
     "npm"
   ],
-  "words": ["architecting", "Geoproximity", "HSET", "LPUSH"],
+  "words": [
+    "architecting",
+    "Geoproximity",
+    "HSET",
+    "LPUSH",
+    "Segregators",
+    "subnetting"
+  ],
   "ignorePaths": [
     "node_modules/**",
     "build/**",

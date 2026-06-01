@@ -1,0 +1,26 @@
+---
+sidebar_position: 1
+---
+
+# Introduction
+
+For **DVA-C02 Developer Exam**, you don't need to know in depth about VPC, AWS isn't going to drag you through 10 layers of intense corporate subnet subnetting mathematics. The exam expects you to have a crystal clear high-level understanding of network isolation, security parameters, and how your compute layers (e.g., EC2, Lambda) safely access database or the public internet without exposing sensitive internal traffic.
+
+A **Virtual Private Cloud (VPC)** is your own isolated, private logical data center carved out inside the public AWS cloud. It gives you the absolute, granular authority over your networking ecosystem, including defining IP address ranges, building subnets, configuring route tables, and deploying network gateways. As a developer, the VPC is the ultimate security boundary wrapping around your application infrastructure.
+
+## Key Takeaways
+
+### The Developer's VPC Blueprint
+
+Here is a look at the core architectural blocks we are going to break down over the next few lectures:
+
+- 🌐 **Subnets (Public vs. Private)**: Segregating your microservices. Public subnets hold components that talk directly to the internet (like your ALB). Private subnets completely air-gap your high security backends (like RDS databases or internal payment APIs).
+- 🔌 **Gateways (IGW & NAT)**: The internet exit ramps. An **Internet Gateway (IGW)** lets you public-facing nodes communicate bidirectionally with the outside world. A **NAT Gateway** lives in the public subnet and acts as a secure, one-way proxy so your private instances can securely download software patches without allowing raw internet traffic to tunnel inside.
+- 🛡️ **Traffic Firewalls (Security Groups vs. NACLs)**: Your perimeter security defenses, You'll master the difference between the stateful **SGs** (protecting individual EC2 instances/ALBs) and stateless Network ACLs (NACLs) (acting as a heavy-duty firewall guardrail for an entire subnet).
+- 🕵️ **Logs & Connections (Flow Logs, Peering, Endpoints)**: Tracking and linking. You'll see how **VPC Flows Logs** act as a security radar capturing your network IP traffic, how **VPC Peering** safely bridges two isolated VPC networks, and how \*\*VPC Endpoints let your instances securely fetch files from S3 or variables from System Manager without using the public internet.
+
+## Exam Tips
+
+Do not skip this section just because it will be only couple of questions in the exam. VPC concepts are fundamental to understanding how AWS works, and how your application will interact with other AWS services.
+
+For example, if you have scenarios where your **Lambda functions trying to talk to an RDS database** tucked away inside a private subnet, you have to know exactly how to attach that Lambda to the same VPC and open up the right SG ports keep the application secure while allowing necessary communication.
