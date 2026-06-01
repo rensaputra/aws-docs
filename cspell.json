@@ -12,14 +12,7 @@
     "companies",
     "npm"
   ],
-  "words": [
-    "architecting",
-    "Geoproximity",
-    "HSET",
-    "LPUSH",
-    "Segregators",
-    "subnetting"
-  ],
+  "words": ["architecting", "Geoproximity", "Segregators", "subnetting"],
   "ignorePaths": [
     "node_modules/**",
     "build/**",
@@ -34,6 +27,10 @@
     "marcey",
     "lorber",
     "dbeaver",
-    "awsdns"
+    "awsdns",
+    "HSET",
+    "LPUSH",
+    "NACLs",
+    "NACL"
   ]
 }
