@@ -1,0 +1,33 @@
+---
+sidebar_position: 5
+---
+
+# VPC Cheat Sheet & Closing Comments
+
+## 🏗️ Core Infrastructure
+
+- **VPC (Virtual Private Cloud)**: Your isolated logical data center in the cloud. **Bound to an entire AWS Region**.
+- **Subnets**: Partitioned IP spaces inside your VPC. **Strictly pinned to a single AZ.**
+  - _Public Subnets_: Have a route directly to an Internet Gateway (IGW)
+  - _Private Subnets_: Lack direct internet access to protect sensitive backends (RDS, ElastiCache)
+- **Default VPC**: Pre-provisioned by AWS in every single region. It **only** contains public subnets with wide-open default routing so you can test resources instantly.
+
+## 🔌 Internet Exit Ramps
+
+- **Internet Gateway (IGW)**: Horizontally scaled, HA VPC component. Provides **bidirectional** open web access for resources in public subnets.
+- **NAT Gateway (Managed)/NAT Instance (Self-Managed)**: Deployed inside a public subnet with an elastic IP. Provides **unidirectional (one-way, outbound only)** internet access for private subnets so they can pull updates or third-party API payloads without exposing themselves to incoming hacking attempts.
+
+## 🛡️ Layered Security Firewalls
+
+- **Network ACLs (NACLs)**: The outer defense rim. Operates at the **Subnet level**. They are completely **stateless** (you must explicitly map both inbound and outbound return rules for ephemeral ports) and support both **Allow and Deny rules**.
+- **Security Groups (SGs)**: The inner host shield. Operates at the **Instance/ENI level**. They are completely **stateful** (return traffic is cleared automatically) and support **Allow rules only**. They can uniquely reference other SGs for smart internal microservice traffic rules.
+- **VPC Flow Logs**: The network radar. Captures raw IP metadata flows (`ACCEPT` vs `REJECT` packets) at te VPC, Subnet, or ENI level. Your number-one triage tool for debugging connection timeous or firewall blocks.
+
+## ⛓️ Advanced Connectivity
+
+- **VPC Peering**: Directly connects two VPCs using private AWS fiber routing (no internet involved). Requires **non-overlapping IP ranges** and is strictly **non-transitive** (if A pings B and B pings C, A cannot ping C without a fresh peer link).
+- **VPC Endpoints**: Bypasses the public internet entirely to let private instances securely talk to public AWS services.
+  - _Gateway Endpoints_: Free of charge, handles strictly **S3 and DynamoDB** via route table targets.
+  - _Interface Endpoints_: Powered by AWS PrivateLink, puts a physical private ENI IP inside your subnet to hook up the rest of the AWS catalog (SQS, SNS, Secrets Manager).
+- **Site-to-Site VPN**: Instantly deploys an encrypted IPsec tunnel connecting an on-prem building to your VPC **over the open public internet**. Fast and cheap to deploy.
+- **Direct Connect (DX)**: Physically drops a dedicated high-speed private fiber connection from your physical datacenter straight into an AWS location. Zero internet involvement, maximum speed, but takes weeks to provision.
