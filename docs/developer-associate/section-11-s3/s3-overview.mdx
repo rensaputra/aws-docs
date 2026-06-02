@@ -1,0 +1,49 @@
+---
+sidebar_position: 1
+---
+
+# S3 Overview
+
+Amazon S3 is an object-based cloud storage utility to house an unlimited volume of files. Data is physically isolated inside **Buckets** assigned to specific AWS Regions. Instead of using traditional hierarchical file system, S3 stores data flatly as **Objects** mapped to unique string **Keys**. For big data processing, ML training pipelines, or standard web app backups, S3 is the foundational storage bed.
+
+## Key Takeaways
+
+### 🚨 The Big Namespace Upgrade (Global vs. Regional)
+
+For over a decade, every developer shared the exact same global headache: S3 bucket names had to be globally unique across the _entire_ planet. If another AWS customer claimed `my-logs`, you were completely out of luck and had to append long, ugly strings.
+
+AWS officially fixed this by introducing **Account Regional Namespaces**:
+
+- **The Old Global Way**: Every bucket name exists in a single global internet pool. Once a name is taken anywhere in the world, it's locked forever.
+- **The Upgraded Way**: You can now create buckets inside your own **reserved account-regional namespace**. This means you can use clean, simple names like `logs`, `backups`, or `data` in your production account, and use the exact same names in your staging or dev accounts without naming collisions!.
+- **How it Works**: Behind the scenes, AWS seamlessly appends your unique account ID and region as a suffix (e.g., `logs-123456789012-us-east-1-an`), ensuring the underlying endpoint is perfectly unique without messing up your clean automation scripts.
+
+### The Object & Key Matrix (The Directory Illusion)
+
+S3 is **not** a file system like the hard drive on your laptop. It is a massive, flat key-value database.  
+When you see a path in the AWS console like `s3://my-bucket/my-folder/another-folder/my-file.txt`,
+
+- **The Illusion**: S3 has zero concept of physical subdirectories or folders.
+- **The Reality**: The entire path is **one single flat text string** called the **Object Key**.
+- **The Anatomy**: S3 splits a key into a **Prefix** (the folder-like paths containing slashes) and the **Object Name** (the final file descriptor):
+
+```math
+\text{Object Key} = \underbrace{\text{my\_folder/another\_folder/}}_{\text{Prefix}} + \underbrace{\text{my\_file.txt}}_{\text{Object Name}}
+```
+
+### Object Constraints & Multi-Part Rule
+
+When pushing data payloads into your buckets, you must adhere to strict structural size limits:
+
+- **The 50 Terabyte Cap**: The maximum size limit for any single object stored inside Amazon S3 is 50TB.
+- **The 5GB Multi-Part Rule**: While 50TB is the ceiling, **you cannot upload a file larger than 5GB using a single, basic standard HTTP PUT request. Any file greater than 5GB must be uploaded using **Multi-Part Upload\*\*. This splits the file into independent chunks, upload them in parallel to maximize network throughput, and stitches them back together automatically at the S3 edge.
+
+:::tip
+Use the AWS CLI (`aws s3 cp`) or AWS SDKs, they handle the multi-part splitting calculation for you completely under the hood!
+:::
+
+## Exam Tips
+
+The exam will tests your awareness of S3 object configurations and modern performance models:
+
+**The Metadata Lifecycle Shift**: S3 allows you to append custom **User Metadata** (key-value text pairs describing the object) and **Object Tags** (up to 10 tags per file). The exam loves to test how these impact operations. **Object Tags are distinct because they can be dynamically read by S3 Lifecycle Rules and IAM Policies**. For example, you can write a rule stating: _"If a file contains the tag `Confidential=True`, block all public access. If it contains `Status=Deprecated`, automatically move it toS3 Glacier storage after 30 days to save cash."_
