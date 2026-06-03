@@ -12,7 +12,13 @@
     "companies",
     "npm"
   ],
-  "words": ["architecting", "Geoproximity", "Segregators", "subnetting"],
+  "words": [
+    "architecting",
+    "Geoproximity",
+    "rendy",
+    "Segregators",
+    "subnetting"
+  ],
   "ignorePaths": [
     "node_modules/**",
     "build/**",
