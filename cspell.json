@@ -27,8 +27,11 @@
     "static/img/**"
   ],
   "ignoreWords": [
+    "AKIA",
     "AKIAI",
     "AKIAIOSFODNN",
+    "ASIAIOSFODNN",
+    "Authy",
     "CYEXAMPLEKEY",
     "HSET",
     "LPUSH",
