@@ -27,17 +27,23 @@
     "static/img/**"
   ],
   "ignoreWords": [
-    "mybrand",
-    "RumahWeb",
-    "stephane",
-    "maarek",
-    "marcey",
-    "lorber",
-    "dbeaver",
-    "awsdns",
+    "AKIAI",
+    "AKIAIOSFODNN",
+    "CYEXAMPLEKEY",
     "HSET",
     "LPUSH",
+    "MDENG",
+    "NACL",
     "NACLs",
-    "NACL"
+    "RumahWeb",
+    "SBMA",
+    "awsdns",
+    "dbeaver",
+    "lorber",
+    "maarek",
+    "marcey",
+    "mybrand",
+    "stephane",
+    "texttt"
   ]
 }
