@@ -4,7 +4,7 @@ sidebar_position: 4
 
 # AWS CLI with MFA
 
-To authenticate the AWS CLI or SDK using MFA, you must invoke the AWS STS `GetSessionToken` API operation. This endpoint accepts your static security credentials, a hardware or virtual MFA device serial ARN string, and your current timed OTP code token. In return, STS drops a temporary credential group containing a unique Access Key, Secret Key, and a mandatory **Session Token string** that expires automatically.
+To authenticate the AWS CLI or SDK using MFA, you must invoke the AWS Security Token Service (STS) `GetSessionToken` API operation. This endpoint accepts your static security credentials, a hardware or virtual MFA device serial ARN string, and your current timed OTP code token. In return, STS drops a temporary credential group containing a unique Access Key, Secret Key, and a mandatory **Session Token string** that expires automatically.
 
 ## Hands On
 
