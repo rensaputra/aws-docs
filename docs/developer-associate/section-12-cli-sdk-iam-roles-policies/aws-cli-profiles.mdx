@@ -1,0 +1,76 @@
+---
+sidebar_position: 3
+---
+
+# AWS CLI Profiles
+
+AWS CLI Named Profiles allow you to securely configure and store multiple sets of AWS Access Keys, default regions, and output formats on a single host computer. By utilizing the `--profile` flag modifier, you can instantly route your terminal API commands to entirely different AWS accounts without modifying your primary underlying system state.
+
+## Hands On
+
+### Phase 1: Check your current CLI configuration
+
+- Open your terminal and run `aws configure list` to see your active AWS CLI configuration.
+- _Under the hood_: aws CLI tracks your credentials by reading two plaintext hidden system files inside your user home directory:
+  - `~/.aws/credentials`: Holds your highly sensitive `aws_access_key_id` and `aws_secret_access_key` parameters.
+  - `~/.aws/config`: Stores non-sensitive variables like your `region` and `output` format.
+- - Running a standard query will execute against the `[default]` block stored inside these files
+
+### Phase 2: Provision a New Named Profile
+
+-To connect a secondary account, initialize the configuration wizard while passing the explicit `--profile` flag parameter combined with a short, memorable custom string name: `aws configure --profile my-other-account`
+
+- **Follow the Prompt Array:**
+  - **AWS Access Key ID:** Notice the wizard displays `[None]`. Paste your secondary account key string and hit enter.
+  - **AWS Secret Access Key:** Paste your secondary secret key and hit enter.
+  - **Default region name:** Specify your secondary regional target (e.g., Oregon `us-west-2`).
+  - **Default output format:** Hit Enter to accept
+
+### Phase 3: Inspect the Local File Updates
+
+- Open your system's shared credentials repository file to verify the changes: `cat ~/.aws/credentials`
+- **The File Structure Result**: You will notice a brand new bracketed section block appended right below your original default configurations:
+
+```ini
+[default]
+aws_access_key_id = AKIAIOSFODNN7EXAMPLE
+aws_secret_access_key = wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
+
+[my-other-account]
+aws_access_key_id = AKIAI47SBMA16EXAMPLE
+aws_secret_access_key = qBlS71XvtMFI/K7MDENG/bPxRfiCYEXAMPLEKEY
+```
+
+- Next, inspect your shared configuration schema file:
+
+```bash
+cat ~/.aws/config
+```
+
+- **The Configuration File Structure Result**:
+
+```ini
+[default]
+region = ap-southeast-2
+output = json
+
+[profile my-other-account]
+region = us-west-2
+output = json
+```
+
+### CLI Identity Swapping Syntax
+
+Now that both configuration contexts live inside your machine, you can shift between accounts using structural CLI flag parameters:
+
+#### Execute against the default profile:
+
+```math
+\text{Target Environment} = \text{\texttt{aws s3 ls}}
+```
+
+#### Execute against your secondary profile:
+
+```math
+\text{Target Environment} = \text{\texttt{aws s3 ls --profile my-other-account}}
+```

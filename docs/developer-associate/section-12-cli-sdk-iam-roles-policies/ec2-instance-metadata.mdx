@@ -1,0 +1,81 @@
+---
+sidebar_position: 1
+---
+
+# AWS EC2 Instance Metadata
+
+As developers, we often need our application code running inside an EC2 virtual machine to know something about its own environment (e.g., _"What's my public IP address?"_ or _"What IAM security role am I running under?"_). Instead of writing complex AWS SDK queries or hardcoded config, EC2 instances can talk directly to a special internal link-local IP address.
+
+The **EC2 Instance Metadata Service (IMDS)** is an on-instance HTTP endpoint that allows a virtual machine to query information about its own configuration parameters without needing an active IAM role or external network connectivity. By issuing a local HTTP request to the reserved Link-Local IPv4 coordinate address `169.254.169.254`, application can retrieve dynamic metadata attributes like instance types, security group IDs, network interfaces, and temporary IAM profile security credentials.
+
+## Key Takeaways
+
+### Internal Network Coordinates
+
+To tap into this system, your code fires an internal request to a globally locked AWS link-local IP. This traffic never travels out over the public internet gateway or touches an external router, it is intercepted locally by the hypervisor layer on the physical host machine.
+
+```math
+\text{Universal IMDS Endpoint Address} = \text{http://169.254.169.254/latest/meta-data/}
+```
+
+#### What Data Can You Harvest?
+
+- **Network Coordinates**: Your instance's `public-ipv4`, `local-ipv4` (private IP), mac addresses, and subnet IDs.
+- **Hardware Specs**: The active `instance-type` (e.g., `t3.micro`), availability zone location, and `ami-id`.
+- **Security Roles**: Tucking a path under `/iam/security-credentials/[role-name]` will spit out a live, rotated **Access Key ID**, **Secret Access Key**, and **Session Token**. Your code can use these temporary security tokens to sign requests directly to services like S3 or DynamoDB!
+- **The IAM Visibility Boundary**: While you can grab the structural _name_ of the attached IAM Instance Profile role, **IMDS cannot read or display the actual IAM Policy permissions document** attached to that role. S3/IAM handles that validation further up the AWS control plane.
+
+:::tip
+**Metadata vs. User Data** Don't confuse them.
+
+- `meta-data/`: Information _about_ the instance environment created during runtime.
+- `user-data/`: The initialization shell script you provided at launch to bootstrap dependencies (e.g., `yum update -y`). You can read this script by querying `http://169.254.169.254/latest/user-data/`.
+  :::
+
+### IMDSv1 vs. IMDSv2
+
+Because of high-profile security leaks where attackers exploited application flaws to steal cloud tokens, AWS pushed a major overhaul to how this service authorizes requests.
+
+#### 🔓 Instance Metadata Service Version 1 (IMDSv1)
+
+- **The Mechanic**: Uses basic, stateless HTTP `GET` requests.
+- **The Vulnerability**: If your web application has a bug like a `Server-Side Request Forgery (SSRF)`, where an attacked manipulate URL input field to force your backend server to make an internal network call-the attacker can pass the metadata address into your app. Your server will fetch the internal AWS security keys, return them to the attacker's browser, and compromise your whole cloud ecosystem!.
+
+#### 🔒 Instance Metadata Service Version 2 (IMDSv2)
+
+- **The Mechanic**: Uses session-oriented tokens via a mandatory two-step handshake.
+- **The Defense**: To prevent SSRF attacks, IMDSv2 forces the caller to issue an initial HTTP PUT request containing a custom header token request to generate a temporary session key.
+- **The Rule**: Modern operating systems (like Amazon Linux 2023) block IMDSv1 out of the box and mandate this secure workflow.
+
+### The IMDSv2 Handshake Protocol
+
+To fetch your metadata using the modern v2 protocol, your code or deployment shell scripts must execute these two sequential operations:
+
+#### Phase 1: Mint a Session Token
+
+You fire an HTTP PUT request to the token API path, specifying a Time-To-Live (TTL) header in seconds (e.g., 6 hours / 21,600 seconds):
+
+```bash
+TOKEN=$(curl -X PUT "http://169.254.169.254/latest/api/token" -H "X-aws-ec2-metadata-token-ttl-seconds: 21600")
+```
+
+#### Phase 2: Inject the Header to Fetch Metadata
+
+Now that you have the session key stored inside the $TOKEN variable, you issue your standard GET request, passing that token inside the custom X-aws-ec2-metadata-token authorization header:
+
+```bash
+curl -H "X-aws-ec2-metadata-token: $TOKEN" http://169.254.169.254/latest/meta-data/public-ipv4
+```
+
+## Exam Tips
+
+**The Container Network Hop Limit**: Imagine an exam scenario states, _"You have migrated an application stack from a traditional EC2 deployment onto an Amazon EKS (Kubernetes) or ECS cluster running on EC2 container instances. You enforced IMDSv2 across the instances for security hardening. Suddenly, your containerized applications are throwing credentials extraction errors and cannot assume their IAM roles, while the host EC2 instance itself can fetch tokens perfectly. How do you fix this?"_  
+**You must understand the architectural behavior of the Metadata Response Hop Limit**. By default, the HTTP response packet carrying the IMDSv2 session token is configured with an IP Time-to-Live (TTL) Hop Limit of 1.
+
+In container networking (Docker, ECS, Kubernetes), traffic running inside a container pod must cross a virtual network bridge interface to talk to the host OS. This bridge counts as an explicit network layer hop! S3/EC2 sees the hop counter drop to 0 at the bridge and drops the packet, preventing your container from reading the token.
+
+The direct developer solution is to use the AWS CLI to update the instance metadata options and increase the hop limit parameter to 2:
+
+```bash
+aws ec2 modify-instance-metadata-options --instance-id i-xxxx --http-put-response-hop-limit 2
+```
