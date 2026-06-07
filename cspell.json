@@ -18,7 +18,8 @@
     "IMDS",
     "rendy",
     "Segregators",
-    "subnetting"
+    "subnetting",
+    "unvetted"
   ],
   "ignorePaths": [
     "node_modules/**",
@@ -34,7 +35,9 @@
     "ASIAIOSFODNN",
     "Authy",
     "Boto",
+    "CNSA",
     "CYEXAMPLEKEY",
+    "DSSE",
     "HSET",
     "LPUSH",
     "MDENG",
@@ -47,6 +50,7 @@
     "lorber",
     "maarek",
     "marcey",
+    "mathbf",
     "mybrand",
     "stephane",
     "texttt"
