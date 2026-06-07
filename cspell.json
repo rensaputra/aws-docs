@@ -27,6 +27,7 @@
     "static/img/**"
   ],
   "ignoreWords": [
+    "ABAC",
     "AKIA",
     "AKIAI",
     "AKIAIOSFODNN",
