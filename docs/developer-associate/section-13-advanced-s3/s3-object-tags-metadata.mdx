@@ -26,7 +26,10 @@ AWS separates object categorization into two explicit pipelines: **User-Defined 
   - **Lifecycle & Replication Hooks**: As we saw in the previous labs, you can scope your automated transitions or cross-region mirroring rules to target objects matching specific tag criteria.
 - **The Mutability Win**: Tags are completely mutable and decoupled. You can invoke `PutObjectTagging` or `DeleteObjectTagging` to swap out tags at any time without re-uploading or modifying the underlying file object! Each object can hold up to **10 tags**.
 
-### The Search Limitation
+### The Search LimitationUse Case Requirement,Target Attribute Protocol,Native S3 Search Capability,Recommended Production Solution Architecture
+
+Pass environmental headers down to frontend client browsers,User-Defined Metadata (x-amz-meta-\*),No,Leverage an external database lookup or run batch analytical sweeps.
+Isolate security access blocks or drive lifecycle transitions,S3 Object Tags (Up to 10 keys per asset),No,Build an automated indexing tier.
 
 By default, **you CANNOT run an S3 API query to search or filter your bucket for objects matching specific custom metadata strings or tag values**. Running a standard `ListObjects` command simply dumps your files back _chronologically_ or _alphabetically_ by key name. If your bucket contains 50 million files and you want to find every object tagged with `Project: Blue`, S3 will not filter that for you out-of-the-box.
 
