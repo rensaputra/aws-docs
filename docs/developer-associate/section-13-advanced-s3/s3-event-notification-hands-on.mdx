@@ -123,7 +123,7 @@ This hands-on lab walks through the infrastructure pipeline required to hook an 
 
 ## Exam Tips
 
-**The Least Privilege SQS Policy Blueprint**: While Stephane used a broad wildcard ("Principal": "\*") to skip configuration steps during the sandbox lab, doing this in a production workspace creates a major security hole because any external resource could spoof events into your application pipeline.  
+**The Least Privilege SQS Policy Blueprint**: While Stephane used a broad wildcard (`"Principal": "\*"`) to skip configuration steps during the sandbox lab, doing this in a production workspace creates a major security hole because any external resource could spoof events into your application pipeline.  
 **On the exam, the correct production architecture requires least-privilege scoping**. The SQS Access Policy must restrict traffic to the explicit `s3.amazonaws.com` service principal, combined with an advanced cryptographic condition clause that isolates inputs exclusively to your source bucket ARN:
 
 ```json
