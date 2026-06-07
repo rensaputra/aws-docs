@@ -51,4 +51,4 @@ By expanding the delay window quadratically, a cluster of thousands of failing c
 **You must analyze whether the failure is an engineering implementation issue or an organic capacity wall**:
 
 - If the error is transient, intermittent, or occurs during sudden random bursts, the correct architectural answer is to Implement Exponential Backoff (or ensure the execution script uses the SDK defaults).
-- If the error is consistent, continuous, and happening constantly throughout the entire production shift because your application has genuinely outgrown the default limits, the only valid choice is to Submit a Service Quotas increase request to AWS via the console or programmatically via the RequestServiceQuotaIncrease API call.
+- If the error is consistent, continuous, and happening constantly throughout the entire production shift because your application has genuinely outgrown the default limits, the only valid choice is to Submit a Service Quotas increase request to AWS via the console or programmatically via the `RequestServiceQuotaIncrease` API call.
