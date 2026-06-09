@@ -65,6 +65,7 @@ This hands-on lab covers provisioning a dedicated central logging bucket, routin
 - Once the logging system completes its delivery run, refresh your console window. You will see a dense stack of system-generated log files matching the signature layout: `[Source-Bucket-Name][Timestamp]-[Unique-Hash]`.
 - Select one of the log dump files, click **Open**, and view the raw space-delimited text line string blocks.
 - While reading this dense text block line by line can be tricky to decipher manually, you can easily break down the crucial audit variables tracking your execution coordinates:
+  ![](./img/s3-log-entry.png)
 
 ```math
 \text{Audit Dimension Traces} \longrightarrow \begin{cases} \text{Identity Principal:} & \texttt{arn:aws:iam::123456789012:user/rendy} \\ \text{API Event Trigger:} & \texttt{REST.PUT.OBJECT} \\ \text{Object Key Target:} & \texttt{beach.jpg} \\ \text{HTTP Status Result:} & \texttt{200 OK} \end{cases}
