@@ -21,7 +21,8 @@
     "rendy",
     "Segregators",
     "subnetting",
-    "unvetted"
+    "unvetted",
+    "Fargate"
   ],
   "ignorePaths": [
     "node_modules/**",
