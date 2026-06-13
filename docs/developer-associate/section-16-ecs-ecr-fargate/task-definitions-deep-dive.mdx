@@ -70,4 +70,18 @@ While many basic task definitions run a single microservice container, complex p
                            └──────────────────────────────┘
 ```
 
-- **The Use Case**: Your primary container runs your web server core app logic. A secondary sidecar container runs a specialized utility process—like an AWS X-Ray daemon for distributed application tracing or a FluentBit/Log forwarder agent that captures system logs.
+- **The Use Case**: Your primary container runs your web server core app logic. A secondary sidecar container runs a specialized utility process—like an **AWS X-Ray daemon** for distributed application tracing or a **FluentBit/Log forwarder agent** that captures system logs.
+- **The Shared Storage Bridge (Bind Mounts)**: Because containers have entirely isolated root file systems out of the box, Container A cannot look inside the directories of Container B. To pass metrics or log outputs between them, you define a logical **Volume Bind Mount** inside the task definition properties.
+- The Operational Lifecycles: Both containers mount this shared volume path location simultaneously. The primary app container writes its log data to the shared folder, and the sidecar container continuously reads that exact same folder to ship metrics off-cluster.
+  - On **EC2 Launch Types**: The storage backing this volume is allocated directly out of the host instance's local drive disk.
+  - On **Fargate Launch Types**: The volume utilizes Fargate's high-speed ephemeral disk space allocation. Every Fargate container gets `20 GiB` of ephemeral storage for free out of the box, and you can scale this allocation up to `200 GiB` right inside the task properties to handle massive local caching data needs!
+
+![](./img/ecs-multi-container-sidecar.png)
+
+## Exam Tips
+
+**The Secret Injection Permission Trap**: Imagine an exam scenario states, _"You are configuring an Amazon ECS Task Definition to deploy a container onto AWS Fargate. Your code requires an environment variable called DB_PASSWORD, which is safely housed inside AWS Secrets Manager. You configure the task definition JSON properties to reference the secret's ARN under the secrets container definition attribute. However, when the service attempts to launch, the tasks immediately loop crash with a status code: `ResourceInitializationError: unable to retrieve secrets from secrets manager`. How do you resolve this error?"_
+**The textbook diagnostic answer relies on configuring the right IAM identity on the Task Definition layout**.
+
+- **The Trap**: Avoid suggestions that tell you to modify the application's Task Role. The Task Role is passed to your custom container code _after_ it is already healthy and running.
+- **The Fix**: Because fetching the secret keys from the vault and mapping them into environmental variables happens during the container bootstrapping phase before your application code ever starts, the entity executing the pull request is the core ECS infrastructure orchestrator. You must open your Task Definition settings and verify that your **Task Execution Role** possesses explicit `secretsmanager:GetSecretValue` IAM policy permissions!
