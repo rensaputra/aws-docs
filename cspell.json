@@ -43,12 +43,14 @@
     "CYEXAMPLEKEY",
     "DSSE",
     "HSET",
+    "IMDS",
     "LPUSH",
     "MDENG",
     "NACL",
     "NACLs",
     "RumahWeb",
     "SBMA",
+    "SQSD",
     "awsdns",
     "awsvpc",
     "dbeaver",
@@ -61,10 +63,9 @@
     "mathbf",
     "mybrand",
     "nginxdemos",
+    "rendy",
     "stephane",
     "textbf",
-    "texttt",
-    "rendy",
-    "IMDS"
+    "texttt"
   ]
 }
