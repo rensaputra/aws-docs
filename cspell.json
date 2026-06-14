@@ -15,14 +15,15 @@
   "words": [
     "architecting",
     "automatable",
+    "Fargate",
     "Geoblocking",
     "Geoproximity",
     "IMDS",
     "rendy",
     "Segregators",
+    "serverlessly",
     "subnetting",
-    "unvetted",
-    "Fargate"
+    "unvetted"
   ],
   "ignorePaths": [
     "node_modules/**",
