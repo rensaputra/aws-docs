@@ -18,13 +18,12 @@
     "Fargate",
     "Geoblocking",
     "Geoproximity",
-    "IMDS",
     "Pluggability",
-    "rendy",
     "Segregators",
     "serverlessly",
     "subnetting",
-    "unvetted"
+    "unvetted",
+    "containerd"
   ],
   "ignorePaths": [
     "node_modules/**",
@@ -64,6 +63,8 @@
     "nginxdemos",
     "stephane",
     "textbf",
-    "texttt"
+    "texttt",
+    "rendy",
+    "IMDS"
   ]
 }
