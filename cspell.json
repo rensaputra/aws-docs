@@ -55,6 +55,7 @@
     "awsvpc",
     "dbeaver",
     "demorendy",
+    "ebextensions",
     "healthcheck",
     "kubelet",
     "lorber",
