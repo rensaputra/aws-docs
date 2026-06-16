@@ -87,5 +87,5 @@ Injects Keys into EC2 OS Environment        Provisions Managed Cluster Stack
     - **A**. Create a file named `env.yaml` inside a directory named `.ebextensions/` at the project root, and declare the keys under the options namespace.
     - **B**. Create a file ending with .config inside a directory named `.ebextensions/` at the root of the source bundle, and define the variables under the `aws:elasticbeanstalk:application:environment` namespace.
     - **C**. Define the environment variables directly inside the application's `requirements.txt` file.
-    - **D**. Use the AWS CLI to manually run `aws elasticbeanstalk update-environment` commands before running each build pipeline iteration.
+    - **D**. Use the AWS CLI to manually run `aws elasticbeanstalk update-environment` commands before running each build pipeline iteration.  
 **Correct Answer: B**. To bundle configuration settings alongside your application code for source control, you must place a `.config` file within the `.ebextensions/` root directory and use the correct environment namespace blocks.
