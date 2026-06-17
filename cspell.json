@@ -14,7 +14,9 @@
   ],
   "words": [
     "architecting",
+    "Attachee",
     "automatable",
+    "containerd",
     "Fargate",
     "Geoblocking",
     "Geoproximity",
@@ -22,8 +24,7 @@
     "Segregators",
     "serverlessly",
     "subnetting",
-    "unvetted",
-    "containerd"
+    "unvetted"
   ],
   "ignorePaths": [
     "node_modules/**",
