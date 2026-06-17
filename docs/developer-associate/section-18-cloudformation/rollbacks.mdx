@@ -1,0 +1,49 @@
+---
+sidebar_position: 11
+---
+
+# CloudFormation - Rollbacks
+
+When a CloudFormation stack operation hits a wall and fails, its behavior depends on whether you are executing a fresh **Stack Creation** or a **Stack Update**. By default, creation failures trigger an absolute global cleanup—wiping out every single asset it attempted to spin up so you aren't left with orphaned charges. Updates, on the other hand, perform an automated rollback to the last known stable configuration state. If a rollback itself crashes (usually due to someone manually changing drift settings in the console), the stack locks down, requiring manual intervention and a code signal to clear the bottleneck.
+
+## Key Takeaways
+
+### Infrastructure Blueprint: Rollback States & Failure Controls
+
+#### Scenario A: Stack Creation Failures (Fresh Deployments)
+
+- **The Default Action**: If a template fails during its initial launch (e.g., you pass an empty mandatory description or a bunk, non-existent `ImageId`), CloudFormation hits the kill switch. The status switches to `ROLLBACK_IN_PROGRESS`, and it **deletes every single resource** it just created.
+- **The Debugging Problem**: Because the default behavior wipes the slate clean, you can read the deployment text error logs, but you cannot inspect the broken physical resources themselves to debug them.
+- **The Workaround Strategy**: Before hitting submit, you can toggle the Stack Failure Option to "**Preserve successfully provisioned resources**" (Disable Rollback). If the stack crashes now, CloudFormation freezes the operational state—leaving the healthy resources standing so you can jump into their dashboards and run diagnostics.
+
+#### Scenario B: Stack Update Failures (Altering Existing Fleets)
+
+- **The Default Action**: If you push a bad template modification to a live stack, CloudFormation protects your application uptime. It halts the update, switches the state to `UPDATE_ROLLBACK_IN_PROGRESS`, and systematically strips out the newly failed assets while restoring the old versions.
+- **The Recovery State**: Once complete, the stack settles back safely into an `UPDATE_ROLLBACK_COMPLETE` status, matching your last known working architecture baseline.
+
+#### Scenario C: The Feared Rollback Failure (`UPDATE_ROLLBACK_FAILED`)
+
+- **The Core Cause**: This occurs when CloudFormation attempts to roll back a stack to its original state, but hits a hard wall. This is almost always caused by **Out-of-Band Manual Changes** (e.g., a developer bypassed CloudFormation and manually deleted a security group or detached a volume directly in the EC2 console).
+- **The Correction Protocol**:
+  1. You must review the stack event logs to find the specific asset throwing the blockage.
+  2. Go to that service's console and manually recreate or fix the missing asset to match what CloudFormation expects.
+  3. Issue a `ContinueUpdateRollback` command via the AWS Console, CLI, or API. This tells the core engine: _"I fixed the roadblock manually, try completing the rollback loop again."_
+  ```bash
+  aws cloudformation continue-update-rollback --stack-name FailureOnUpdate
+  ```
+
+## Exam Tips
+
+- **Debugging Failed Creation Resources**: Look out for questions where a developer wants to inspect the property states of a resource that fails during stack creation, but the stack keeps completely disappearing. The answer is to set the Stack Failure Option to **"Preserve successfully provisioned resources"** (or disable rollback) during creation.
+- **Fixing `UPDATE_ROLLBACK_FAILED`**: This is a top-tier DevOps/Developer scenario question. If the exam states a stack is stuck in `UPDATE_ROLLBACK_FAILED`, do not select options that suggest deleting the stack or rewriting the template from scratch. The correct operational answer is to **manually fix the drifted resources in the AWS Console** to match the expected state, and then execute the `ContinueUpdateRollback` API action.
+
+### Practice Scenario
+
+**Scenario**: A software developer pushes a template modification to an existing production AWS CloudFormation stack. During the deployment phase, an error occurs due to an invalid configuration attribute, causing CloudFormation to initiate an automated rollback. However, the rollback process fails, leaving the stack stuck in the `UPDATE_ROLLBACK_FAILED` state. Upon review, the developer discovers that a team member had previously manually deleted an attached security group directly via the Amazon EC2 dashboard. How can the developer return the stack back to a stable, operational state?
+
+- **A**. Run an `aws cloudformation delete-stack` command to force-clear the entire operational boundary.
+- **B**. Manually recreate the missing security group inside the Amazon EC2 Console with the exact parameters expected by the template, and then issue a `ContinueUpdateRollback` command via the CloudFormation Console or CLI.
+- **C**. Re-upload the original YAML source file into the Amazon S3 staging bucket and execute an All at Once deployment override.
+- **D**. Modify the template formatting metadata to JSON and execute a Stack Drift Clear operation.
+
+**Correct Answer: B**. When a CloudFormation rollback gets stuck in `UPDATE_ROLLBACK_FAILED` due to an out-of-band manual modification, you must manually recreate or fix the drifted resource in the console first to restore structural alignment, and then trigger the `ContinueUpdateRollback` command to resume the automated cleanup loop safely.
