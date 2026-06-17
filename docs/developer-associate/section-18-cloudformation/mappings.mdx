@@ -1,0 +1,61 @@
+---
+sidebar_position: 7
+---
+
+# CloudFormation - Mappings
+
+**Mappings** are static, hardcoded configuration matrices defined directly inside your CloudFormation template. Think of them as a lookup table or a dictionary file. They are engineered to solve environment and regional branching logic. Instead of asking a user to input an AMI ID or a subnet type via a dynamic parameter, CloudFormation evaluates an environment key (like the current `AWS::Region` pseudo parameter) and automatically extracts the correct, predefined value from your mapping matrix.
+
+## Key Takeaways
+
+### Infrastructure Blueprint: Matrix Topology & Ingestion Mechanics
+
+- **The Mapping Blueprint Structure**: Mappings live inside a top-level `Mappings` block. They use a strict, three-tier nested key structure to hold data values. The lookup order follows a cascading hierarchy:
+  1. **Map Name**: The global identifier of the table (e.g., `EnvironmentMap`).
+  2. **Top-Level Key**: The primary category index (e.g., `dev` vs. `prod`, or `us-east-1` vs. `ap-southeast-2`).
+  3. **Second-Level Key**: The specific attribute variable name (e.g., `InstanceSize` or `AMI`).
+- **The !FindInMap Intrinsic Function**: To programmatically pull a value out of your table, you call the `!FindInMap` function (shorthand for `Fn::FindInMap`). The syntax requires passing all three tiers in exact sequential order: `!FindInMap [ MapName, TopLevelKey, SecondLevelKey ]`.
+
+### ⚔️ Mappings vs. Parameters: The Architectural Trade-Off
+
+- **Choose Mappings** when all potential infrastructure choices are known completely in advance and can be deduced automatically from the context (e.g., "If region is $\text{X}$, use AMI $\text{Y}$"). This locks down security and eliminates user data-entry errors.
+- **Choose Parameters** when the configuration value **depends on user choice at runtime** or cannot be anticipated before stack execution (e.g., "What should the developer name this specific project tag?").
+
+### Multi-Dimensional Lookup Geometry & Function Syntax
+
+When structuring lookup matrices, your configuration file maps out key paths to resolve final values.
+
+The structural blueprint layout for a regional AMI lookup block inside a YAML file is defined as follows:
+
+```YAML
+Mappings:
+  RegionMap:                         # 1. Map Name
+    us-east-1:                       # 2. Top-Level Key (Region Index)
+      HVM64: "ami-0c7217cdde317cfec" # 3. Second-Level Key: Value
+      HVMG2: "ami-0a1b2c3d4e5f6g7h8"
+    ap-southeast-2:
+      HVM64: "ami-0abcd1234abcd5678"
+      HVMG2: "ami-09876fedcba543210"
+```
+
+To extract a value dynamically using the `!FindInMap` shorthand syntax model combined with cross-region tracking, the engine resolves the property string using this exact functional mapping equation:
+
+```math
+\text{Resolved\_Value} = \text{!FindInMap} \left[ \text{RegionMap}, \text{!Ref "AWS::Region"}, \text{"HVM64"} \right]
+```
+
+## Exam Tips
+
+- **Baking Cross-Region Portability**: This scenario shows up constantly on the developer exam. If a question states: _"A developer is designing a unified CloudFormation template that must deploy compute infrastructure across `us-east-1`, `eu-west-1`, and `ap-southeast-2`. The template fails because AMI IDs differ by region. What is the most operationally efficient way to resolve this?"_ Look for an answer that defines a **Region Map** inside the Mappings block and uses `!FindInMap` combined with the `AWS::Region` **pseudo parameter**.
+- **Syntax Order Check**: Make sure you memorize the exact positional argument order for `!FindInMap`. The matrix array index syntax must be exactly: `[ MapName, TopLevelKey, SecondLevelKey ]`. Any distractor switching the keys around or omitting the map handle is absolute bait.
+
+### Practice Scenario
+
+**Scenario**: A cloud software developer wants to build a standardized AWS CloudFormation template to deploy microservices into two separate hosting environments: `development` and `production`. The template must automatically assign a `t3.medium` instance type if the stack is launched as development, and a `c6i.large` instance type if it is launched as production. The setup must be completely hardcoded inside the template code to prevent human data-entry mistakes. How should this architecture be defined?
+
+- **A**. Declare a dynamic Parameters block with an `AllowedValues` restriction and force developers to type the instance size manually during pipeline execution.
+- **B**. Create an environment lookup matrix inside the Mappings block, and use the `!FindInMap` intrinsic function under the **EC2 instance InstanceType** property to resolve the size based on an environment identifier key.
+- **C**. Build an internal python bash macro script and inject it into the `.ebextensions/` software bundle root folder.
+- **D**. Re-compile the template into individual standalone JSON files for every infrastructure component tier.
+
+**Correct Answer: B**. When configuration constraints are known completely in advance and must remain rigidly defined inside the code baseline to enforce strict environment guardrails, utilizing a structural matrix within the Mappings block accessed via `!FindInMap` is the exact AWS best-practice pattern.
