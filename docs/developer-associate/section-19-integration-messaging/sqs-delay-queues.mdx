@@ -6,6 +6,8 @@ sidebar_position: 9
 
 An **Amazon SQS Delay Queue** allows you to postpone the initial delivery of new messages to your consumers. When a message is dropped into a delay queue, it lands in a hidden state and remains completely invisible to any `ReceiveMessage` polling calls for a set duration. You can configure this delivery delay anywhere from a **minimum of 0 seconds** up to a **maximum hard ceiling of 15 minutes**.
 
+![](./img/delay-queue.png)
+
 ## Key Takeaways
 
 ### Global vs. Per-Message Delays
