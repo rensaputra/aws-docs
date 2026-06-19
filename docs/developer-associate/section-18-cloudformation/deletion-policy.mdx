@@ -1,0 +1,65 @@
+---
+sidebar_position: 14
+---
+
+# CloudFormation - Deletion Policy
+
+By default, when you delete a CloudFormation stack, every single resource inside that stack is wiped from existence. The `DeletionPolicy` attribute allows you to override this default behavior on a per-resource basis. It gives you the power to explicitly protect critical assets—either by telling CloudFormation to walk away and leave the resource standing (`Retain`) or to take one final safety backup before killing the compute/storage node (`Snapshot`).
+
+## Key Takeaways
+
+This is your ultimate insurance policy against accidental `rm -rf` moments in the cloud.
+
+### Infrastructure Blueprint: Policy Types & State Behaviors
+
+- **`DeletionPolicy`**:
+  - **`Delete` (The Default State)**:
+    - **Mechanics**: If you don't declare a policy, this is what you get. The resource is destroyed alongside the stack.
+    - **The Amazon S3 Exception**: If your template deletes an S3 bucket with a `Delete` policy, the operation will fail completely if there are objects inside the bucket. To fix this, you must either manually purge the objects or deploy a Custom Resource backed by a Lambda function to programmatically empty the bucket before CloudFormation drops it.
+  - **`Retain`**:
+    - **Mechanics**: Tells CloudFormation to remove the resource from its management tracking registry but leave the physical infrastructure completely intact.
+    - **Post-Deletion State**: The resource status marks as `DELETE_SKIPPED` in the events log. If you want to delete it later, you must navigate to that specific service dashboard (like DynamoDB or EC2) and manually delete it yourself.
+  - **`Snapshot`**:
+    - **Mechanics**: CloudFormation executes a destruction API call on the resource, but it blocks the teardown until it successfully commands the underlying service to capture a final backup state archive.
+    - **Supported Resource Fleet**: Only specific stateful data storage clusters support this behavior. Key examples include:
+      - Amazon EBS Volumes (`AWS::EC2::Volume`)
+      - Amazon RDS DB Clusters and Instances
+      - Amazon ElastiCache Clusters / Replication Groups
+      - Amazon Redshift, Neptune, and DocumentDB clusters.
+
+### Structural Policy Geometry & Artifact Mapping
+
+Unlike dynamic parameters, `DeletionPolicy` is a top-level structural attribute declared right alongside the resource `type` definition, completely outside of the standard `Properties` block.
+
+```YAML
+Resources:
+  MyProductionDatabase:
+    Type: "AWS::RDS::DBInstance"
+    DeletionPolicy: "Snapshot"       # Top-level attribute! Takes a snapshot before destruction
+    Properties:
+      DBInstanceClass: "db.t4g.micro"
+      Engine: "postgres"
+
+  MyCriticalDataLogs:
+    Type: "AWS::DynamoDB::Table"
+    DeletionPolicy: "Retain"         # Top-level attribute! Skips deletion entirely
+    Properties:
+      TableName: "user-transactions-2026"
+      BillingMode: "PAY_PER_REQUEST"
+```
+
+## Exam Tips
+
+- **The S3 Deletion Failure Trap**: This is an absolute classic. If the exam describes a scenario where a stack deletion gets stuck or errors out on an **Amazon S3 bucket** resource, look for the option pointing out that the **bucket contains data objects**, causing the standard delete operation to fail.
+- **Protecting Data from Accidental Deletion**: If a prompt states that a company wants to ensure that deleting an infrastructure stack never results in losing production database tables or block storage contents, look for options that explicitly append `DeletionPolicy: Retain` or `DeletionPolicy: Snapshot` to those specific resource schemas.
+
+### Practice Scenario
+
+Scenario: A software engineer is configuring an AWS CloudFormation template to deploy a microservice that uses an Amazon DynamoDB table to store user profile data. The business requires that if the CloudFormation stack is accidentally deleted, the data within the DynamoDB table must be preserved to prevent permanent data loss. How should the developer structure the template?
+
+- **A**. Define an environment parameter variable with `NoEcho: true` inside the table configuration properties.
+- **B**. Configure an inline script using `.ebextensions` to automatically backup the table to an S3 bucket every hour.
+- **C**. Wrap the database properties inside a CloudFormation Mappings logic lookup table.
+- **D**. Place a top-level `DeletionPolicy: Retain` attribute directly within the DynamoDB table resource block definition.
+
+**Correct Answer: D**. Adding the `DeletionPolicy: Retain` attribute tells CloudFormation that if the stack is torn down, it must skip destroying that specific resource, leaving the physical DynamoDB table and its production data fully intact inside your AWS account.
