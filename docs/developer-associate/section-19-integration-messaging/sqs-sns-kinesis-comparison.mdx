@@ -1,0 +1,62 @@
+---
+sidebar_position: 21
+---
+
+# SQS vs SNS vs Kinesis
+
+Choosing between **SQS, SNS, and Kinesis** comes down to understanding your data's communication model and persistence lifecycle.
+
+- **SQS** uses a _pull-based_, _1-to-1 decoupling model_ where messages are explicitly destroyed after processing.
+- **SNS** utilizes a _push-based_, _1-to-Many pub/sub broadcast model_ with zero data persistence.
+- **Kinesis** is built for _high-velocity, real-time big data ingestion_ using a persistent, append-only log structure that allows multiple analytical tools to independently parse and replay the same stream.
+
+## Architectural Showdown Matrix
+
+Lock these core metrics, scaling limits, and feature flags into your memory before exam day:
+
+| Feature / Metric          | Amazon SQS (Simple Queue Service)                         | Amazon SNS (Simple Notification Service)                   | Amazon Kinesis Data Streams                        |
+| ------------------------- | --------------------------------------------------------- | ---------------------------------------------------------- | -------------------------------------------------- |
+|                           | ![](./img/Simple-Queue-Service.png)                       | ![](./img/Simple-Notification-Service.png)                 | ![](./img/Kinesis-Data-Streams.png)                |
+| **Communication Model**   | Pull-Based (Worker Polls)                                 | Push-Based (Topic Broadcasts)                              | Pull-Based (Shared) / Push-Based (Enhanced)        |
+| **Data Architecture**     | 1-to-1 Decoupling (Single Consumer removes job)           | 1-to-Many Fan-Out (Clones job to all subscribers)          | Multi-Consumer Sequential Stream Parsing           |
+| **Data Persistence**      | Short-lived (Up to 14 days, erased immediately on delete) | Transient (Ephemeral; dropped instantly if no destination) | Append-Only Log (Persistent up to 365 days)        |
+| **Data Replay Capacity**  | No (Once processed and deleted, it's gone)                | No (Ephemeral delivery pipe)                               | Yes (Multiple apps can replay the same history)    |
+| **Scaling Mechanics**     | Serverless / Unlimited Throughput Out-of-the-Box          | Serverless / Unlimited Throughput Out-of-the-Box           | Shard-Based Performance (Provisioned or On-Demand) |
+| **Strict Ordering Rules** | Opt-In via FIFO queues (`.fifo`)                          | Opt-In via FIFO topics (Routes to SQS FIFO only)           | Guaranteed chronologically at the Shard Level      |
+| **Inline Data Delay**     | Yes (Delay Queues or message-level timers)                | No (Forces near-instant push execution)                    | No (Continuous ingestion flow)                     |
+
+## Architectural Decision Tree
+
+```Plaintext
+                   Is your workload Big Data Ingestion / Real-Time Analytics?
+                                               │
+                       ┌───────────────────────┴───────────────────────┐
+                       ▼ (YES)                                         ▼ (NO)
+         ┌───────────────────────────┐                Do you need to broadcast a message
+         │  AMAZON KINESIS STREAMS   │                to multiple systems simultaneously?
+         │  • Multi-app log replay   │                                 │
+         │  • Shard level sequencing │                 ┌───────────────┴───────────────┐
+         └───────────────────────────┘                 ▼ (YES)                         ▼ (NO)
+                                         ┌───────────────────────────┐   ┌───────────────────────────┐
+                                         │        AMAZON SNS         │   │        AMAZON SQS         │
+                                         │ • Push pub/sub broadcast  │   │ • Pull 1-to-1 decoupling  │
+                                         │ • Combined with SQS fanout│   │ • Buffer worker workloads │
+                                         └───────────────────────────┘   └───────────────────────────┘
+```
+
+## Exam Tips
+
+- **Choose SQS when**: You have worker pools (like an EC2 Auto Scaling Group) processing task jobs (like generating PDFs, processing billing files). The key phrases to hunt for are **"asynchronous decoupling," "worker buffers," "horizontal scaling," or "dynamic visibility timeouts."**
+- **Choose SNS when**: You need to trigger multiple disparate backend infrastructures simultaneously off a single event notification. The key phrases are **"pub/sub," "broadcast notifications," "fan-out to multiple queues," or "subscription filter policies."**
+- **Choose Kinesis when**: You are ingesting an astronomical torrent of telemetry, server logs, or clickstream events. The key phrases are **"real-time big data," "sub-second data streaming," "clickstream logging," or "independently replaying historical data blocks."**
+
+### Practice Scenario
+
+**Scenario**: A cloud architect is designing an infrastructure pattern for an online multiplayer game application. The architecture must handle millions of continuous **real-time player action logs per second**. Two separate downstream systems must consume these logs simultaneously: a real-time player leaderboards dashboard and a security auditing engine that checks for compliance breaches. If either system crashes, it must be able to reboot and catch up on missing events by re-reading the log history from the last 24 hours. Which service satisfies these requirements?
+
+- **A**. Amazon SQS standard queues configured with an extended message-level delay timer setup.
+- **B**. An Amazon SNS FIFO topic configured with subscription rules routing straight to individual Lambda functions.
+- **C**. Amazon Kinesis Data Streams paired with standard partition keys.
+- **D**. An AWS CloudFormation StackSet pipeline managed via an `.ebextensions` script block wrapper.
+
+**Correct Answer: C**. The requirements explicitly mention real-time **logging at a massive scale** combined with the absolute requirement to independently replay data history from the last 24 hours. **SQS deletes messages upon consumption** and **SNS doesn't retain data** at all, leaving Kinesis Data Streams as the definitive big data streaming champion, bro!
