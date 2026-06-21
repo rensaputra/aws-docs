@@ -1,0 +1,46 @@
+---
+sidebar_position: 2
+---
+
+# Monitoring Overview in AWS
+
+The absolute worst-case scenario for a cloud engineer is finding out your system is down because angry users start hitting up the support queue or venting on socials. We want to catch, isolate, and fix anomalies before anyone else even notices a stutter.
+
+**AWS monitoring** separates into three distinct domains to give you full visibility across your stack:
+
+- **Amazon CloudWatch** acts as the primary health center, aggregating performance numbers (Metrics) and internal stack records (Logs).
+- **AWS X-Ray** operates as a code-level visibility engine, tracking asynchronous request lifetimes across complex microservices (Distributed Tracing).
+- **AWS CloudTrail** serves as a permanent governance recorder, logging every single control-plane API interaction across your infrastructure for absolute compliance security.
+
+## Key Takeaways
+
+### Infrastructure Blueprint: The Three Pillars
+
+- **Amazon CloudWatch (The Health Core)**:
+  - **Metrics**: Numerical data plots tracking resource consumption over time (e.g., EC2 CPU utilization, SQS queue depth, DynamoDB throttled requests).
+  - **Logs**: Long-term text storage vaults housing granular runtime execution records directly from application outputs, Lambda functions, or ECS task containers.
+  - **Events/Alarms**: Rules engines designed to dynamically fire notifications or launch automated horizontal scaling actions (ASGs) the second a performance baseline gets crossed.
+- **AWS X-Ray (The Code Tracer)**:
+  - **Distributed Tracing**: Maps the exact end-to-end network path of a single transaction request as it hits an API Gateway, triggers a Lambda function, pushes to SQS, and writes to DynamoDB.
+  - **Visual Service Maps**: Generates a real-time graph displaying call performance latencies and specific error percentages at each hop, making it trivial to find the exact bottleneck in a microservice web.
+- **AWS CloudTrail (The Auditor)**:
+  - **Governance & Compliance**: A permanent ledger tracking the _who, what, and when_ of your AWS account control plane. Every time an admin logs into the console, a developer runs an SDK script, or a Terraform template executes, CloudTrail logs the API event securely.
+
+## Exam Tips
+
+When sizing up troubleshooting questions, hunt for these explicit keywords to instantly nail the right answer:
+
+1. If the goal is horizontal autoscaling, threshold alarms, or collecting code stack traces, select **CloudWatch**.
+2. If the goal is microservice latency bottlenecks, visual call graphs, or debugging distributed services, select **X-Ray**.
+3. If the goal is security compliance auditing, identifying who terminated an EC2 instance, or tracking API history, select **CloudTrail**.
+
+### Practice Scenario
+
+Scenario: A development team recently split a monolithic web application into a decoupled microservices architecture running across multiple AWS Lambda functions and Amazon DynamoDB tables. Users are occasionally complaining that submitting forms takes over 10 seconds, but the global CloudWatch CPU metrics look normal. What service should the developer implement to visually track down exactly which microservice or database operation is causing the lag?
+
+- **A**. Enable an inline `.ebextensions` log tracking configuration wrapper inside an SQS standard queue.
+- **B**. Configure AWS X-Ray across the microservices to perform distributed tracing and inspect the performance service map graph.
+- **C**. Provision a secondary AWS CloudTrail tracking trail targeting multi-region bucket paths.
+- **D**. Fire a continuous `PurgeQueue` API action string sequence using an external CloudFormation template configuration.
+
+**Correct Answer: B**. When you are dealing with microservices, distributed architectures, and latency tracking, AWS X-Ray is the absolute king. It maps out the exact call chain graph across your services, pinpointing exactly where the 10-second lag is hiding.
