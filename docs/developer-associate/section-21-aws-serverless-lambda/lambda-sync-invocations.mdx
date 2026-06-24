@@ -1,0 +1,57 @@
+---
+sidebar_position: 5
+---
+
+# Lambda Synchronous Invocations
+
+In a **Synchronous Invocation**, the calling client initiates a blocking network connection to the AWS Lambda service and waits for the function's execution to complete. The execution response payload—including standard return statements or stack-trace error details—is passed directly back to the invoker in the same request-response cycle. Because Lambda does not manage automated retries or dead-letter queuing for synchronous traffic, **the client application bears 100% of the responsibility for error handling, exponential backoff, and retry logic.**
+
+---
+
+## Key Takeaways
+
+### Core Operational Mechanics
+
+Every time you execute a synchronous handshake, you are bound by a few strict platform constraint rules:
+
+- **The `RequestResponse` Invocation Type:** Under the hood, when you invoke a function using the AWS CLI or SDK, the `InvocationType` header parameter defaults explicitly to **`RequestResponse`**. This is the explicit flag that commands Lambda to keep the TCP pipeline open until the code completes or hits a timeout limit.
+- **The 6 MB Payload Ceiling:** This is an absolute hard limit on the DVA-C02 exam, chief! **The combined size of your synchronous request payload and response payload cannot exceed 6 MB.** If a client tries to upload an 8 MB raw file directly through a synchronous Lambda call, the runtime will instantly crash with a `RequestEntityTooLargeException` error.
+  - _The Workaround:_ If you need to process files larger than 6 MB, you drop the asset into Amazon S3 first, then pass the lightweight S3 bucket and key string reference down to your Lambda function instead (this is called the _Claim Check Pattern_).
+
+---
+
+### Infrastructure Blueprint: The Synchronous Gateway Pipeline
+
+When building user-facing web applications, you tie Lambda behind proxy routers to intercept client traffic:
+
+```text
+  ┌─────────────────────────┐     ┌─────────────────────────┐     ┌─────────────────────────┐
+  │     🌐 Web Client       │ ──► │  🚦 API Gateway / ALB   │ ──► │     ⚡ AWS Lambda       │
+  │ (Sends HTTPS POST Call) │     │ (Proxies Request In)    │     │ (Executes Core Logic)   │
+  └─────────────────────────┘     └─────────────────────────┘     └─────────────────────────┘
+               ▲                               │                               │
+               │                               ▼                               ▼
+               └───────────────────────────────┴───────────────────────────────┘
+                                   (🔄 Connection Kept Wide Open)
+            [ Handshake Completed: Returns JSON Data or HTTP Error to User Instantly ]
+
+```
+
+---
+
+### The Synchronous Service Roster (The "Waiters")
+
+Make sure you memorize exactly which AWS services trigger Lambda synchronously, chief. If a service expects an _immediate_ return value to decide its next step, it belongs in this tier:
+
+- **User-Driven Interfaces:** The AWS Management Console test button, the AWS CLI (`aws lambda invoke`), and any programmatic execution using the AWS SDK.
+- **Web Entry Routers:** **Amazon API Gateway** and the **Application Load Balancer (ALB)** (both wait for your code to output valid HTTP response schemas).
+- **Edge Compute Systems:** **CloudFront with Lambda@Edge** (intercepts viewer or origin requests to mutate headers on the fly).
+- **Identity and Security Hooks:** **Amazon Cognito** (Triggers custom verification checks during user signup or authentication loops).
+- **Workflow Orchestration:** **AWS Step Functions** (invokes your task states and blocks moving to the next state until your function returns its output).
+
+---
+
+## Exam Tips
+
+- **Client-Side Failure Ownership:** If an exam scenario states that a Python SDK application triggers a Lambda function synchronously, but the function intermittently throws connection timeouts due to external database pressure, look for the answer that places remediation code **inside the client SDK wrapper application**. You must write the custom try/catch loops and exponential backoffs yourself.
+- **The API Gateway Timeout Collision:** Keep this architectural constraint locked down: while Lambda functions can run for up to 15 minutes, **Amazon API Gateway has a hard timeout limit of 29 seconds.** If your synchronous Lambda function takes 45 seconds to crunch a heavy report, API Gateway will disconnect the user with an HTTP 504 Gateway Timeout error, even though your Lambda function is still running happily in the background.
