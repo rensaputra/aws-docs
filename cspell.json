@@ -62,6 +62,7 @@
     "SSHSG",
     "awsdns",
     "awseb",
+    "awsevents",
     "awsvpc",
     "dbeaver",
     "demorendy",
