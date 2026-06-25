@@ -1,0 +1,99 @@
+---
+sidebar_position: 18
+---
+
+# Lambda Destinations
+
+Before AWS dropped Destinations, managing asynchronous execution states felt like throwing a message in a bottle—if it failed, you relied on DLQs, but if it succeeded, the calling service had zero visibility into the outcome unless you manually wrote `sns.publish()` or `sqs.send_message()` code blocks straight into your handler.
+
+Destinations pull that operational routing logic completely out of your application code and move it to the **AWS infrastructure layer**.
+
+---
+
+## Key Takeaways
+
+**Lambda Destinations** is a feature that allows developers to automatically route execution results (containing context metadata and payloads) to a downstream AWS service based on the final condition of an invocation. It supports **On Success** and **On Failure** routing targets for _Asynchronous Invocations_, and **On Failure** targets for _Event Source Mappings_ routing discarded batches. Supported downstream target options include Amazon SQS, Amazon SNS, AWS Lambda, and Amazon EventBridge.
+
+---
+
+### 🔀 Architectural Targets: Async vs. Event Source Mapping (ESM)
+
+The routing pathways split dramatically depending on how your function was kicked off:
+
+#### ⚡ Pattern A: For Asynchronous Invocations (e.g., S3, SNS triggers)
+
+You can configure independent dual-routing tracks based on how the code finishes executing:
+
+- **`On Success` Track:** If your code returns an HTTP 200/flawless resolution, Lambda automatically wraps the return execution data and drops it down your success channel.
+- **`On Failure` Track:** If your code throws an exception, hits a timeout execution ceiling, or runs out of memory, Lambda intercepts the crash state and routes the breakdown forensics down your failure channel.
+- **The 4 Available Targets:** SQS Queues, SNS Topics, another secondary AWS Lambda Function, or an EventBridge Event Bus!
+
+#### 🗺️ Pattern B: For Stream-based Event Source Mappings (Kinesis & DynamoDB)
+
+For Event Source Mappings, Destinations are exclusively used for **failures** when a batch exhausts its retry limits or age limit rules and is about to be discarded.
+
+- **The Core Benefit:** Instead of letting a poison-pill message freeze your entire Kinesis shard line or letting it drop on the floor, the ESM unblocks the pipeline by redirecting the broken batch straight to your failure destination!
+- **The 2 Available Targets:** Streams can route failures strictly to **SQS** or **SNS** targets.
+
+---
+
+### 🥊 The Ultimate Exam Showdown: Destinations vs. DLQs
+
+The DVA-C02 developer exam _loves_ to pit these two concepts against each other in migration scenarios. Lock down these comparisons immediately:
+
+| Feature Capability           | Dead-Letter Queues (DLQ)                                         | Lambda Destinations 👑                                                                                           |
+| ---------------------------- | ---------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- |
+| **Execution Trigger Models** | Supports **Asynchronous** invocations only.                      | Supports **Asynchronous** AND **Event Source Mappings** stream failures!                                         |
+| **Condition Triggers**       | **On Failure** processing tracks only.                           | **On Failure** AND **On Success** processing tracks.                                                             |
+| **Available Targets**        | Strictly limited to **SQS** and **SNS** destinations.            | Expanded to **SQS, SNS, Lambda**, and **Amazon EventBridge**!                                                    |
+| **Forensic Payload Quality** | **Low.** Only passes the raw original input event payload block. | **High!** Passes original input, execution context metadata, timestamps, error stack traces, and response codes. |
+
+:::tip
+**AWS Best Practice Recommendation:** While you can technically run both simultaneously on a single function, AWS explicitly recommends **phasing out old-school DLQs in favor of Lambda Destinations**. Destinations provide richer debugging metadata, lower code overhead, and support for EventBridge routing.
+:::
+
+---
+
+### 📝 Deconstructing the Forensic Failure Destination Payload
+
+When an `On Failure` Destination catches a crashed execution, it doesn't just hand you the bad input. It packages a highly detailed JSON object containing full forensic tracking data so you can debug instantly, bro:
+
+```json
+{
+  "version": "1.0",
+  "timestamp": "2026-06-25T12:00:00.000Z",
+  "requestContext": {
+    "requestId": "abc123de-4567-890f-abcd-ef1234567890",
+    "functionArn": "arn:aws:lambda:ap-southeast-2:111122223333:function:my-async-worker:$LATEST",
+    "condition": "RetriesExhausted",
+    "approximateInvokeCount": 3
+  },
+  "requestPayload": {
+    "userId": "usr_999",
+    "action": "process_invoice"
+  },
+  "responseContext": {
+    "statusCode": 200,
+    "executedVersion": "$LATEST"
+  },
+  "responsePayload": {
+    "errorMessage": "Database connection timed out after 15000ms!",
+    "errorType": "ConnectionError",
+    "stackTrace": [
+      "  File \"/var/task/lambda_function.py\", line 12, in lambda_handler\n    raise ConnectionError(\"Database connection timed out...\")\n"
+    ]
+  }
+}
+```
+
+#### 🧠 Critical Structural Metadata to Monitor:
+
+- **`requestContext.condition`:** Displays exactly _why_ the message was tossed out to the destination (e.g., `RetriesExhausted` or `HandledApplicationError`).
+- **`responsePayload.stackTrace`:** Passes the actual raw runtime error trace straight into your target queue or bus. This completely bypasses the old limitation where you had to crawl manually through CloudWatch Logs to find out why a DLQ message failed!
+
+---
+
+## Exam Tips
+
+- **The Orchestrated Chain Pattern:** If a scenario states that an enterprise needs to automatically kick off an entirely separate validation workflow or invoke a secondary tracking system _only_ when an async record executes perfectly without editing core business code, look for the choice that hooks an **`On Success` Destination pointing to another Lambda function or EventBridge rule**.
+- **Unblocking the Stream Shard:** If a question complains that an application reading from Kinesis is experiencing massive data processing delays because bad records are causing infinite loop errors and halting the shard poller, look for the answer that maps an **On-Failure Destination** onto the Event Source Mapping to offload bad record arrays safely to SQS.
