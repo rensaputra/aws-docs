@@ -1,0 +1,73 @@
+---
+sidebar_position: 12
+---
+
+# Lambda & EventBridge Hands On
+
+## 🛠️ Step-by-Step Serverless Scheduler Hands On
+
+### 1. Provisioning the Code & Time Trigger
+
+- **Step 1: Set Up the Target Environment**
+  - Boot up a fresh function named `lambda-demo-eventbridge` using the **Node.js 24.x** runtime environment.
+
+- **Step 2: Construct the Event Clock (EventBridge Scheduler)**
+  - Open the **Amazon EventBridge Console** ──► click **Schedules** ──► hit **Create schedule**.
+  - Name your trigger: `InvokeLambdaEveryMinute`.
+  - **Schedule pattern selection:** Set to **Recurring schedule** ──► choose a **Rate-based expression** ──► assign it to **`1 minute`** (turn off the flexible time window constraint so it fires exactly on the second mark). Click Next.
+
+- **Step 3: Point to the Target Pipeline API**
+  - Under the _Target detail_ panel, select **AWS Lambda Invoke** ──► choose your newly initialized function (`lambda-demo-eventbridge`) from the resource index array. Click Next.
+
+---
+
+### 2. ⚠️ The Ultimate Exam Security Trap: Identity Roles vs. Resource Policies
+
+Look closely at how permissions are handled here, chief. This is where a lot of devs drop free points on the DVA-C02 exam because the mechanics shift depending on which EventBridge interface you deploy:
+
+| Event Framework                  | Security Method           | How Permissions Move under the Hood                                                                                                                                                                                                                     |
+| -------------------------------- | ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Classic EventBridge Rules**    | **Resource-Based Policy** | The Rule does _not_ carry an identity role. Instead, a policy statement is directly attached _onto the Lambda function_ allowing `events.amazonaws.com` to push invocations.                                                                            |
+| **Modern EventBridge Scheduler** | **IAM Execution Role** 👑 | The Scheduler acts as an active execution identity principal! The console creates an IAM service role assumed by **`scheduler.amazonaws.com`** that explicitly carries a policy allowing it to execute **`lambda:InvokeFunction`** on your target, bro! |
+
+---
+
+### 📥 3. Deconstructing the Ingested Cron Schema Payload
+
+Once you deploy the `console.log(event)` command string inside your Node.js script and tailed your log stream vectors inside **CloudWatch Logs**, you can review how EventBridge wraps and details its cron triggers:
+
+```json
+{
+  "version": "0",
+  "id": "e96a3c79-2e98-47db-9b62-b6a59e4fdc74",
+  "detail-type": "Scheduled Event",
+  "source": "aws.scheduler",
+  "account": "747554530150",
+  "time": "2026-06-25T00:41:18Z",
+  "region": "ap-southeast-2",
+  "resources": [
+    "arn:aws:scheduler:ap-southeast-2:747554530150:schedule/default/InvokeLambdaEveryMinute"
+  ],
+  "detail": "{}"
+}
+```
+
+#### 🧠 Core Schema Variables to Remember:
+
+- **`detail-type`:** Explicitly hardcoded to `"Scheduled Event"`. This tells your application logic that the call was fired by an interval clock, not a real-world infrastructure failure loop or user payload action.
+- **`source`:** Shows **`aws.scheduler`**, confirming it originated from the modern managed scheduler array instead of the older `aws.events` cloud engine.
+- **`time`:** An ISO 8601 timestamp capture tracking down to the exact millisecond when the trigger event bus dispatched the payload block down your pipeline lanes.
+
+---
+
+### 📊 Operational Telemetry Ingestion Notation
+
+The scheduled execution patterns and time-based automation structures evaluate under these direct expressions:
+
+$$\text{Scheduler Pipeline Trigger} = \text{Expression}(\text{rate}(1\text{ minute})) \implies \text{Assume Role}(\text{scheduler.amazonaws.com})$$
+
+$$\text{Target Execution Delivery} = \text{IAM Role Authority} \xrightarrow{\text{lambda:InvokeFunction}} \text{Lambda MicroVM Runtime} \implies \text{Asynchronous Ingestion}$$
+
+:::tip
+🧹 **Sandbox Budget Guardrail Lock:** Make sure you go back into your EventBridge dashboard, highlight the `InvokeLambdaEveryMinute` row entry, and click **Disable** or **Delete**. Leaving it active means it'll chew through 43,000+ free invocations a month for absolutely no reason while you sleep.
+:::
