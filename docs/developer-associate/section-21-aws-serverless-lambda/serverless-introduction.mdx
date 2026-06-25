@@ -1,0 +1,66 @@
+---
+sidebar_position: 2
+---
+
+# Serverless Introduction
+
+Every production serverless application follows this clean, decoupled flow across your cloud layout:
+
+```text
+ ┌─────────────────────────┐     ┌─────────────────────────┐
+ │   🌐 Amazon S3 + CF     │ ──► │     🔐 AWS Cognito      │ ──► Handles your user signup, login,
+ │  (Static Web Hosting)   │     │    (User Identity)      │     and JWT token security verification.
+ └─────────────────────────┘     └─────────────────────────┘
+                                              │
+                                              ▼ (Sends Secure HTTPS Requests)
+                                 ┌─────────────────────────┐
+                                 │   🚦 API Gateway        │ ──► Acts as the entry guardrail router,
+                                 │   (REST API Interface)  │     throttling and mapping endpoint paths.
+                                 └────────────┬────────────┘
+                                              │
+                                              ▼ (Triggers Ingestion Execution)
+                                 ┌─────────────────────────┐
+                                 │     ⚡ AWS Lambda       │ ──► Computes raw backend business logic
+                                 │   (Function Runtimes)   │     on demand inside microVM instances.
+                                 └────────────┬────────────┘
+                                              │
+                                              ▼ (Fast Key-Value Storage Access)
+                                 ┌─────────────────────────┐
+                                 │   📦 Amazon DynamoDB    │ ──► Fully serverless NoSQL data store with
+                                 │    (NoSQL Database)     │     sub-millisecond scaling profiles.
+                                 └─────────────────────────┘
+
+```
+
+---
+
+## Key Takeaways
+
+### 📦 The 5 Pillars of the AWS Serverless Catalog
+
+Serverless isn't _just_ Lambda anymore. It includes any managed tool where AWS hides the infrastructure scaling loops completely from your sight. Remember this classification matrix:
+
+#### 1. Compute & Execution
+
+- **AWS Lambda:** The baseline standard. Runs pure function code events on a millisecond billing clock.
+- **AWS Fargate:** Serverless container execution. You run your heavy Docker container packages without ever owning or configuring an underlying EC2 host cluster node.
+
+#### 2. Databases & Storage
+
+- **Amazon DynamoDB:** A hyper-scalable NoSQL database engine featuring unlimited capacity limits.
+- **Amazon Aurora Serverless:** A standard relational database layer (MySQL/PostgreSQL compatible) that spins up or down completely on demand based on application database connection pressures.
+- **Amazon S3:** Object storage that expands infinitely without you ever configuring a storage partition block.
+
+#### 3. Orchestration & App Integration
+
+- **AWS Step Functions:** A serverless workflow orchestrator that chains multiple Lambda execution routines together using complex logic trees (`if/else`, loops, try/catch handlers).
+- **Amazon EventBridge:** The central event bus router that shifts payloads across resources on a scheduled cron cadence or state change signature.
+
+#### 4. Messaging & Ingestion
+
+- **Amazon SQS & SNS:** Fully managed queuing and pub/sub broadcast nodes that buffer and scale past sudden spikes in traffic effortlessly.
+- **Amazon Data Firehose:** Serverless stream loader that ingests high-velocity streaming records and drops them directly into S3 or OpenSearch.
+
+#### 5. Identity & Security
+
+- **Amazon Cognito:** Managed user directory pools that handle token claims, social sign-ins, and multi-factor authentication loops out of the box.
