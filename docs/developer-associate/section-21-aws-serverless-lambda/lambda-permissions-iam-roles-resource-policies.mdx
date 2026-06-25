@@ -1,0 +1,68 @@
+---
+sidebar_position: 20
+---
+
+# Lambda Permissions - IAM Roles & Resource Policies
+
+If you want to ace the DVA-C02 exam, you have to master the two completely different dimensions of Lambda security: **What your function is allowed to talk to**, and **Who is allowed to talk to your function**.
+
+Devs stumble here constantly, but the trick is recognizing the exact direction of the communication flow. Let's do a clean-room distillation of **Execution Roles vs. Resource-Based Policies**.
+
+---
+
+## Key Takeaways
+
+AWS Lambda enforces security isolation using a two-way permission model:
+
+- **IAM Execution Roles** dictate what downstream AWS resources (like DynamoDB or S3) the Lambda function code is authorized to _access_ or pull from.
+- **Resource-Based Policies** grant upstream external principals or AWS services (like Amazon S3 bucket notification loops or API Gateway) the explicit authority to _invoke_ the Lambda function resource.
+
+---
+
+### 🔀 The Direct Access Matrix: Inside vs. Outside
+
+To keep these straight during an architectural review, look at the arrow direction of the network transaction:
+
+#### 📤 Dimension A: Outbound Actions ──► IAM Execution Roles
+
+- **The Direction:** From Lambda **out** to the rest of AWS.
+- **The Rule:** Just like attaching an IAM Role to an EC2 instance, your Lambda function _must_ assume an execution role to do work. If your code tries to call `s3.putObject()` or `dynamodb.putItem()` without an execution role containing that policy permission, the microVM drops an immediate Access Denied crash state!
+- **The Pull-Model Exception (ESMs):** When utilizing an **Event Source Mapping** (like reading from SQS or Kinesis), _Lambda_ is the component actively long-polling the data provider. Therefore, the permissions to read from that queue or stream must live inside the **Lambda Function's Execution Role**.
+- **Enterprise Best Practice:** Allocate exactly **one dedicated execution role per function**. Sharing roles across different functions violates the principle of least privilege.
+
+#### 📥 Dimension B: Inbound Actions ──► Resource-Based Policies
+
+- **The Direction:** From external AWS services or cross-accounts **in** to invoke Lambda.
+- **The Rule:** This is an inline policy attached directly _onto_ the Lambda function resource itself (exactly like an S3 Bucket Policy). It grants a separate entity permission to fire the `lambda:InvokeFunction` API command against your shell.
+- **The Push-Model Use Case:** When a service pushes an event notification down to Lambda (e.g., an S3 file landing, a CloudFront edge mutation, or an API Gateway request proxy route), the service requires clearance via the function's **Resource-Based Policy**.
+
+---
+
+### 📊 Essential Managed Policies to Memorize
+
+AWS provides several high-value managed blueprints for common serverless patterns. Make sure you know these indicators for the exam workspace:
+
+| Managed Policy Name                   | Primary Use Case Core Requirement                                                                                                                      |
+| ------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **`AWSLambdaBasicExecutionRole`**     | Minimum baseline. Grants permission to create log groups, open log streams, and write logging strings down into **Amazon CloudWatch Logs** 📊          |
+| **`AWSLambdaSQSQueueExecutionRole`**  | Grants the Event Source Mapper background poller rights to invoke `ReceiveMessage`, `DeleteMessage`, and `GetQueueAttributes` on an **SQS Queue** 📥   |
+| **`AWSLambdaDynamoDBExecutionRole`**  | Gives the ESM engine the tracking rights to pull streaming change data captured from a **DynamoDB Stream** shard 📦                                    |
+| **`AWSLambdaVPCAccessExecutionRole`** | Grants permission to create, describe, and delete Elastic Network Interfaces (ENIs) to execute your function safely inside a **Private VPC Subnet** 🌐 |
+| **`AWSXrayWriteOnlyAccess`**          | Grants authorization to output structural tracking telemetry and performance graph spans straight to the **AWS X-Ray Daemon** 🕸️                       |
+
+---
+
+### 📊 Operational Telemetry Policy Notation
+
+The dual security pathways governing your compute runtime bound evaluation metrics align with these clean expressions:
+
+$$\text{Outbound Code Authority} = \text{Lambda Execution Role} \xrightarrow{\text{Grants Scope}} \text{AWS Service API Actions } (\text{e.g., } \text{s3:PutObject})$$
+
+$$\text{Inbound Invocation Gateway} = \text{Principal Identity } (\text{S3 / API Gateway}) \xrightarrow{\text{lambda:InvokeFunction}} \text{Resource Policy Target Function}$$
+
+---
+
+## Exam Tips
+
+- **The SQS Poller Breakdown Scenario:** If an exam scenario says: _"A developer sets up an Event Source Mapping between an Amazon SQS queue and an AWS Lambda function, but the execution triggers are never firing and messages are stacking up in the queue,"_ check the permissions. Because an ESM uses a pull model, **the Lambda Function's Execution Role must carry the `AWSLambdaSQSQueueExecutionRole` policy.** If you attach that clearance as a Resource-Based policy instead, it will fail completely!
+- **The Cross-Account Invocation Scenario:** If a corporate requirement states that an application running inside AWS Account `111111111111` needs to directly invoke a specialized processing Lambda function situated inside AWS Account `222222222222`, look for the answer that instructs you to **modify the function's Resource-Based Policy inside Account `222222222222` to grant explicit `lambda:InvokeFunction` access to the external Principal ARN.**
