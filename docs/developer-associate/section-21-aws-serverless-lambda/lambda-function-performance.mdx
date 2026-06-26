@@ -1,0 +1,108 @@
+---
+sidebar_position: 29
+---
+
+# Lambda Function Performance
+
+When you are configuring your Lambda resources, you aren't just adjusting sliders on a dashboard—you are directly manipulating the structural boundaries of an isolated microVM. Let’s unbox the engineering realities of memory allocations, cold-start mechanics, and temporary scratchpad boundaries so you can optimize your stacks.
+
+---
+
+## Key Takeaways
+
+AWS Lambda scales out execution performance strictly through its **Memory (RAM)** configuration slider, allocating vCPU capacity proportionally in a linear scale. To achieve cost and execution optimization, developers must utilize global **Initialization Code Blocks** outside the primary handler method to preserve and reuse network connections across warm execution contexts. For on-disk data mutations, functions can leverage up to **10 GB** of local **Ephemeral Storage (`/tmp`)** allocated per microVM sandbox.
+
+---
+
+### 🎛️ The Compute Scale: Proportional CPU Allocation
+
+This is an absolute milestone architectural constraint for the DVA-C02 exam workspace:
+
+- **The Only Variable:** You **cannot** manually select 2 vCPUs or 4 vCPUs for your function. The only hardware lever you control is **Memory (RAM)**, which ranges from **128 MB up to 10,240 MB (10 GB)** in precise 1 MB increments.
+- **The vCPU Linear Thread Formula:** AWS allocates raw compute horsepower proportionally based on how much RAM you provision.
+  - The golden baseline threshold to memorize is **1,769 MB**. At exactly 1,769 MB of RAM, your microVM is granted the compute equivalent of **one full, dedicated vCPU core**.
+  - If you pull the slider past 1,769 MB, the platform drops multiple core footprints into your container shell. To actually benefit from that extra juice, your code handler **must implement multi-threading or parallel child processing rules**. Otherwise, a single-threaded loop will leave the extra cores sitting completely idle while your invoice clock ticks.
+
+    $$\text{Configured Memory} \propto \text{Allocated vCPU Power} \;\land\; (1,769\text{ MB} \equiv 1.0\text{ vCPU})$$
+
+- **The Timeout Ceiling:** By default, your guardrail timeout is locked to 3 seconds. You can scale this up to a hard platform ceiling of **900 seconds (15 minutes)**. If a background pipeline execution or heavy computation takes 15 minutes and 1 second to finish, Lambda is a bad choice—you must migrate that workload to **AWS Fargate, ECS, or EC2**.
+
+---
+
+### 🥶 Maximizing Execution Context Recycles (The Init Phase)
+
+Every time AWS provisions a fresh container shell from scratch, it triggers a **Cold Start**. This phase fires up the environment and executes any code living outside your primary handler function before passing in your payload.
+
+AWS keeps that exact container warm in memory for a short time after execution finishes in anticipation of back-to-back invocations. Let's look at the bad vs. optimized code blueprints side-by-side to see how to save thousands on your billing cycles:
+
+#### ❌ The Bad, High-Latency Pattern (Handler-Scoped Ingestion)
+
+```javascript
+// BAD: This code re-negotiates a connection on EVERY SINGLE INVOCATION, bro!
+import os from "os";
+import { MyDatabaseClient } from "database-driver";
+
+export const handler = async (event, context) => {
+  // ⚠️ CRITICAL ERROR: This network handshake runs over and over again on warm hits!
+  const dbUrl = process.env.DATABASE_URL;
+  const dbClient = new MyDatabaseClient({ connectionString: dbUrl });
+  await dbClient.connect();
+
+  const { userId } = event;
+  const userData = await dbClient.getUser(userId);
+
+  // Sockets left open or manually torn down here ruin your scaling efficiency
+  await dbClient.close();
+
+  return {
+    statusCode: 200,
+    body: JSON.stringify(userData),
+  };
+};
+```
+
+#### 🟢 The Optimized, Elite Pattern (Init-Scoped Global Cache)
+
+```javascript
+// EXCELLENT: The heavy connection block runs EXACTLY ONCE during the Cold Start Init phase!
+import os from "os";
+import { MyDatabaseClient } from "database-driver";
+
+// 1. This executes ONCE when the microVM container boots up from scratch
+const dbUrl = process.env.DATABASE_URL;
+const dbClient = new MyDatabaseClient({ connectionString: dbUrl });
+
+// Establish the persistent connection pool globally in the Init Phase
+// Node.js top-level await allows us to block the Cold Start until the DB is ready!
+await dbClient.connect();
+
+export const handler = async (event, context) => {
+  // 2. Subsequent warm invocations instantly query the data tier! Zero connection delays!
+  const { userId } = event;
+  const userData = await dbClient.getUser(userId);
+
+  return {
+    statusCode: 200,
+    body: JSON.stringify(userData),
+  };
+};
+```
+
+By lifting SDK client origin setups, HTTP connections, and cryptographic keys up into the global execution context namespace, your warm starts can process payloads in milliseconds rather than seconds, chief!
+
+---
+
+### 🗄️ Managing Heavy Payloads: The Local `/tmp` Scratchpad
+
+If your serverless stack needs to unzip media bundles, download massive datasets from S3, or process local file arrays, you use the local **`/tmp` Ephemeral Storage Directory**.
+
+- **The Real Capacity Profile:** While the default storage allocation starts at 512 MB, you can scale this scratchpad completely independently up to **10,240 MB (10 GB)**, bro!
+- **State Persistence Realities:** Just like your memory cache variables, the files inside your `/tmp` path **persist across warm invocations**. If Invocations 1 and 2 land on the same warm container instance, Invocation 2 can instantly access files downloaded by Invocation 1.
+- **The Encryption Catch:** AWS does not provide a toggle switch in the Lambda console to auto-encrypt the local `/tmp` folder at rest. If your compliance standards mandate file system encryption, you must use the **AWS KMS API** inside your handler code to generate data keys and manually encrypt/decrypt those byte blocks before writing them to the disk array.
+
+---
+
+## Exam Tips
+
+- **The Spiking Database Connection Count:** If an exam scenario says: _"A high-traffic web application backed by an AWS Lambda function and an Amazon RDS PostgreSQL instance is failing because the database is throwing max connection limit exceptions,"_ check where the client is instantiated. The bug is happening because **the developer initialized the database client inside the handler block instead of globally.** Moving it out allows warm instances to multiplex connections and unblock your DB.
+- **The CPU-Bound Performance Tuning Trick:** If a prompt states that a cryptographic or data-heavy function is taking 12 seconds to run with 256 MB of RAM, and the developer wants to slash execution latency down to under 2 seconds, look for the answer that tells you to **increase the function's Memory allocation.** Even if the function doesn't need the extra RAM footprint, increasing memory forces AWS to allocate a massive boost in vCPU credits, instantly crashing through your calculation times and often lowering your total billed duration cost.
