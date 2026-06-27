@@ -1,0 +1,139 @@
+---
+sidebar_position: 30
+---
+
+# Lambda Function Performance - Hands On
+
+Stephane's hands-on lab beautifully demonstrates how the AWS control plane decouples your global code execution from your individual request lifecycle.
+
+---
+
+## 🛠️ Step-by-Step Performance Profiling Hands On
+
+### 1. Manipulating the Timeout Boundaries
+
+- **Step 1: Code the Simulated Task Overhead**
+  - Jump into your `lambda-config-demo` code editor workspace.
+
+    ```javascript title="index.mjs"
+    export const handler = async (event) => {
+      const heavyWork = await heavyWorkload(3000);
+      const response = {
+        statusCode: 200,
+        body: JSON.stringify(`Hello from Lambda`),
+      };
+      return response;
+    };
+
+    async function heavyWorkload(ms) {
+      return new Promise((resolve) => setTimeout(resolve, ms));
+    }
+    ```
+
+- **Step 2: Hit the Platform Guardrail Limit**
+  - Make sure your function's **Configuration -> General configuration -> Timeout** is set to its default of **3 seconds**.
+  - Hit **Deploy**, then head to the **Test** tab and fire an invocation.
+  - **The Crash State:** The function drops a hard application failure: `"Task timed out after 3.00 seconds"`.
+
+- **Step 3: Extend the Configuration Window**
+  - Navigate back to **General configuration**, hit **Edit**, pull the timeout slider up to **5 seconds**, and click Save.
+  - Re-run your manual test. The execution resolves perfectly with a `Duration: ~3000 ms` tracking metric.
+
+---
+
+### 2. The Global Initialization Contrast Lab
+
+Let’s look closely at how the Node.js runtime tracks execution costs based on where your resource connections are established.
+
+#### ❌ Pattern A: The Handler-Scoped Performance Killer
+
+If you define your database or SDK client connection inside the async handler loop, you pay a severe tax on _every single request_:
+
+```javascript
+export const handler = async (event) => {
+  const DB_CONNECTION = await getDBConnection();
+  const response = {
+    statusCode: 200,
+    body: JSON.stringify(`Hello from Lambda`),
+  };
+  return response;
+};
+
+async function getDBConnection() {
+  await sleep(3000);
+  return { DB_URL: "" };
+}
+
+async function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+```
+
+- **The Telemetry Result:** Every single time you click **Test**, your execution logs reveal a flatline delay of exactly 3,000+ milliseconds. If 1,000 users hit your endpoint concurrently, your backend database gets hammered with 1,000 parallel connection handshake sequences!
+
+#### 🟢 Pattern B: The Init-Scoped High-Performance Optimization
+
+By refactoring the configuration setup so it sits in the global scope **above and outside** the handler function loop, you use top-level await to shift the latency out of the user client request pathway:
+
+```javascript
+const DB_CONNECTION = await getDBConnection();
+
+export const handler = async (event) => {
+  const response = {
+    statusCode: 200,
+    body: JSON.stringify(`Hello from Lambda`),
+  };
+  return response;
+};
+
+async function getDBConnection() {
+  await sleep(3000);
+  return { DB_URL: "" };
+}
+
+async function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+```
+
+---
+
+## 🔍 3. Decoding the Forensic Telemetry Output
+
+When you deploy **Pattern B** inside your Node.js environment and test it back-to-back, look at how the CloudWatch Log `REPORT` lines shift across your invocation lifecycle, bro:
+
+### ❄️ Invocations 1: The Cold Start Hit
+
+```text
+REPORT RequestId: 11111111-aaaa-bbbb-cccc-dddddddddddd
+Duration: 1.25 ms   Billed Duration: 2 ms   Memory Size: 128 MB   Max Memory Used: 68 MB   Init Duration: 3045.12 ms
+
+```
+
+- **The Audit:** The actual handler execution took only `1.25 ms`. However, because the V8 engine had to spin up and execute your global top-level `await sleep(3000);` code block, the platform logs a distinct **`Init Duration: 3045.12 ms`** footprint.
+
+### 🔥 Invocations 2, 3, & 4: The Warm Start Blitz
+
+```text
+REPORT RequestId: 22222222-aaaa-bbbb-cccc-dddddddddddd
+Duration: 0.38 ms   Billed Duration: 1 ms   Memory Size: 128 MB   Max Memory Used: 68 MB
+
+```
+
+- **The Audit:** Notice that **`Init Duration` has completely vanished from the telemetry report!** Because the microVM instance is kept warm in memory, the global connection wrapper is fully preserved. Your function clears out the workload in a fraction of a millisecond, bro!
+
+---
+
+## 📊 Operational Telemetry Performance Logic
+
+The execution duration costs and cold-start boundary metrics verified during this hands-on run evaluate under these clear expressions:
+
+$$\text{First Execution Cost } (\text{Cold Start}) \implies \text{Total Clock} = \text{Init Duration} + \text{Handler Duration}$$
+
+$$\text{Subsequent Execution Cost } (\text{Warm Start}) \implies \text{Total Clock} = \text{Handler Duration} \quad (\text{Init Duration} \equiv 0)$$
+
+---
+
+## Exam Tips
+
+- **The Timeout Optimization Dilemma:** As Stephane noted, _never_ blindly max out your function timeouts to 15 minutes for lightweight web tasks just because you can, chief. If a downstream database lock causes your code to hang, a loose timeout means your function will run endlessly for 15 minutes, burning your account's concurrent invocation pool and racking up massive unneeded billing statements. **Set your timeouts tightly (e.g., average execution time + a small 50% safety cushion)!**
