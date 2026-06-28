@@ -1,0 +1,122 @@
+---
+sidebar_position: 39
+---
+
+# Lambda and CloudFormation - Hands On
+
+On this hands on we'll be working with CloudFormation to perfectly orchestrate IAM roles, bucket version mappings, and active X-Ray daemon configs for a Node.js Lambda function. Writing your serverless architecture directly into a template means you can tear down the stack or clone it into a completely new account in seconds.
+
+---
+
+## 🛠️ Step-by-Step CloudFormation Lambda Provisioning Hands On
+
+### 1. Preparing the Storage Layer (S3 Versioning Engine)
+
+- **Step 1: Provision the Bucket**
+  - Head to the **Amazon S3 Console** ──► click **Create bucket**.
+  - Give it a globally unique name (e.g., `s3-cloudformation-lambda-demos-yourname`).
+  - **⚠️ The Absolute Requirement:** Toggle **Bucket Versioning** to **Enabled**. (Remember, if you skip this step, CloudFormation won't be able to detect future code overwrites.)
+
+- **Step 2: Staging the Binary Bundle**
+  - Jump into your CloudShell or local terminal, [download](./res/functions.zip) your compiled `functions.zip` artifact to your desktop, and drag-and-drop upload it straight into the root of your newly created S3 bucket.
+
+---
+
+### 2. Dissecting the Infrastructure Declaration (`lambda-xray.yaml`)
+
+This is how the raw infrastructure blueprints stack up under the hood inside your declaration code:
+
+```yaml
+Parameters:
+  S3BucketParam:
+    Type: String
+  S3KeyParam:
+    Type: String
+  S3ObjectVersionParam:
+    Type: String
+
+Resources:
+  LambdaExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - lambda.amazonaws.com
+            Action:
+              - sts:AssumeRole
+      Path: "/"
+      Policies:
+        - PolicyName: root
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - logs:*
+                Resource: arn:aws:logs:*:*:*
+              - Effect: Allow
+                Action:
+                  - xray:PutTraceSegments
+                  - xray:PutTelemetryRecords
+                  - xray:GetSamplingRules
+                  - xray:GetSamplingTargets
+                  - xray:GetSamplingStatisticSummaries
+                Resource: "*"
+              - Effect: Allow
+                Action:
+                  - s3:Get*
+                  - s3:List*
+                Resource: "*"
+
+  LambdaWithXRay:
+    Type: "AWS::Lambda::Function"
+    Properties:
+      Handler: "index.handler"
+      Role:
+        Fn::GetAtt:
+          - "LambdaExecutionRole"
+          - "Arn"
+      Code:
+        S3Bucket:
+          Ref: S3BucketParam
+        S3Key:
+          Ref: S3KeyParam
+        S3ObjectVersion:
+          Ref: S3ObjectVersionParam
+      Runtime: "nodejs24.x"
+      Timeout: 10
+      # Enable XRay
+      TracingConfig:
+        Mode: "Active"
+```
+
+---
+
+### 3. Executing the Stack Generation Engine
+
+- **Step 3: Launching the Stack**
+  - Open the **AWS CloudFormation Console** ──► click **Create stack (with new resources)**.
+  - Select **Upload a template file** ──► choose your `lambda-xray.yaml` file ──► hit Next.
+
+- **Step 4: Mapping the Parameters Matrix**
+  - Set your Stack Name to `demo-LambdaCF`.
+  - **Parameter Ingestion:** Paste your exact S3 Bucket name, input `functions.zip` as the key, and jump back to your S3 bucket object metadata panel to extract the massive **Object Version alphanumeric string hash**, bro. Paste that directly into the `SrcVersion` slot!
+
+- **Step 5: Overriding the Safety Acknowledgment**
+  - Click Next through the advanced settings, scroll to the absolute bottom of the review page, and check the box reading: **"I acknowledge that AWS CloudFormation might create IAM resources."** Hit **Submit**.
+
+---
+
+### 🔍 4. Visual Verification and the "Managed" Status
+
+Once the stack transitions to a glorious green `CREATE_COMPLETE` status flag, navigate back to your AWS Lambda dashboard panel.
+
+When you click open the newly minted `cf-orchestrated-xray-worker` function profile page, you'll see a clean system info banner at the top:
+
+> ℹ️ **"This function belongs to an application."**
+
+This is an awesome console quality-of-life feature indicating that Lambda natively detects the underlying CloudFormation stack binding anchor! This locks down manual console editing permissions to ensure your live infrastructure never drifts out of sync with your Git repository files.
