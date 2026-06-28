@@ -55,6 +55,11 @@ Resources:
 
 ### Practice Scenario
 
-**Scenario**: A cloud software developer is auditing a legacy AWS CloudFormation template. The template contains a list of subnet IDs associated with an Application Load Balancer resource block. When reading the YAML configuration, the developer notices the values are structured using consecutive prefix lines starting with a dash (-). Which programmatic data structure type is being defined by this syntax marker? - **A**. A multi-line literal text block - **B**. A conditional logic string map - **C**. A sequence array list - **D**. A nested structural map root key
+**Scenario**: A cloud software developer is auditing a legacy AWS CloudFormation template. The template contains a list of subnet IDs associated with an Application Load Balancer resource block. When reading the YAML configuration, the developer notices the values are structured using consecutive prefix lines starting with a dash (-). Which programmatic data structure type is being defined by this syntax marker?
+
+- **A**. A multi-line literal text block
+- **B**. A conditional logic string map
+- **C**. A sequence array list
+- **D**. A nested structural map root key
 
 **Correct Answer: C**. In YAML formatting syntax, consecutive lines prefixed with a dash (-) character represent items belonging to an sequential array list or collection set. CloudFormation parses this structure as an array input type.
