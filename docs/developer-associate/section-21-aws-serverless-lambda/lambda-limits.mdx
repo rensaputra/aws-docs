@@ -56,7 +56,7 @@ These quotas apply at an account level per individual AWS region:
 
 ---
 
-## 🎯 DVA-C02 Exam Limits Strategy Matrix
+## Exam Tips
 
 - **The 30-Minute Job Trap:** If an exam question claims a corporate developer wants to migrate a cron job that processes data for exactly **30 minutes** onto a standard Lambda function to optimize costs—look for the answer that rejects the design. Lambda will kill the execution after 15 minutes flat. Suggest **AWS Fargate tasks triggered via an Amazon EventBridge Schedule rule** instead.
 - **The Massive Machine Learning Package:** If a scenario mentions a developer trying to push an advanced Python image classification script that uses heavy pre-trained models, causing the local zip code package to expand to 400 MB—look straight for **Lambda Container Images via Amazon ECR**. Containers unlock that 10 GB footprint limit and cruise past the 250 MB zip barrier smoothly!
