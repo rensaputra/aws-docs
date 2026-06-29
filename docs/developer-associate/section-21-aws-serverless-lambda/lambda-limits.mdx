@@ -1,0 +1,62 @@
+---
+sidebar_position: 47
+---
+
+# Lambda Limits
+
+Knowing the hard structural walls of the platform is what separates a certified developer from someone guessing in production. 📈🛑
+
+AWS Lambda scales like an absolute beast, but it operates inside strict physical guardrails. If you try to force a workload past these boundaries, the control plane will drop a hard exception and halt your task. For the DVA-C02 exam, knowing these numbers by heart lets you instantly identify when to skip Lambda and deploy straight to **AWS Fargate, ECS, or EC2**.
+
+---
+
+## Key Takeaways
+
+### 🏎️ 1. Execution Runtimes (In-Flight Boundaries)
+
+When your code is actively executing inside a Firecracker microVM instance, these constraints are enforced per invocation:
+
+- **Memory Allocation Slider:** Ranges from **128 MB up to 10,240 MB (10 GB)**.
+- _The Modern Incremental Increment:_ While older documentation used 64 MB increments, the platform allows you to slide your memory configuration in granular **1 MB increments**.
+- _vCPU Scaling Law:_ You do not control CPU directly. At exactly **1,769 MB**, your function gets the compute equivalent of **one full, dedicated vCPU core**.
+
+- **Hard Timeout Gate:** Maximum execution time is strictly capped at **900 seconds (15 minutes)**. If your job needs 16 minutes to compile a dataset, Lambda is a bad choice—migrate to Fargate.
+- **Environment Variable Payload:** The combined total size of all your configuration environment strings **cannot exceed 4 KB**. If you need to pass massive JSON configs or high-volume parameters, you must pull them at runtime from **AWS Systems Manager Parameter Store** or **Secrets Manager** instead.
+- **Local Ephemeral Storage (`/tmp`):** Need to drop a heavy binary or scratchpad dataset to disk? The local ephemeral storage defaults to 512 MB for free, but you can configure it all the way up to **10 GB**.
+
+---
+
+### 📦 2. Deployment Packages (Payload Material Storage)
+
+When you are zipping code or shipping artifact files, the AWS control plane enforces these delivery limits:
+
+- **The Direct Upload Zip Limit (Compressed):** **50 MB**. If your zipped artifact file is 51 MB, a direct CLI push fails. You _must_ upload the archive into an **Amazon S3 Bucket** first and reference it in your deployment.
+- **The Absolute Extraction Ceiling (Uncompressed):** **250 MB**. No matter how you deliver your asset (Direct Zip, via S3, or stacked across up to **5 Lambda Layers**), the total unzipped footprint inside the container filesystem cannot cross 250 MB!
+- **The Container Image Loophole:** If you deploy your serverless function via **Lambda Container Images (Docker artifacts pushed to Amazon ECR)**, the 250 MB rule is completely vaporized. You get a massive container footprint capacity of up to **10 GB**!
+
+---
+
+### 📊 3. Absolute Regional Default Quotas
+
+These quotas apply at an account level per individual AWS region:
+
+- **Default Concurrency Threshold:** **1,000 concurrent executions** running simultaneously across all functions in your account. If a single unreserved function spikes and eats up all 1,000 units, your other services will get throttled (`HTTP 429 Rate Exceeded`). This is a soft limit—you can open an AWS support ticket to scale this pool up into the tens of thousands!
+
+---
+
+### 🔲 4. The Quick-Reference Sizing Grid
+
+| Parameter Metric Vector      | Platform System Boundary Limit | Is It Flexible/Adjustable? | Exam Architectural Failure Pattern                                                                        |
+| ---------------------------- | ------------------------------ | -------------------------- | --------------------------------------------------------------------------------------------------------- |
+| **Max Timeout Window**       | **15 Minutes (900 seconds)**   | ❌ Hard Platform Ceiling   | _Scenario:_ Heavy video encoding taking 25 minutes. **Fix: Move to ECS/Fargate.**                         |
+| **Max Memory Allocation**    | **10,240 MB (10 GB)**          | ❌ Hard Platform Ceiling   | _Scenario:_ Data analytics processing job requiring 16 GB RAM. **Fix: Move to EC2/Glue.**                 |
+| **Environment Variables**    | **4 KB Total**                 | ❌ Hard Platform Ceiling   | _Scenario:_ Storing a massive collection of raw app configurations. **Fix: Fetch from SSM.**              |
+| **Uncompressed Zip Size**    | **250 MB** (Includes Layers)   | ❌ Hard Platform Ceiling   | _Scenario:_ Heavy data science libraries bloating your deployment. **Fix: Use Container Images (10 GB).** |
+| **Default Concurrency Pool** | **1,000 Concurrent Units**     | Adjustable via Support     | _Scenario:_ High-volume API spikes freezing internal reporting jobs. **Fix: Apply Reserved Concurrency.** |
+
+---
+
+## 🎯 DVA-C02 Exam Limits Strategy Matrix
+
+- **The 30-Minute Job Trap:** If an exam question claims a corporate developer wants to migrate a cron job that processes data for exactly **30 minutes** onto a standard Lambda function to optimize costs—look for the answer that rejects the design. Lambda will kill the execution after 15 minutes flat. Suggest **AWS Fargate tasks triggered via an Amazon EventBridge Schedule rule** instead.
+- **The Massive Machine Learning Package:** If a scenario mentions a developer trying to push an advanced Python image classification script that uses heavy pre-trained models, causing the local zip code package to expand to 400 MB—look straight for **Lambda Container Images via Amazon ECR**. Containers unlock that 10 GB footprint limit and cruise past the 250 MB zip barrier smoothly!
