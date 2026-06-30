@@ -1,0 +1,75 @@
+---
+sidebar_position: 6
+---
+
+# DynamoDB - Basic Operations
+
+When you are writing application code using the AWS SDK, you aren't writing standard SQL strings by default. You are invoking specific, low-level data plane API calls. Understanding the nuances of these commands—and how they consume your calculated RCUs and WCUs—is a massive portion of the DVA-C02 exam blueprint.
+
+---
+
+## Key Takeaways
+
+### ✍️ Write Operations: Mutating the Disk Layer
+
+Every write operation evaluates against the 400 KB item ceiling and consumes WCUs based on the final rounded-up footprint size:
+
+- **`PutItem`**: Creates a brand new item or **completely overrides and replaces** an existing item carrying the exact same Primary Key signature. If you miss passing an existing attribute, it gets wiped out!
+- **`UpdateItem`**: Modifies _only_ the specific attributes you declare inside the request payload, leaving all other existing attributes completely untouched. If the primary key doesn't exist yet, it proactively builds a new item.
+  - _Atomic Counters 🔢:_ `UpdateItem` supports unconditional increment/decrement operations (e.g., setting `ViewCount = ViewCount + 1`). Perfect for tracking statistics, though not ideal for high-accuracy financial lines since it doesn't guarantee absolute accuracy if requests fail and retry.
+- **Conditional Writes**: You attach a `ConditionExpression` onto your `PutItem`, `UpdateItem`, or `DeleteItem` actions. The database plane evaluates the clause server-side and **only allows the mutation if the rule evaluates to true**.
+  - _Example:_ Allow an item update _only if_ `version = 2` or `AccountBalance >= 100`. If the criteria fails, it throws a `ConditionalCheckFailedException`, protecting your data from concurrent overwrite races!
+
+---
+
+### 🔍 Read Operations: Data Retrieval Mechanics
+
+#### 🟢 `GetItem` (Point Lookup)
+
+Fetches an individual item by targeting its exact, absolute Primary Key (`PK` or `PK + SK`). This is the most efficient lookup pattern, returning up to 400 KB of data instantly.
+
+#### 🔀 `Query` (Isolated Group Extraction)
+
+Finds items sharing the same **Partition Key** using the mandatory `KeyConditionExpression` (which _must_ use the strict `=` operator).
+
+- _Sort Key Support:_ You can chain range operators onto the **Sort Key** (e.g., `>`, `<`, `begins_with`, `between`) right inside the expression to slice your timeline.
+- _Filter Expression Trap ⚠️:_ You can add a `FilterExpression` to look at non-key attributes (e.g., `status = 'ACTIVE'`). However, **this filtering happens AFTER the data is already pulled from disk but BEFORE it's returned to your code.** You still pay for the full RCU footprint of every item read before the filter dropped them.
+- _Ceiling Limits:_ Returns a collection block up to **1 MB of data max**. To pull the rest, your code must execute **Pagination** loops using the returned `LastEvaluatedKey`.
+
+#### 🚨 `Scan` (The Dangerous Blunder)
+
+Loops through **every single physical partition drive** to read your entire database table from top to bottom!
+
+- _The Efficiency Penalty:_ It returns up to 1 MB per call and consumes an absolute mountain of RCUs. If you run a raw scan on a production table, you will exhaust your throughput pool and throttle live users instantly!
+- _Parallel Scan Acceleration 🚀:_ If you _must_ run an analytical scan (like an overnight backup job), you can split the table footprint into isolated data segments and have multiple background threads pull them in parallel via a **Parallel Scan**. It speeds up execution drastically but burns through your RCU reserves like crazy!
+
+#### 💡 Core Read API Sub-Parameters:
+
+- **`ProjectionExpression`**: A selective string array listing only the precise attribute keys you want returned to your application code. (Saves your server-side network bandwidth bytes, but does **not** reduce the RCU cost of the query.)
+
+---
+
+### 📦 High-Velocity Batching Operations
+
+To save on network latency overhead, you can group multiple independent point mutations into a single API transport flight:
+
+| Batch API Method Vector | Maximum Request Capacity                    | Data Throughput Boundary             | Key Operational Constraints                                                                          | Throttling Error Handling                                                                                                                              |
+| ----------------------- | ------------------------------------------- | ------------------------------------ | ---------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **`BatchWriteItem`**    | Up to **25 actions** bundled together.      | Max **16 MB** total payload size.    | Can only execute **`PutItem`** and **`DeleteItem`**. **You CANNOT use `UpdateItem` inside a batch!** | Returns a collection of **`UnprocessedItems`** if capacity runs dry. You must retry only those specific failed keys using an exponential backoff loop. |
+| **`BatchGetItem`**      | Up to **100 items** across multiple tables. | Max **16 MB** total extraction size. | Retrieves records in parallel across separate disk sectors to minimize application wait times.       | Returns **`UnprocessedKeys`** if the local partition read headroom is exhausted.                                                                       |
+
+---
+
+### 📜 PartiQL: SQL Interface Integration
+
+If your engineering team has standard relational habits and prefers standard declarative strings over JSON API method syntax, you can execute operations using **PartiQL**.
+
+- It lets you write familiar `SELECT`, `INSERT`, `UPDATE`, and `DELETE` syntax wrappers directly against DynamoDB tables.
+- ⛔ **The Relational Reality Check:** Using PartiQL **does not add new capabilities or allow you to perform `JOIN` operations.** It is literally just an alternative syntax wrapper that compiles down into the exact same low-level `Query`, `Scan`, or `PutItem` API requests under the hood.
+
+---
+
+## Exam Tips
+
+- **The Database Wipe Best Practice:** If an exam prompt presents a scenario where a test engineer needs to completely clear out a 20 GB staging table before a fresh deployment run, **never choose an option that suggests running a Scan loop followed by individual DeleteItem commands** That burns millions of RCUs and takes forever. The correct, most cost-effective architectural answer is to execute a single **`DeleteTable`** API call to drop the entire resource instantly, and then fire a clean `CreateTable` call to recreate the shell!
+- **Handling Unprocessed Batch Failures:** If a question asks how your application code should handle partial batch delivery failures when `BatchWriteItem` returns a list of `UnprocessedItems`, look for the software mitigation pattern: **Do not retry the entire original batch array! Extract strictly the specific item nodes inside the `UnprocessedItems` object block and resend them down the wire using an Exponential Backoff and Jitter loop**
