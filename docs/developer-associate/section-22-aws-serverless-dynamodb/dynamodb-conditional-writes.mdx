@@ -1,0 +1,160 @@
+---
+sidebar_position: 8
+---
+
+# DynamoDB - Conditional Writes
+
+When you have thousands of Lambda functions firing simultaneously, you can't just check a value in your code, think _"Okay, looks good,"_ and then push an update. By the time your update hit travels down the wire, another execution worker could have modified that exact same row, rendering your code's check completely stale.
+
+DynamoDB solves this by moving the validation rule directly onto the database engine storage layer.
+
+---
+
+## Key Takeaways
+
+### 🔁 The Core Split: Condition Expressions vs. Filter Expressions
+
+This is an absolute milestone distinction that the exam blueprint targets aggressively. Make sure you don't confuse their operational lifecycles:
+
+- **`FilterExpression` (Read Plane Only) 🔍:** Bound to `Query` and `Scan` API operations. The engine reads the data from the physical disk _first_, pays the full RCU bill, and then filters the payload down server-side before passing the pruned collection back to your calling app code.
+- **`ConditionExpression` (Write Plane Only) ✍️:** Bound to data mutation APIs (`PutItem`, `UpdateItem`, `DeleteItem`, and `TransactWriteItems`). The engine checks your validation rules **before** altering a single bit on disk. If the condition evaluates to true, the write succeeds. If it evaluates to false, **the write is rejected completely**, saving your database state from overlapping updates!
+
+---
+
+### 🛠️ The Conditional Syntax Toolkit
+
+You can string together complex logical operators (`AND`, `OR`, `NOT`) alongside these specialized platform evaluation functions, chief:
+
+- **`attribute_exists(path)` & `attribute_not_exists(path)`**: Checks for the absolute presence or absence of a specific attribute field path indicator.
+- **`attribute_type(path, type)`**: Evaluates data compliance (e.g., verifying if a field string is a `Number` or a nested `List`).
+- **`contains(path, operand)` & `begins_with(path, operand)`**: Built-in string matching hooks (like inspecting if an asset URL begins with `https://`, bro).
+- **`size(path)`**: Evaluates string length or checks the count array elements inside document list objects.
+- **`IN` & `BETWEEN`**: Traditional range checks (e.g., validating if `Price BETWEEN :low AND :high`).
+
+---
+
+### 🏢 Enterprise Use Cases: Overwrite Protection & State Triage
+
+#### 🔒 Operational Playbook A: Absolute Overwrite Prevention
+
+If a new user tries to sign up, you want to write their profile using `PutItem`. However, if that `user_ID` primary key already exists in the table, a standard `PutItem` call will blindly overwrite and delete the old user's profile data!
+
+```bash
+aws dynamodb put-item \
+    -- table-name Users \
+    -- item file://values.json \
+    -- condition-expression "attribute_not_exists(user_ID)"
+```
+
+- **The Software Shield Strategy:** You append a condition checking the primary partition key field itself:  
+   $$\text{ConditionExpression} \equiv \mathbf{\text{attribute\_not\_exists}(\text{user\_ID})}$$
+  - _The Result:_ If the user ID is brand new, the write commits cleanly. If it already exists, DynamoDB drops the request immediately and throws a hard **`ConditionalCheckFailedException`**, preserving your historical user record.
+
+#### 📉 Operational Playbook B: The Discount Threshold Cap
+
+Let's analyze Stephane's price reduction script model. You want to subtract a promotional discount value from a product item, but _only if_ the baseline retail price is high enough to justify it:
+
+```bash
+aws dynamodb update-item \
+    -- table-name ProductCatalog \
+    -- key '{"Id: {"N": "456"}"}' \
+    -- update-expression "SET Price = Price - :discount" \
+    -- condition-expression "Price > :limit" \
+    -- expression-attribute-values file://values.json
+```
+
+```json
+// The payload parameters mapped in your values.json block:
+{
+  ":discount": { "N": "150" },
+  ":limit": { "N": "500" }
+}
+```
+
+$$\text{Initial Price} = 650 \xrightarrow{\text{UpdateItem w/ Condition: Price } > \text{ :limit}} \text{Price Updates to } 650 - 150 = \mathbf{500}$$
+
+$$\text{Subsequent Price} = 500 \xrightarrow{\text{Re-run Exact Same UpdateItem Call}} \text{Rejected via } \mathbf{\text{ConditionalCheckFailedException}}$$
+
+Because $500$ is not strictly _greater than_ the `:limit` threshold value of $500$, the condition evaluates to false. The write operation bounces off the front door, ensuring your profit margins never dip below your limit baseline, chief!
+
+#### Conditional writes - example on delete item
+
+##### `attribute_not_exists`
+
+Let's say we want to delete item from our 'ProductCatalog' table that doesn't have a price yet. We can use `attribute_not_exists` to check if the Price attribute exists before deleting the item.
+
+```bash
+aws dynamodb delete-item \
+    --table-name ProductCatalog \
+    --key '{"Id": {"N": "456"}}' \
+    --condition-expression "attribute_not_exists(Price)"
+```
+
+#### `attribute_exists`
+
+We want to delete item with One star rating from our 'ProductCatalog' table. We can use `attribute_exists` to check if the Rating attribute exists before deleting the item.
+
+```bash
+aws dynamodb delete-item \
+    --table-name ProductCatalog \
+    --key '{"id":{"N": "456"}}' \
+    --condition-expression "attribute_exists(ProductRating.OneStar)"
+```
+
+##### IN and BETWEEN operators
+
+Let's say we want to delete item from our 'ProductCatalog' table for a certain 'ProductCategory' and within certain price range.
+
+```bash
+aws dynamodb delete-item \
+    --table-name ProductCatalog \
+    --key '{"Id": {"N": "456"}}' \
+    --condition-expression "(ProductCategory IN (:cat1, :cat2)) AND (Price BETWEEN :lo and :hi)"
+    --expression-attribute-values file://values.json
+```
+
+```json title="values.json"
+{
+  ":cat1": {
+    "S": "Sporting Goods"
+  },
+  ":cat2": {
+    "S": "Gardening Supplies"
+  },
+  ":lo": {
+    "N": "500"
+  },
+  ":hi": {
+    "N": "600"
+  }
+}
+```
+
+for example, this is item: 456 attributes:
+
+```json
+{
+  "Id": {
+    "N": "456"
+  },
+  "ProductCategory": {
+    "S": "Sporting Goods"
+  },
+  "Price": {
+    "N": "650"
+  }
+}
+```
+
+This will results in `ConditionalCheckFailedException` because the price is not between 500 and 600, even though the product category is in the list of categories.
+
+---
+
+## Exam Tips
+
+- **The Runaway Overwrite Vulnerability:** If a scenario states: _"A high-volume mobile game records player scores by sending a PutItem request every time a level finishes. However, occasionally a user's historical highest score is replaced and lost when a slower network request arrives late."_ Look for the architecture fix: **Implement an `UpdateItem` or `PutItem` call backed by a `ConditionExpression` like `NewScore > HistoricalHighScore`.** If a late request comes in with a lower score, the write fails safely with a `ConditionalCheckFailedException`.
+- **The RCU/WCU Billing Impact:** Keep this straight for cost-optimization questions. If a conditional write fails its validation check server-side and drops a `ConditionalCheckFailedException`, **you still pay a fractional WCU fee for the processing power spent evaluating that item on disk!** It prevents data corruption, but it isn't free if you spam failed writes continuously.
+
+```
+
+```
