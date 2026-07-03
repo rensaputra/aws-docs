@@ -46,12 +46,13 @@ Stephane’s terminal console hands-on perfectly validates the operational bound
 
 ---
 
-## 🚨 3. The Front-End Browser Filter Trap
+## 🚨 The Server-Side Filter Expression Trap
 
-Pay close attention to what happens if you try to search for words inside the raw `content` body text attribute using the console filtering box:
+Pay close attention to what happens when you use a `FilterExpression` to search for words inside a non-key attribute (like checking if a `content` string contains the word `"edited"`) in the console or via the SDK:
 
-> ⛔ **THE CLIENT-SIDE FILTER EXHAUSTION LAW:** When you append a filter condition targeting non-key fields (like checking if the `content` string contains the word `"edited"`), **this filter does NOT execute deep inside the low-level database engine layout to save you money!** >
-> The console still forces a full **`Scan`** or wide **`Query`** operation across the disk partitions, pays the full RCU bill for every single item pulled down, streams the entire 1 MB data block to your web browser, and then uses the browser's JavaScript engine to discard the rows that don't match. This is highly inefficient for large tables.
+> ⛔ **THE SERVER-SIDE FILTER EXHAUSTION LAW:** When you append a filter condition targeting non-key fields, **this filter does NOT execute deep inside the storage engine layout to save you money!**
+> DynamoDB still forces a full **`Scan`** or wide **`Query`** operation across the disk partitions, consuming the full RCU bill for every single item read up to the 1 MB boundary.
+> Once that 1 MB block is loaded, the **DynamoDB Service Layer (on the AWS side)** evaluates your filter and discards the non-matching rows _before_ sending the data over the network. While this saves you network bandwidth, it is highly inefficient for large tables because you are still billed for reading the discarded data from the disk.
 
 ---
 
