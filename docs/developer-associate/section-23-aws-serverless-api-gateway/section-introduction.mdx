@@ -1,0 +1,36 @@
+---
+sidebar_position: 1
+---
+
+# API Gateway - Section Introduction
+
+We’ve already mastered the computing muscle with **AWS Lambda** and locked down our lightning-fast, stateless storage layer with **DynamoDB**. But right now, our stack is living in a total vacuum. If a frontend mobile application, a web browser, or a third-party webhook try to ping our app over the open web, they can't reach it because our functions don't have public URLs.
+
+That is exactly where **Amazon API Gateway** drops into the blueprint. Think of it as the ultimate serverless front door for your entire cloud architecture.
+
+---
+
+## Key Takeaways
+
+By introducing API Gateway, we are officially locking in the core architectural pattern of modern cloud-native development:
+
+- **The Front Door (API Gateway) 🚪:** Accepts incoming public HTTP/HTTPS traffic requests over the open internet, handles routing math, blocks malicious bad actors, and scales seamlessly from zero to millions of hits without you touching a single server config file.
+- **The Brains (AWS Lambda) 🧠:** Intercepts the clean event payload handed down from the gateway, executes your core business logic, cuts processing durations down to milliseconds, and stays dead quiet when nobody is pinging your site.
+- **The Ledger (DynamoDB) 📊:** Stores and pulls raw key-value state parameters at blazing speeds with single-digit millisecond response times.
+
+---
+
+### 🛠️ What API Gateway Crushes Out-of-the-Box
+
+Managing a traditional web hosting server like Nginx or an Express.js app just to route public endpoints is a massive admin tax. API Gateway vaporizes that overhead by natively absorbing these heavy enterprise production duties:
+
+1. **Strict Path Routing Matrix 🔀:** Maps standard public clean URLs (e.g., `GET /products` or `POST /orders`) directly onto specific background Lambda target functions.
+2. **Ironclad Perimeter Defense (`Cognito` Integration) 🔐:** We’ll look at hooking up **Amazon Cognito** directly to the API plane. It automatically verifies incoming user login tokens _before_ the request ever touches your Lambda code, blocking unauthorized scripts out completely for free!
+3. **Traffic Shaping & Rate Limiting 🛑:** Defends your system from distributed denial of service (DDoS) attacks or runaway client script loops by applying strict throttling policies and individual usage plan quotas per API Key.
+4. **Data Formats Mapping Transformers 🔀:** Translates incoming XML or legacy body payloads into clean JSON formats effortlessly using mapping templates.
+
+---
+
+### 🎯 What to Watch For in this Section
+
+As we cruise through this new module, the DVA-C02 developer exam is going to hit us with major high-priority architectural questions. We are going to lock down the exact differences between **REST APIs** vs. **HTTP APIs**, master backend configuration integrations like **Lambda Proxy** mode, and dissect how to properly handle cross-origin resource sharing (**CORS**) so your frontend browsers don't throw ugly red console blocks!
