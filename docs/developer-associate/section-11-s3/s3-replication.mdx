@@ -59,7 +59,7 @@ The exam will test your understanding of the blast radius when files are removed
 
 If you configure your rule with **Delete Marker Replication enabled**, running a standard `aws s3 rm` command on the source bucket will place a delete market on the source and automatically mirror that exact same delete market layer onto the destination bucket.
 
-🔒 Tactic B: Blocking Permanent Deletes
+#### 🔒 Tactic B: Blocking Permanent Deletes
 
 If a rogue script or compromised IAM user targets an explicit Version ID to permanently destroy a file layer from the source bucket. **S3 won't replicate this action**. The Targeted version layer is wiped out of the source bucket, but the destination bucket completely ignores this delete event, leaving the backup copy of that exact file version totally intact and safe in the target bucket.
 
@@ -75,7 +75,7 @@ This hands-on lab lab layout walks through creating an S3 lifecycle baseline for
   - Name it `rendy-bucket-origin`
   - Scroll down and explicitly **Enable Bucket Versioning**
   - Complete the creation and open this bucket in a new browser tab
-- ** Create the Destination Bucket**
+- **Create the Destination Bucket**
   - Select the `ap-southeast-1` Singapore region
   - click **Create Bucket**
   - Name it `rendy-bucket-replica`
