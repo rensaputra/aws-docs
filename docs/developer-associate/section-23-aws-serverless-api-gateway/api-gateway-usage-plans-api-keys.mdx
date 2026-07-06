@@ -46,19 +46,47 @@ This is an absolute favorite multi-choice target area on the exam. If you execut
 
 Commit this exact execution timeline to your architectural memory, bro:
 
-```text
-🛠️ THE USAGE PLAN PROVISIONING TIMELINE:
-   ├── Step 1: Design your REST API paths, resources, and verbs in the console layout.
-   ├── Step 2: Toggle "API Key Required" to TRUE on the specific method settings card! 🛑
-   ├── Step 3: Deploy the API to your live environment Stage (e.g., prod or dev).
-   ├── Step 4: Generate or import your unique customer API Keys string tokens.
-   ├── Step 5: Create your Usage Plan, dialing in your exact Throttle and Quota caps.
-   └── Step 6: LINK everything together! Associate the Stage AND the API Keys to the Usage Plan.
-```
+#### THE USAGE PLAN PROVISIONING TIMELINE:
 
-If you forget **Step 2**, your API will completely ignore the `x-api-key` headers passed by your users. If you forget **Step 6**, the gateway won't know which keys are bound to which throttling rules, and your clients will catch hard access denials, chief!
+##### Step 1: Design your REST API paths, resources, and verbs in the console layout.
+
+##### Step 2: Toggle "API Key Required" to TRUE on the specific method settings card! 🛑
+
+![](./img/api-gateway-usage-plans-api-key-required.png)
+
+##### Step 3: Deploy the API to your live environment Stage (e.g., prod or dev).
+
+##### Step 4: Generate or import your unique customer API Keys string tokens.
+
+![](./img/api-gateway-usage-plans-api-keys.png)
+
+##### Step 5: Create your Usage Plan, dialing in your exact Throttle and Quota caps.
+
+![](./img/api-gateway-usage-plans-throttle-quota.png)
+
+##### Step 6: LINK everything together! Associate the Stage AND the API Keys to the Usage Plan.
+
+![](./img/api-gateway-usage-plans-link.png)
+Linking the usage plan to the stage tells the gateway **which API deployment** is being metered.
 
 ---
+
+![](./img/api-gateway-usage-plans-link-2.png)
+Linking the usage plan to the API keys tells the gateway **which clients** are being throttled and billed.
+
+---
+
+![](./img/api-gateway-usage-plans-link-3.png)
+Successful API calls now require the `x-api-key` header to be present.
+
+---
+
+![](./img/api-gateway-usage-plans-link-4.png)
+API will throw a hard **`403 Forbidden`** error if the header is missing or invalid.
+
+---
+
+If you forget **Step 2**, your API will completely ignore the `x-api-key` headers passed by your users. If you forget **Step 6**, the gateway won't know which keys are bound to which throttling rules, and your clients will catch hard access denials.
 
 ## Exam Tips
 
