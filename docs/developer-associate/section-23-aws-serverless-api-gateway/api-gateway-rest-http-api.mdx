@@ -1,0 +1,57 @@
+---
+sidebar_position: 19
+---
+
+# API Gateway REST API vs. HTTP API
+
+Breaking down the difference between **REST APIs** and **HTTP APIs** inside API Gateway is an absolute favorite architectural optimization question on the developer certification blueprint.
+
+Stephane mentions in the recording that they might not show up heavily, but the DVA-C02 exam blueprint has since been fully updated, chief. The testers _love_ checking if you know exactly when to pivot away from a heavyweight REST API to save massive cash on your cloud bill using a lean, mean HTTP API endpoint!
+
+---
+
+## Key Takeaways
+
+Think of **REST APIs** as the ultimate enterprise-tier SUV—it packs every single feature under the sun (caching, VTL mapping, usage plans, firewalls), but it's expensive to run and injects a tiny bit of processing weight.
+
+**HTTP APIs** are like a stripped-back, high-velocity racing motorcycle. They were built from scratch to do one thing incredibly fast and incredibly cheap: catch a public HTTP request and slam-proxy it straight down to an AWS Lambda function or a private VPC integration with **minimal latency and up to a 70% discount on your API bill!**
+
+---
+
+### 📊 The Core Feature Battle Matrix
+
+This is the exact feature cutoff line you must commit to your core developer memory for the exam, chief:
+
+| Feature Dimension            | REST API 🏛️                                            | HTTP API ⚡                                                                              |
+| ---------------------------- | ------------------------------------------------------ | ---------------------------------------------------------------------------------------- |
+| **Baseline Cost & Latency**  | Higher Cost, Standard Latency                          | **Up to 70% Cheaper, Ultra-Low Latency, bro!**                                           |
+| **Integration Architecture** | Proxy & **Custom (Non-Proxy) with VTL Mapping**        | Strict **Proxy Only** (Lambda Proxy / HTTP Proxy). No VTL data-morphing allowed.         |
+| **Native Auth Support**      | IAM, Cognito User Pools, Lambda Authorizers            | **Native OIDC / OAuth 2.0 (JWT Tokens)**, Lambda Authorizers, IAM.                       |
+| **Traffic Monetization**     | **Usage Plans & API Keys** (SaaS Metering)             | **None** No native usage plan tiers or API keys.                                         |
+| **Response Caching**         | **Built-in Native Caching**                            | **None.** You have to handle caching manually downstream in your code or via CloudFront. |
+| **Network & Firewall Walls** | **Resource Policies**, WAF Firewall, Private Endpoints | Private Integrations via VPC Links, **No Resource Policies**                             |
+
+---
+
+## Exam Tips
+
+When you read a scenario on the exam, you can instantly filter out the wrong answer by matching their primary business constraint, chief:
+
+### 🚀 Look for the REST API Answer if the prompt mentions:
+
+1. **SaaS Monetization:** "The company wants to create tier-based subscription plans for customers using API Keys."
+2. **Data Transformation:** "The system must map incoming legacy XML payloads over to modern JSON strings using VTL mapping templates."
+3. **Edge Caching:** "The backend database is getting hammered, and identical reads must be cached directly at the gateway layer."
+4. **Network Access Control:** "The API must enforce a strict Resource Policy to blacklist specific client public IP address ranges."
+
+### ⚡ Look for the HTTP API Answer if the prompt mentions:
+
+1. **Aggressive Cost Optimization:** "The development team wants to build a simple serverless backend but needs the absolute most **cost-effective** solution to handle millions of requests."
+2. **Native Social Login/OAuth Integration:** "The mobile app needs a lean endpoint that natively accepts and validates standard **OAuth 2.0 / OIDC tokens** straight from an external provider with zero custom authorizer code."
+3. **Simple, Low-Latency Proxying:** "The architecture merely requires passing an incoming HTTP request straight down to a Lambda function with the lowest possible processing latency."
+
+---
+
+### 🛠️ Summary Check: The WebSocket Cameo
+
+Stephane briefly gives a shoutout to **WebSocket APIs**. Just remember for the exam: if a scenario introduces a real-world, real-time interactive app—like a **live multiplayer game lobby** or a **financial trading chat room**—where the client and server need a permanent, open, two-way bidirectional connection to stream data back and forth without constant HTTP polling overhead—**WebSocket API is your undisputed golden choice.**
