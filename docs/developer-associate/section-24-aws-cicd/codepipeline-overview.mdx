@@ -31,6 +31,8 @@ This is an absolute milestone architectural concept for the exam. **How do your 
 
 AWS CodeBuild and AWS CodeDeploy do _not_ query CodeCommit or GitHub directly during a pipeline run. Instead, CodePipeline uses **Amazon S3 as its centralized transient Artifact Store.**
 
+![](./img/codepipeline-artifact-store.png)
+
 ```text
 🔄 THE CODEPIPELINE DATA BUS MATRIX:
    ├── 📁 1. Developer pushes code ──► Hits CodeCommit Repo
