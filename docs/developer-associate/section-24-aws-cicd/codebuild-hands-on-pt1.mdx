@@ -53,7 +53,7 @@ Stephane’s walkthrough guides you through connecting your source repository us
 ### 📄 4. Declaring the Build Instruction Track
 
 - **The Command Framework Blueprint:** Under the Buildspec settings panel, pick the selection locked to **Use a buildspec file**.
-- **The Strict Filename Anchor:** Ensure the text prompt box dictates the exact runtime target name: **`buildspec.yaml`** or `buildspec.yml`.
+- **The Strict Filename Anchor:** Ensure the text prompt box dictates the exact runtime target name: **`buildspec.yml`**.
   ![](./img/buildspec.png)
 
 ---
@@ -62,7 +62,7 @@ Stephane’s walkthrough guides you through connecting your source repository us
 
 - **Launch the Container Rocket:** Scroll all the way down to the base of the designer panel and hit **Create build project** ──► once baked, click **Start build**.
   ![](./img/codebuild-start-build.png)
-- **Watch the Phase Logs:** The execution plane immediately transitions from `In Progress` to `Failed`.
+- **Watch the Phase Logs:** The execution phase immediately transitions from `SUBMITTED` to `COMPLETED`. However, if you look closely, the build status is marked as **`Failed`**.
 - **Read the Diagnostic Output:** Click into the CloudWatch build phase logs panel. The engine throws a clear error message stating: **`YAML_FILE_ERROR Message: YAML file does not exist`**.
 - **The Architecture Lesson:** This failure is 100% expected. CodeBuild spun up the container successfully, but because we haven't actually written and committed our blueprint execution file to the root of our Git repository yet, the compiler engine had no choice but to drop the line.
   ![](./img/codebuild-failed-build.png)
