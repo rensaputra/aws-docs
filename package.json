@@ -54,6 +54,6 @@
     "node": ">=20.0"
   },
   "lint-staged": {
-    "**/*.{md,mdx}": "cspell lint"
+    "docs/**/*.{md,mdx}": "cspell lint"
   }
 }

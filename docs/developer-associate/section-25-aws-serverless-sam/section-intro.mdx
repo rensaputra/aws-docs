@@ -1,0 +1,46 @@
+---
+sidebar_position: 1
+---
+
+# AWS SAM - Section Introduction
+
+Welcome to the absolute promised land of serverless development, chief! 🏎️💥 Stepping into **AWS SAM (Serverless Application Model)** is where we stop writing painful, 500-line declarative CloudFormation templates just to spin up a single simple Lambda endpoint, and start packaging apps like elite cloud-native engineers.
+
+As Stephane calls out, trying to wire up Lambda functions, configure API Gateway resource route linkages, map IAM execution profiles, and provision DynamoDB backend tables using raw, vanilla CloudFormation is an absolute mental marathon. It's incredibly verbose, error-prone, and a massive time sink for a developer.
+
+AWS SAM completely mutates that paradigm. It acts as a clean, high-level developer shorthand—essentially a specialized, hyper-efficient macro extension layer built right on top of CloudFormation.
+
+Let’s lay down the foundational map of the SAM universe so you can crush this section:
+
+---
+
+## 🏗️ 1. The Anatomy of the Shorthand
+
+When you build a SAM project, you write a standard YAML layout file. But you kick it off with a magic compiler instruction flag right at the absolute top header line **`Transform: 'AWS::Serverless-2016-10-31'`**.
+
+This single line tells the global AWS CloudFormation engine: _"Don't read this template standard. Fire up the SAM Transformer macro engine first, take my simplified serverless block shortcuts, and auto-expand them into massive, fully fleshed-out raw infrastructure stacks behind the scenes!"_
+
+You get three powerful, high-level resource primitives that replace dozens of lines of standard infrastructure boilerplate:
+
+- **`AWS::Serverless::Function` 🧠:** Auto-generates your Lambda function compute block, populates environment states, and dynamically builds out the entire complex underlying IAM execution role permissions on the fly!
+- **`AWS::Serverless::Api` 🌐:** Establishes full API Gateway endpoints with clean path routing filters and access controls.
+- **`AWS::Serverless::SimpleTable` 📊:** Provisions a highly optimized, scalable Amazon DynamoDB table focused strictly on standard primary keys with minimal configuration noise.
+
+---
+
+## 🛠️ 2. The SAM CLI: Local Container Testing Power
+
+Beyond giving you dense, short templates, SAM ships with an incredible local testing tool—the **SAM CLI**.
+
+Because it hooks natively into Docker running on your local machine, you don't even need to push code to AWS just to see if your code runs right, bro! You can drop commands straight into your terminal:
+
+- `sam local invoke` 📥: Mimics an AWS event payload and executes your Lambda function locally inside a temporary Docker container.
+- `sam local start-api` 🛰️: Spawns a local HTTP mock server on port 3000, allowing you to hit your endpoints with `curl` or Postman straight from your local dev environment!
+
+---
+
+## Exam Tips
+
+Stephane drops the old note that the exam only checks the bare basics of SAM. **Keep your guard up.** The DVA-C02 blueprint heavily stresses Content Domain 1 (Serverless Development) and Domain 3 (Deployment).
+
+The certification testers absolutely _love_ sliding SAM template syntax snippets in front of you. They will check if you know how to map an API Gateway event trigger right inside the `Events:` property block of a `Serverless::Function`, how to declare global settings using the SAM-exclusive `Globals:` configuration block, or how the `sam build`, `sam package`, and `sam deploy` commands bundle up zip packages and ship them safely to Amazon S3.
