@@ -37,6 +37,19 @@ const config: Config = {
     locales: ["en"],
   },
 
+  themes: [
+    [
+      "@easyops-cn/docusaurus-search-local",
+      {
+        hashed: true,
+        language: ["en"],
+        indexDocs: true,
+        indexBlog: false,
+        indexPages: false,
+      },
+    ],
+  ],
+
   presets: [
     [
       "classic",
