@@ -123,7 +123,7 @@ const config: Config = {
             },
             {
               label: "DVA-C02",
-              to: "/docs/category/aws-certified-developer-associate-2026-dva-c02",
+              to: "/docs/developer-associate/section-1-course-introduction/course-introduction",
             },
           ],
         },
