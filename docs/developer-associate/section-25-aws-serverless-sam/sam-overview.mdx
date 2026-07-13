@@ -18,7 +18,7 @@ SAM is an open-source framework designed specifically for developing, testing, a
 
 Every valid SAM template is a CloudFormation file at its core, but it kicks off with a mandatory compiler header macro declaration right at line one, bro:
 
-$$\text{Transform: 'AWS::Serverless-2016-10-31'}$$
+$$\text{Transform: AWS::Serverless-2016-10-31}$$
 
 This header tells CloudFormation: _"Yo, intercept this file and parse my SAM constructs before building the stack!"_ You get three powerful serverless primitive shortcuts that eliminate massive blocks of standard boilerplate JSON/YAML:
 
@@ -73,4 +73,4 @@ SAM hooks straight into your working directory and monitors your local codebase 
 ## Exam Tips
 
 - **The Velocity vs. Latency Optimization:** If an exam scenario introduces a developer who is actively testing a serverless application consisting of dozens of connected Lambda functions, and complains that running `sam deploy` after every minor bug fix is killing their velocity—**look straight for the answer recommending `sam sync --watch` (SAM Accelerate) to hot-swap internal code code-bases directly via the Lambda service APIs, bypassing slow CloudFormation stack updates**
-- **The Syntax Verification Catch:** Always keep an eye out for code snippet identification questions. If a question asks how to ensure an infrastructure file is interpreted cleanly as a Serverless Application template rather than a standard legacy CloudFormation script, **the undisputed marker is checking for the presence of the `Transform: 'AWS::Serverless-2016-10-31'` macro statement right at the header top line!**
+- **The Syntax Verification Catch:** Always keep an eye out for code snippet identification questions. If a question asks how to ensure an infrastructure file is interpreted cleanly as a Serverless Application template rather than a standard legacy CloudFormation script, **the undisputed marker is checking for the presence of the `Transform: AWS::Serverless-2016-10-31` macro statement right at the header top line!**

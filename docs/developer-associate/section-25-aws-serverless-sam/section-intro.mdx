@@ -16,7 +16,7 @@ Let’s lay down the foundational map of the SAM universe so you can crush this 
 
 ## 🏗️ 1. The Anatomy of the Shorthand
 
-When you build a SAM project, you write a standard YAML layout file. But you kick it off with a magic compiler instruction flag right at the absolute top header line **`Transform: 'AWS::Serverless-2016-10-31'`**.
+When you build a SAM project, you write a standard YAML layout file. But you kick it off with a magic compiler instruction flag right at the absolute top header line **`Transform: AWS::Serverless-2016-10-31`**.
 
 This single line tells the global AWS CloudFormation engine: _"Don't read this template standard. Fire up the SAM Transformer macro engine first, take my simplified serverless block shortcuts, and auto-expand them into massive, fully fleshed-out raw infrastructure stacks behind the scenes!"_
 
