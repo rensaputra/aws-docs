@@ -133,6 +133,17 @@ Open your AWS Management Console in another tab and audit the underlying changes
 - **The Auto-Healing Shield:** If your connected CloudWatch Alarm catches a sudden spike in application processing errors or throws a red status flag at any point during this 10-minute window, CodeDeploy kills the release instantly, terminates v2, and snaps the alias weights back to 100% on v1—protecting your users from bugs completely automatically!
 - **The Succeeded Completion:** Once the 10-minute clock finishes rolling with zero errors, the lifecycle status turns a clean **Passing Green**. CodeDeploy rolls the remaining traffic over, updating your `live` alias pointer to lock 100% of network traffic straight onto Version 2.  
   ![](./img/sam-codedeploy-deployment-success.png)
+  ***
+  ![](./img/sam-lambda-alias-v1-traffic.png)
+
+:::tip
+Don't forget to clean up your resources after the hands-on! You can delete the stack using the following command:
+
+```bash
+sam delete
+```
+
+:::
 
 ---
 
