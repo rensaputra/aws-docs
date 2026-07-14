@@ -34,7 +34,7 @@ Run an `ls` or file scan to inspect the three mission-critical files that make u
 
 - **`hello_world/app.ts` 🧠:** The operational backend logic. It contains a standard execution handler method that takes a JSON inbound payload and returns a clean HTTP status wrapper carrying the message string: `"hello world"`.
 - **`samconfig.toml` 🎛️:** Holds your persistent CLI execution properties, deployment parameter hooks, bucket routes, and global variables.
-- **`template.yaml` 📜:** The holy grail template. It features the mandatory **`Transform: 'AWS::Serverless-2016-10-31'`** header macro string and provisions an `AWS::Serverless::Function` resource. Under its `Events:` configuration card, it dynamically hooks up an API Gateway `Api` GET trigger route natively!  
+- **`template.yaml` 📜:** The holy grail template. It features the mandatory **`Transform: AWS::Serverless-2016-10-31`** header macro string and provisions an `AWS::Serverless::Function` resource. Under its `Events:` configuration card, it dynamically hooks up an API Gateway `Api` GET trigger route natively!  
   ![](./img/sam-template.png)
 
 ---

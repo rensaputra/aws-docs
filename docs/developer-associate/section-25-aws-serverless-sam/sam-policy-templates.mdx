@@ -1,0 +1,57 @@
+---
+sidebar_position: 5
+---
+
+# SAM Policy Templates
+
+**SAM Policy Templates** is how we maintain a bulletproof, highly secure **Principle of Least Privilege** architecture without writing massive, explicit IAM JSON code blocks.
+
+---
+
+## Key Takeaways
+
+When you deploy serverless apps, your Lambda functions need to talk to other cloud resources—like pulling items from a database, reading images from a storage bucket, or catching messages from a queue.
+
+Normally, writing those IAM execution roles manually means spending 30 minutes mapping exact arrays of granular action strings (`dynamodb:GetItem`, `dynamodb:PutItem`, etc.) and exact resource ARNs. If you make one tiny syntax mistake, your function crashes. **SAM Policy Templates provide pre-built, production-tested, scoped shorthand definitions for common serverless patterns!**
+
+Let’s look at how this compresses your security code down to pure elegance:
+
+### 🏗️ Big Three Exam-Critical Templates
+
+While AWS maintains a massive official library of these templates, the DVA-C02 blueprint forces you to be intimately familiar with these three heavy hitters:
+
+- **`S3ReadPolicy` 📂:** Instantly grants strict **Read-Only** access parameters (`GetObject`, `ListBucket`) to a specific target Amazon S3 bucket name.
+- **`SQSPollerPolicy` 🦜:** Gives your Lambda function exactly the right clearance parameters required to systematically stream, poll, and delete message packets straight out of an **Amazon SQS Queue**.
+- **`DynamoDBCrudPolicy` 📊:** Grants full **Create, Read, Update, and Delete** actions bounded directly to a single target DynamoDB table resource—without dangerously granting global account rights!  
+  ![](./img/sam-policy-templates.png)
+
+Full list available here: [AWS SAM Policy Templates](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-policy-templates.html#serverless-policy-template-table)
+
+---
+
+### 📜 The Granular Syntax Anatomy
+
+Look at how dead simple it is to hook up an SQS polling listener right inside your function properties, chief:
+
+```yaml
+MyFunction:
+  Type: "AWS::Serverless::Function"
+  Properties:
+    Handler: index.handler
+    Runtime: nodejs22.x
+    CodeUri: src/
+    Policies:
+      - SQSPollerPolicy:
+          QueueName: !GetAtt MyQueue.QueueName
+```
+
+#### ⚡ Under the Hood Transformation Macro:
+
+When you run `sam build` or ship this stack to CloudFormation, the SAM Transformer interceptor catches that `- SQSPollerPolicy` statement block. It automatically expands those two basic indented lines into a massive, explicit IAM Inline Policy Document populated with the precise, minimal execution rights needed to handle SQS streams safely!
+
+---
+
+## Exam Tips
+
+- **The Resource Parameter Trap 🚨:** Always remember that these templates are **scoped to specific targets, chief!** You cannot just drop `- DynamoDBCrudPolicy` blind into a template line item. Your deployment will fail unless you supply the explicit resource parameter it requires to scope the identity envelope (like providing the `TableName` or `QueueName`).
+- **The Security Synthesis Mix:** Keep in your back pocket for multi-choice scenarios that SAM does not force a hard choice. Inside your function's `Policies:` array block, **you can cleanly mix and match SAM Policy Templates side-by-side with global AWS Managed Policies (like `AmazonDynamoDBFullAccess`) or even standard custom inline IAM JSON blocks!** SAM blends them all together into a single, unified execution role on the fly.
