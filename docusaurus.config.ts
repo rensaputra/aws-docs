@@ -141,7 +141,7 @@ const config: Config = {
           ],
         },
       ],
-      copyright: `Copyright © ${new Date().getFullYear()} Rendy Saputra. Built with Docusaurus.`,
+      copyright: `Built with ❤️ Rendy Saputra`,
     },
     prism: {
       theme: prismThemes.github,
