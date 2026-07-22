@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkaws_docs=self.webpackChunkaws_docs||[]).push([["3195"],{79779(s){s.exports=JSON.parse('{"metadata":{"permalink":"/aws-docs/pr-67/blog","page":1,"postsPerPage":10,"totalPages":1,"totalCount":4,"blogDescription":"Blog","blogTitle":"Blog"}}')}}]);
