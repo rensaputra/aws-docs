@@ -1,0 +1,114 @@
+---
+sidebar_position: 3
+---
+
+# KMS Overview
+
+**AWS Key Management Service (KMS)** is the undisputed core encryption hub across the entire AWS ecosystem. 🏎️🔑
+
+Whether you are encrypting S3 buckets, EBS volumes, Lambda environment variables, or SSM Parameters, KMS handles the cryptographic key material, authorization logic, and CloudTrail audit logging out of the box.
+
+---
+
+## Key Takeaways
+
+Let's explore the concepts of the core key types, rotation mechanics, regional isolation rules, and custom key policies before we dive into hands-on in the next section.
+
+### 🔑 Symmetric vs. Asymmetric KMS Keys
+
+```text
+                               ┌────────────────────────────────────────────────────────┐
+                               │                    AWS KMS KEYS                        │
+                               └───────────────────────────┬────────────────────────────┘
+                                                           │
+             ┌─────────────────────────────────────────────┴─────────────────────────────────────────────┐
+             ▼                                                                                           ▼
+🔐 SYMMETRIC KEYS                                                                           🔓 ASYMMETRIC KEYS
+  • Single Secret Key (Encrypt = Decrypt)                                                     • Public/Private Key Pair
+  • AWS Services ALWAYS use Symmetric Keys                                                    • Encryption/Decryption OR Sign/Verify
+  • Raw key material NEVER leaves KMS HSMs                                                    • Public Key can be downloaded outside AWS!
+  • You call API methods (`kms:Encrypt`, `kms:Decrypt`)                                       • Private Key NEVER leaves KMS HSMs
+
+```
+
+- **Symmetric Keys 🔐:** Uses a single key for both encryption and decryption. **Every AWS service integrated with KMS requires a symmetric key.** You never see or download the raw key material; you only interact with it via KMS API calls.
+- **Asymmetric Keys 🔓:** Consists of a Public Key (which can be exported outside AWS for external users to encrypt payloads) and a Private Key (stored safely inside KMS HSMs to perform decryption inside your cloud account).
+
+---
+
+### 🏷️ The KMS Key Hierarchy & Pricing Matrix
+
+| Key Category                    | Created / Owned By                                   | Visibility                | Cost                          | Rotation Strategy                                                         |
+| ------------------------------- | ---------------------------------------------------- | ------------------------- | ----------------------------- | ------------------------------------------------------------------------- |
+| **AWS Owned Keys**              | AWS Services (e.g., S3, DynamoDB)                    | Invisible in your console | **FREE**                      | Managed automatically by the AWS Service.                                 |
+| **AWS Managed Keys**            | Created in your account by AWS (`aws/s3`, `aws/ebs`) | Visible in KMS console    | **FREE** (No monthly fee)     | Automatically rotated **every 1 year (365 days)**.                        |
+| **Customer Managed Keys (CMK)** | Created & managed by YOU                             | Full visibility & control | **$1/month** + API usage fees | Optional auto-rotation (every 90–2560 days, default 1 year) or on-demand. |
+| **Imported Keys**               | Created in your On-Premise HSM                       | Managed by YOU            | **$1/month** + API usage fees | **Manual rotation ONLY** (using aliases).                                 |
+
+---
+
+### 🌐 Regional Isolation & The Cross-Account Snapshot Copy Pattern
+
+**KMS Keys are strictly bound to a single AWS Region!** You cannot use a KMS Key in `us-east-1` to directly encrypt or decrypt data residing in `ap-southeast-2`.
+
+#### 🔄 Pattern A: Cross-Region Resource Migration
+
+To copy an encrypted resource (like an EBS Snapshot or RDS Snapshot) to a new region, you must execute a **Re-Encryption Handshake** during the copy process:
+
+1. Snapshot is encrypted in Region A using **KMS Key A**.
+2. Initiating a Region Copy operation re-encrypts the snapshot data using **KMS Key B** in Region B.
+3. The new snapshot in Region B can now be restored as a volume!
+
+![](./img/kms-cross-region.png)
+
+---
+
+#### 🤝 Pattern B: Cross-Account Resource Sharing
+
+To share an encrypted snapshot with another AWS account:
+
+1. **You CANNOT share resources encrypted with AWS Managed Keys (`aws/ebs`) across accounts!** You MUST use a **Customer Managed Key (CMK)**.
+2. Update the CMK's **Key Policy** in Account A to grant `kms:Decrypt`, `kms:DescribeKey`, and `kms:CreateGrant` permissions to Account B.  
+   ![](./img/kms-cross-account.png)
+3. Share the snapshot with Account B.
+4. Account B copies the snapshot into its own account, **re-encrypting it using Account B's local CMK**!
+
+---
+
+### 📄 KMS Key Policies: The Ultimate Access Control
+
+Unlike standard IAM policies, **IAM policies ALONE are not enough to access a KMS key!** You must explicitly authorize access inside the **KMS Key Policy**.
+
+```text
+🔒 DEFAULT KEY POLICY (Delegates to IAM):
+  Allows root account principal ──► Enables IAM policies attached to users/roles to grant access.
+
+🛑 CUSTOM KEY POLICY (Explicit Control & Cross-Account):
+  Directly dictates which users, roles, or EXTERNAL ACCOUNTS can use or administer the key!
+```
+
+```json
+{
+  "Sid": "Allow Cross-Account Use of the Key",
+  "Effect": "Allow",
+  "Principal": {
+    "AWS": "arn:aws:iam::999999999999:root"
+  },
+  "Action": [
+    "kms:Encrypt",
+    "kms:Decrypt",
+    "kms:ReEncrypt*",
+    "kms:GenerateDataKey*",
+    "kms:DescribeKey"
+  ],
+  "Resource": "*"
+}
+```
+
+---
+
+## Exam Tips
+
+- **The Cross-Account Snapshot Sharing Trap 🚨:** If a scenario asks why an engineer cannot share an encrypted EBS snapshot with a secondary AWS account—**check if the snapshot is encrypted with an AWS Managed Key (`aws/ebs`). AWS Managed Keys CANNOT be shared cross-account! The snapshot must be re-encrypted using a Customer Managed Key with an updated Key Policy.**
+- **The CloudTrail Audit Requirement:** If a question asks how to track every single user, role, or service attempting to encrypt or decrypt data using KMS keys—**target Amazon CloudTrail integration! Every KMS API call (`kms:GenerateDataKey`, `kms:Decrypt`) is logged as a CloudTrail event.**
+- **Cross-Region Snapshot Copying:** If a prompt asks how to move an encrypted RDS database backup to another AWS region—**select the option that copies the snapshot to the target region while specifying a target region KMS key for re-encryption.**
