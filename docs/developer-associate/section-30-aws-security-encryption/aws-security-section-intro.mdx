@@ -1,0 +1,51 @@
+---
+sidebar_position: 1
+---
+
+# AWS Security - Section Introduction
+
+Security isn't just a side topic on the **DVA-C02 exam**—it carries a massive **26% domain weighting** (Content Domain 2: Security). Mastering the interplay between serverless compute like AWS Lambda and core encryption engines is how you crush the test and build bulletproof cloud architectures in the real world.
+
+Here is a roadmap of the heavy-hitting security mechanisms we are locking down in this section, chief:
+
+---
+
+## Key Takeaways
+
+```text
+                               ┌────────────────────────────────────────────────────────┐
+                               │             AWS SECURITY ARCHITECTURE                  │
+                               └───────────────────────────┬────────────────────────────┘
+                                                           │
+             ┌─────────────────────────────────────────────┼─────────────────────────────────────────────┐
+             ▼                                             ▼                                             ▼
+🔑 AWS KMS (Key Mgmt Service)                  📦 Secrets Manager & Parameter Store            🔐 Data Protection & Lambda
+  • Envelope Encryption (DEKs)                  • SSM Parameter Store (Free/Standard vs. Adv)  • Server-Side Encryption (SSE-S3, SSE-KMS)
+  • AWS Managed vs. CMK Keys                    • Secrets Manager (Auto-Rotation via Lambda)   • Encrypting Lambda Env Variables
+  • Symmetric vs. Asymmetric KMS                • SecureString Parameter vs. Secret            • Client-Side Encryption (AWS Encryption SDK)
+
+```
+
+---
+
+### 🔑 AWS Key Management Service (KMS) & Envelope Encryption
+
+- **Customer Managed Keys (CMK) vs. AWS Managed Keys:** Knowing when to create your own key (for cross-account sharing, key rotation control, and key policies) versus using the default `aws/s3` or `aws/lambda` keys.
+- **Envelope Encryption ✉️:** The core mechanics of calling `GenerateDataKey`. You use a **KMS Plaintext Data Key** to encrypt your heavy data payload locally, drop the plaintext key from memory immediately, and store the **Encrypted Data Key** alongside your ciphertext!
+- **KMS API Calls for Devs:** Mastering `GenerateDataKey`, `Encrypt`, `Decrypt`, and `ReEncrypt` within the AWS SDK.
+
+---
+
+### 🗄️ Secrets Management: SSM Parameter Store vs. AWS Secrets Manager
+
+Choosing the right storage medium for database passwords, API tokens, and connection strings is a constant exam target:
+
+- **AWS Systems Manager Parameter Store:** Ideal for plain text parameters or encrypted configuration parameters (`SecureString` backed by KMS). Low cost, integrated with CloudFormation dynamic references.
+- **AWS Secrets Manager:** Built specifically for sensitive credentials. Features **native automated rotation** using pre-configured AWS Lambda functions (e.g., rotating RDS database passwords every 30 days without app downtime).
+
+---
+
+### ⚡ Hands-On Security Integrations with AWS Lambda
+
+- **Environment Variable Encryption 🔒:** Default Lambda environment variables are encrypted at rest using an AWS-managed KMS key. For strict compliance, using **KMS Helper Keys** (Customer Managed Keys) to encrypt sensitive variables at the application level _before_ or _during_ deployment.
+- **Least-Privilege Execution Roles:** Ensuring your Lambda execution roles carry exact, scoped IAM policies targeting KMS key usage (`kms:Decrypt`, `kms:GenerateDataKey`) and Parameter Store/Secrets Manager endpoints.
