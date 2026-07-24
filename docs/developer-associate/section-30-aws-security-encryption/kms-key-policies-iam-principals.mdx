@@ -1,0 +1,94 @@
+---
+sidebar_position: 10
+---
+
+# KMS Key Policies & IAM Principals
+
+**KMS Key Policies** are the primary access control mechanism for AWS KMS keys—unlike most other resource policies in AWS, **a KMS key cannot be accessed by any principal unless the key policy explicitly allows it!** 🏎️🛡️
+
+Understanding how the key policy delegates authority to IAM or grants direct access to principals is one of the most high-yield topics on the DVA-C02 exam.
+
+---
+
+## Key Takeaways
+
+Let's take notes on the default key policy behavior, principal targets, and decision paths.
+
+### 🔑 The Default KMS Key Policy & The "Root" Trap
+
+When you create a Customer Managed Key (CMK) via the console, AWS injects a default key policy statement that looks like this:
+
+```json
+{
+  "Sid": "Enable IAM User Permissions",
+  "Effect": "Allow",
+  "Principal": {
+    "AWS": "arn:aws:iam::123456789012:root"
+  },
+  "Action": "kms:*",
+  "Resource": "*"
+}
+```
+
+#### 🚨 The DVA-C02 Exam Trap (`:root` Principal Nuance):
+
+- **What this do:** In AWS IAM logic, specifying the `:root` as a principal doesn't mean _only_ the root account user gets access. Instead, it means **"trust this entire AWS account,"** as long as they have proper IAM permissions.
+- **The Golden Rule:** Without this statement (or an explicit IAM allow statement in the key policy), **IAM identity policies attached to users or roles are completely useless for accessing the KMS key**!
+
+```text
+🏛️ KMS KEY ACCESS EVALUATION PATHWAY:
+   ├── 1. Direct Access: Principal listed explicitly in KMS Key Policy? ──► ALLOWED ✅ (IAM Policy NOT required)
+   └── 2. Delegated Access: Account `:root` allowed in KMS Key Policy?
+           ├── YES ──► Check IAM Identity Policy ──► Has `kms:Encrypt`/`Decrypt`? ──► ALLOWED ✅
+           └── NO  ──► IAM Identity Policy ignored! ──────────────────────────────► DENIED ❌
+
+```
+
+---
+
+### 🎯 Principal Types in KMS Key Policies
+
+You can target various IAM principals directly inside a key policy statement using the `"Principal"` block:
+
+```json
+{
+  "Effect": "Allow",
+  "Principal": {
+    "AWS": [
+      "arn:aws:iam::123456789012:root",
+      "arn:aws:iam::123456789012:user/Zoro",
+      "arn:aws:iam::123456789012:role/S3WriteRole",
+      "arn:aws:sts::123456789012:assumed-role/S3WriteRole/session-name",
+      "arn:aws:iam::123456789012:role/federated-user/user-name"
+    ],
+    "Service": [
+      "s3.amazonaws.com",
+      "ecs.amazonaws.com",
+      "elasticloadbalancing.amazonaws.com"
+    ],
+    "Federated": [
+      "cognito-identity.amazonaws.com",
+      "arn:aws:iam::123456789012:saml-provider/Okta"
+    ]
+  },
+  "Action": ["kms:Encrypt", "kms:Decrypt"],
+  "Resource": "*"
+}
+```
+
+| Principal Structure        | Syntax Example                                                     | Key Takeaway                                                                                               |
+| -------------------------- | ------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------- |
+| **AWS Account Delegation** | `"AWS": "arn:aws:iam::123456789012:root"`                          | Delegates authorization decisions to **IAM Identity Policies** in account `123456789012`.                  |
+| **Specific IAM Role**      | `"AWS": "arn:aws:iam::123456789012:role/AppRole"`                  | Grants access directly to anyone assuming that IAM Role.                                                   |
+| **Assumed Role Session**   | `"AWS": "arn:aws:sts::123456789012:assumed-role/RoleName/Session"` | Locks down access to a **single active session** of an assumed role.                                       |
+| **Federated User**         | `"Federated": "cognito-identity.amazonaws.com"`                    | Direct permission mapping for external or Web Identity users.                                              |
+| **AWS Service Principal**  | `"Service": "lambda.amazonaws.com"`                                | Allows an AWS service to interact directly with the key (often combined with `kms:ViaService` conditions). |
+
+---
+
+## Exam Tips
+
+- **The Mysterious KMS Access Denied Scenario:** If a developer attached a policy allowing `kms:Decrypt` directly to a Lambda function's IAM execution role, but the function still receives `AccessDeniedException` when decrypting—**the root cause is that the KMS Key Policy does not have the `:root` delegation statement or does not explicitly list the Lambda Role ARN as a Principal!**
+- **Cross-Account KMS Key Access 🌐:** When sharing a Customer Managed Key (CMK) across AWS accounts (e.g., Account A sharing a key with Account B to decrypt an S3 bucket or EBS snapshot):
+  1. **Account A (Owner):** The KMS Key Policy must explicitly grant Account B (`arn:aws:iam::AccountB:root`) permission to use the key.
+  2. **Account B (Consumer):** An IAM identity policy inside Account B must explicitly allow the user/role to invoke `kms:Decrypt` targeting Account A's KMS Key ARN!
