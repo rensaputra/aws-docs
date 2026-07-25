@@ -89,5 +89,3 @@ For **Advanced Tier parameters**, you can attach automated **Parameter Policies*
 - **Public Parameters Integration 🌐:** Need to dynamically pull the official latest Amazon Linux 2 or AL2023 AMI ID inside your CloudFormation templates or automated scripts? Query the public parameter path `/aws/service/ami-amazon-linux-latest/amzn2-ami-hvm-x86_64-gp2`!
 - **Secrets Manager Reference Trick 🔮:** You can reference secrets stored in **AWS Secrets Manager** directly through Parameter Store by querying the special path `/aws/reference/secretsmanager/secret_name`!
 - **Decryption Failure Troubleshooting 🛑:** If an application successfully retrieves an SSM parameter but throws a base64 or cipher error on the string value, check if the parameter is a `SecureString` and verify that the application's IAM role includes `kms:Decrypt` for the target KMS key ARN!
-
-We have officially mastered Parameter Store hierarchies, tier limits, parameter policies, and IAM scoping patterns, chief! We stand completely undefeated across this configuration block. What play or architectural module are we tearing open next, bro? Let's run the play!
