@@ -1,0 +1,98 @@
+---
+sidebar_position: 19
+---
+
+# CodeBuild Security
+
+**CodeBuild Security** is a prime scenario target on the DVA-C02 exam because CI/CD pipelines naturally need access to private database endpoints, deployment keys, and third-party API tokens.
+
+Hardcoding credentials directly inside your `buildspec.yml` or setting plain text environment variables in the CodeBuild console leaves your secrets exposed to anyone with read access to the build project or build logs.
+
+---
+
+## Key Takeaways
+
+### 🔒 Secrets Management in CodeBuild
+
+CodeBuild provides native mechanisms to fetch secrets dynamically at runtime from **SSM Parameter Store** or **AWS Secrets Manager** without storing sensitive data in plain text.
+
+#### Option A: Via the AWS Console UI
+
+Inside the CodeBuild Project settings under **Additional Configuration ──► Environment Variables**:
+
+- **Plaintext:** For non-sensitive config values (e.g., `APP_ENV` = `production`).
+- **Parameter Store:** Select `Parameter` type and set the value to the SSM Parameter path (e.g., `/CodeBuild/DBPassword`).
+- **Secrets Manager:** Select `Secrets Manager` type and set the value to the secret name or ARN (e.g., `prod/my-db-secret`).  
+  ![](./img/codebuild-console-env-vars.png)
+
+#### Option B: Directly in `buildspec.yml` (The Developer Choice)
+
+You can declare SSM parameters and Secrets Manager secrets natively inside the `env` block of your `buildspec.yml`:
+
+```yaml
+version: 0.2
+
+env:
+  # Plain text environment variables
+  variables:
+    STAGE: "prod"
+
+  # Secrets fetched from SSM Parameter Store (SecureString / Plaintext)
+  parameter-store:
+    DB_PASSWORD: "/CodeBuild/DBPassword"
+
+  # Secrets fetched from AWS Secrets Manager
+  secrets-manager:
+    API_KEY: "prod/my-api-keys:api_key" # secret-id:json-key
+    DB_SECRET: "prod/my-db-secret" # Entire secret payload
+
+phases:
+  build:
+    commands:
+      - echo "Building app for $STAGE..."
+      # Use $DB_PASSWORD and $API_KEY securely in your scripts!
+```
+
+---
+
+### 🌐 VPC Security & Network Isolation
+
+By default, CodeBuild containers run in an AWS-managed isolated network outside your VPC. This means a default CodeBuild runner **cannot directly access private resources** (e.g., an RDS instance, ElastiCache cluster, or internal REST API sitting in a private subnet).
+
+```text
+                               ┌────────────────────────────────────────────────────────┐
+                               │                    CODEBUILD VPC SETUP                 │
+                               └───────────────────────────┬────────────────────────────┘
+                                                           │
+             ┌─────────────────────────────────────────────┴─────────────────────────────────────────────┐
+             ▼                                                                                           ▼
+🌐 Default CodeBuild (Outside VPC)                                                          🏰 In-VPC CodeBuild (Inside VPC)
+  • Public internet access out of the box                                                    • Provisioned directly inside your private subnets
+  • Cannot reach private RDS / internal endpoints                                            • Can reach private RDS, EC2, ElastiCache via Security Groups
+  • Standard build execution environment                                                     • Requires ENIs (Elastic Network Interfaces) in subnets
+                                                                                             • Requires NAT Gateway for outbound internet!
+
+```
+
+:::info
+If you launch CodeBuild inside a private VPC so it can run database migrations against a private RDS database, **your build runner loses default public internet access!** If your build step needs to pull external packages (e.g., `npm install`, `pip install`, `maven build`), **your private subnet must route through a NAT Gateway!**
+:::
+
+---
+
+### 🔑 IAM Policy Binding Checklist
+
+Whenever you wire up Parameter Store, Secrets Manager, or VPC attachments in CodeBuild, the **CodeBuild Service Role** must carry the required IAM permissions:
+
+1. **Parameter Store Access:** `ssm:GetParameters`
+2. **Secrets Manager Access:** `secretsmanager:GetSecretValue`
+3. **KMS Decryption (Required for `SecureString` or CMKs):** `kms:Decrypt`
+4. **VPC Attachment Permissions:** `ec2:CreateNetworkInterface`, `ec2:DescribeNetworkInterfaces`, `ec2:DeleteNetworkInterface` (managed via `AWSCodeBuildVPCPolicy`).
+
+---
+
+## Exam Tips
+
+- **`buildspec.yml` Secret Injection 🚨:** If a scenario asks for the most secure, clean way to inject database credentials into a CodeBuild container without hardcoding values in source code—**target defining `parameter-store` or `secrets-manager` under the `env` block in `buildspec.yml`.**
+- **Access Denied on Build Phase:** If a CodeBuild job fails during the environment setup phase with an authorization error while fetching a secret—**check if the CodeBuild Service Role has `kms:Decrypt` permissions on the Customer Managed Key backing the SSM Parameter or Secret.**
+- **In-VPC Internet Connectivity:** If a CodeBuild project running inside a VPC fails to download third-party npm or PyPI packages—**verify that the private subnets attached to CodeBuild have a valid route to a NAT Gateway!**
