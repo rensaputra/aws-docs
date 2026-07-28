@@ -1,0 +1,54 @@
+---
+sidebar_position: 2
+---
+
+# AWS SES
+
+**Amazon SES (Simple Email Service)** is as straightforward as it gets, but knowing where AWS tries to throw curveballs with messaging services will save you from easy trap answers.
+
+---
+
+## Key Takeaways
+
+### 📧 Core Capabilities & Interfaces
+
+Amazon SES is a transactional, bulk outbound and inbound email service.
+
+- **Sending Emails (Outbound):**
+  - **SMTP Interface:** Plug-and-play for standard email clients or legacy app code.
+  - **AWS SDK / API:** Calls like `SendEmail` or `SendRawEmail` directly from application code (e.g., Lambda, EC2).
+- **Receiving Emails (Inbound & Rule Sets):**
+  - You can define **Receipt Rules** to trigger downstream serverless workflows when an inbound email hits your verified domain:
+  - **S3:** Store the raw email payload directly inside an S3 bucket.
+  - **SNS:** Send a JSON payload notification of the incoming email event.
+  - **AWS Lambda:** Execute a Lambda function to process headers/body synchronously or asynchronously.
+- **Security & Access:** Full integration with IAM policies to restrict which roles/users can invoke send actions.
+
+---
+
+### ⚔️ The Great Messaging Trap: SES vs. SNS vs. SQS
+
+The exam loves mixing up notification and queuing services. Use this rule of thumb to instantly eliminate wrong answers:
+
+```text
+                               ┌────────────────────────────────────────────────────────┐
+                               │               AWS MESSAGING DISTINCTION                │
+                               └───────────────────────────┬────────────────────────────┘
+                                                           │
+             ┌─────────────────────────────────────────────┼─────────────────────────────────────────────┐
+             ▼                                             ▼                                             ▼
+✉️ Amazon SES                                    📢 Amazon SNS                                   📬 Amazon SQS
+  • Emails ONLY (Transactional & Bulk)            • Pub/Sub Push Notifications                    • Decoupled Message Queuing
+  • Outbound marketing, transactional emails      • Push to HTTP/S, SQS, Lambda, Mobile Push      • Pull/Polling model for background workers
+  • Inbound email routing to S3/Lambda            • Short SMS / Email JSON alerts                 • Guarantees application decoupling & buffering
+```
+
+---
+
+## Exam Tips
+
+- **The Email Requirement Rule 🚨:** If a scenario explicitly asks for an application to **send rich HTML emails, handle transactional receipts, process inbound domain emails, or manage sender domain reputation (DKIM/SPF)**—**select Amazon SES.**
+- **SNS vs. SES for Email:**
+  - If a system needs to alert an operational team or admin with plain JSON/text system alerts: **Amazon SNS (Email subscription)**.
+  - If an application needs formatted customer-facing marketing or transactional emails (e.g., password reset, welcome email): **Amazon SES**.
+- **Inbound Processing Pattern:** If an inbound email must trigger a business workflow, look for **SES Receipt Rule ──► Store in S3 / Trigger Lambda / Notify SNS**.
