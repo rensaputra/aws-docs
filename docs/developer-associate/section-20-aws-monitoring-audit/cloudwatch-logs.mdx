@@ -33,7 +33,7 @@ The exam loves to pit historical query engines against real-time streaming pipel
 #### ⚡ Continuous Ingestion: Batch Exports vs. Subscription Filters
 
 - Batch Export (CreateExportTask): Used to dump logs into an Amazon S3 bucket for long-term archiving.
-  - The Bottleneck: This is not real-time. An export task can take up to 12 hours to fully compile and write out.
+  - The Bottleneck: This is not real-time. An export task can take up to 12 hours to fully compile and write out.  
     ![](./img/logs-export.png)
 - Subscription Filters (Real-Time Push): If you need real-time alerting or immediate downstream processing, you attach a Subscription Filter to the log group. It screens incoming logs via patterns and instantly pushes matching payloads out to:
   - **AWS Lambda**: To run custom parsing scripts instantly.

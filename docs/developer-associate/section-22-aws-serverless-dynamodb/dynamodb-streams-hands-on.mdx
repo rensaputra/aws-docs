@@ -32,16 +32,16 @@ Stephane’s hands-on lab lays out the exact pipeline mechanics for change-data-
 
 - **Step 4: Configure the Event Source Mapping (ESM)**
   - Scroll to the built-in trigger configuration block:
-  - **DynamoDB table:** Select `UserPosts` from the dropdown list.
-  - **Batch size:** Set it to `100` (This dictates the maximum number of stream records the poller will pack into a single invocation flight, bro).
-  - **Starting position:** Select **Latest** (or **Trim horizon** if you want to scan existing unread items up to the 24-hour expiration ceiling). Click **Create function**.
+    - **DynamoDB table:** Select `UserPosts` from the dropdown list.
+    - **Batch size:** Set it to `100` (This dictates the maximum number of stream records the poller will pack into a single invocation flight).
+    - **Starting position:** Select **Latest** (or **Trim horizon** if you want to scan existing unread items up to the 24-hour expiration ceiling). Click **Create function**.
 
     ![](./img/dynamodb-trigger.png)
 
 - **Step 5: Inject Missing Stream IAM Rights (Triage) 🚨**
   - The console will throw an immediate access warning check banner because a basic Lambda execution role lacks rights to crawl database streams.
   - Fix it fast: Navigate to **Configuration -> Permissions** ──► click the clickable IAM Role ARN string.
-  - Inside the IAM console drawer, hit **Attach policies** ──► search for and link the managed **`AWSLambdaDynamoDBExecutionRole`** policy token, chief! (This instantly whitelists `GetRecords`, `GetShardIterator`, `DescribeStream`, and `ListStreams`).
+  - Inside the IAM console drawer, hit **Attach policies** ──► search for and link the managed **`AWSLambdaDynamoDBExecutionRole`** policy token. (This instantly whitelists `GetRecords`, `GetShardIterator`, `DescribeStream`, and `ListStreams`).
   - Head back to Lambda and flip your trigger check to active!
 
 ---

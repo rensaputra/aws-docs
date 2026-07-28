@@ -30,10 +30,10 @@ You attach an **AWS Lambda function** straight to your stream via an **Event Sou
 
 - **The Polling Mechanism:** The internal ESM process continuously polls the stream's background shards, extracts records in organized batches, and invokes your processing Lambda function **synchronously**!
 - **IAM Security Guardrail 🔒:** Your Lambda function’s execution role must carry permissions to talk to the stream endpoints. It explicitly requires these four policy permissions to read the stream successfully:
-- `dynamodb:GetRecords`
-- `dynamodb:GetShardIterator`
-- `dynamodb:DescribeStream`
-- `dynamodb:ListStreams`
+  - `dynamodb:GetRecords`
+  - `dynamodb:GetShardIterator`
+  - `dynamodb:DescribeStream`
+  - `dynamodb:ListStreams`
 
 ![](./img/dynamodb-streams-lambda.png)
 
