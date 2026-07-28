@@ -1,0 +1,32 @@
+---
+sidebar_position: 1
+---
+
+# AWS Other Services - Section Introduction
+
+We are officially pulling up to the home stretch of the course, bro! 🏎️💨
+
+This final "Other Services" module is designed as a **high-yield, rapid-fire safety net** for the DVA-C02 exam. The questions stemming from this block aren't deep-dive architectural traps—they are high-level **definition and scenario-matching checks** designed to award easy points if you know what key terms to spot.
+
+Here is the exact blueprint of those "1 to 2 question" niche services you need on your radar to keep our score completely maxed out:
+
+---
+
+## 🧭 The "Other Services" High-Yield Cheat Sheet
+
+| Service Name                  | Core Concept (What is it?)                   | Exam Keyword / Trigger Phrase                                                 |
+| ----------------------------- | -------------------------------------------- | ----------------------------------------------------------------------------- |
+| **Amazon Athena**             | Serverless SQL query engine over raw S3 data | _"Run SQL queries directly on S3 log files without loading into DB"_          |
+| **AWS AppSync**               | Managed GraphQL API engine                   | _"GraphQL, real-time WebSocket subscriptions, offline sync"_                  |
+| **Amazon Step Functions**     | Visual serverless workflow orchestrator      | _"State machine, long-running workflow, retry logic for multi-step Lambda"_   |
+| **Amazon OpenSearch Service** | Managed search & log analytics engine        | _"Full-text search, ELK stack, structured log analytics dashboard"_           |
+| **AWS Amplify**               | Full-stack web/mobile app build suite        | _"Frontend framework integration, rapid web/mobile app backend provisioning"_ |
+| **AWS Batch**                 | Managed batch processing computing platform  | _"Run thousands of batch container jobs on dynamic EC2/Fargate"_              |
+
+---
+
+## 🎯 Exam Tips
+
+- **Don't Overthink It 🧠:** If an exam question asks how to quickly analyze 50 GB of CloudTrail or S3 access logs in place without setting up an EC2 server or RDS database, **select Amazon Athena immediately**.
+- **GraphQL vs. REST:** If you see **GraphQL** or need real-time data sync across mobile devices, **target AWS AppSync**. If it's a standard REST or HTTP interface, **target API Gateway**.
+- **State Machine Orchestration:** If a scenario describes chaining multiple AWS Lambda functions together with complex conditional branching, parallel execution, and error handling, **select Amazon Step Functions**.
