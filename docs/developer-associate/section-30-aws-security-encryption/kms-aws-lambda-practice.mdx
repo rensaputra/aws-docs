@@ -28,9 +28,9 @@ Let's summarize the step-by-step execution playbook, the code mechanisms, and th
 
 ---
 
-### 💻 2. Programmatic Decryption Code Dissection (Python Example)
+### 💻 2. Programmatic Decryption Code Dissection (JavaScript Example)
 
-Because the environment variable stored in the Lambda runtime is now an encrypted cipher blob, your code must explicitly decrypt it at runtime using `boto3`:
+Because the environment variable stored in the Lambda runtime is now an encrypted cipher blob, your code must explicitly decrypt it at runtime using the AWS SDK and the `kms:Decrypt` API. Here's a Node.js example:
 
 ```javascript
 import { KMSClient, DecryptCommand } from "@aws-sdk/client-kms";
