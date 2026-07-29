@@ -31,6 +31,8 @@
     "Redrive",
     "remediations",
     "Segregators",
+    "SERDE",
+    "SERDEPROPERTIES",
     "serverlessly",
     "shoutout",
     "standups",
@@ -60,6 +62,7 @@
     "CNSA",
     "CYEXAMPLEKEY",
     "DSSE",
+    "Debezium",
     "FGAC",
     "HDNTW",
     "HSET",
@@ -107,6 +110,7 @@
     "marcey",
     "mathbf",
     "mybrand",
+    "mybucket",
     "nakama",
     "nginxdemos",
     "npmjs",
@@ -116,8 +120,10 @@
     "samconfig",
     "signupuser",
     "stephane",
+    "stephantheteacher",
     "textbf",
     "texttt",
+    "yourdomain",
     "yourname"
   ]
 }
