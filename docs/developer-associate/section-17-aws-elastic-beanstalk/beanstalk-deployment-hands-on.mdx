@@ -102,6 +102,11 @@ This visual model outlines how the DNS abstraction switches underneath your user
 
 ### Practice Scenario
 
-**Scenario**: A developer wants to deploy a major software patch to a production application running on AWS Elastic Beanstalk. The patch includes changing the underlying EC2 operating system version. The developer must ensure there is zero downtime, and if unexpected system issues arise, the traffic must be immediately redirected back to the original operational setup. Which approach should the developer take? - **A**. Update the application deployment configuration settings to use an All at Once policy. - **B**. Configure the application deployment preferences to run an Immutable deployment directly on the live fleet. - **C**. Create a new deployment bundle containing a .ebextensions directive to forcefully upgrade the OS patch inline using a Rolling deployment. - **D**. Clone the existing Beanstalk environment, apply the new runtime platform configurations and app patch version to the cloned environment, test its performance, and then use the Swap Environment Domains option.
+**Scenario**: A developer wants to deploy a major software patch to a production application running on AWS Elastic Beanstalk. The patch includes changing the underlying EC2 operating system version. The developer must ensure there is zero downtime, and if unexpected system issues arise, the traffic must be immediately redirected back to the original operational setup. Which approach should the developer take?
+
+- **A**. Update the application deployment configuration settings to use an All at Once policy.
+- **B**. Configure the application deployment preferences to run an Immutable deployment directly on the live fleet.
+- **C**. Create a new deployment bundle containing a .ebextensions directive to forcefully upgrade the OS patch inline using a Rolling deployment.
+- **D**. Clone the existing Beanstalk environment, apply the new runtime platform configurations and app patch version to the cloned environment, test its performance, and then use the Swap Environment Domains option.
 
 **Correct Answer: D**. When changing the underlying managed platform or major OS configurations, spinning up a parallel cloned environment and executing a CNAME/Domain Swap is the recommended AWS best practice. It insulates production entirely until you're completely satisfied and can instantly be reverted by swapping back if an edge-case bug shows up.

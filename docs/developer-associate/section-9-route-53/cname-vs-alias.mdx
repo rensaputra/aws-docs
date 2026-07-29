@@ -26,7 +26,9 @@ When a user visits a domain mapped via a standard CNAME record, their browser ha
  [ Target Web IP ] <──(4. Finally returns: 54.x.x.x)───────────┘
 ```
 
-1, The client requests `app.domain.com.` 2. Route 53 looks at its zone file and replies: "I don't know the IP, but that text string maps to `alb-123.aws.com`." 3. The client's resolver is forced to close that session, open a completely new query, and lookup the load balancer's URL to extract the real hosting server IP address. **This extra hop adds measurable network latency**.
+1. The client requests `app.domain.com.`
+2. Route 53 looks at its zone file and replies: "I don't know the IP, but that text string maps to `alb-123.aws.com`."
+3. The client's resolver is forced to close that session, open a completely new query, and lookup the load balancer's URL to extract the real hosting server IP address. **This extra hop adds measurable network latency**.
 
 #### 🏎️ The Alias Short-Circuit (Single-Hop Speed)
 
@@ -63,5 +65,5 @@ As Stephane calls out, you cannot point an Alias at just anything with an Amazon
 
 ## Exam Tips
 
-**The Broken Naked Domain Launch**: If an exam scenario says, "Your marketing team just launched a brand new marketing campaign. They want users to be able to type the root naked domain name (`mybrand.com`) directly into their phone browsers to reach an application sitting behind an AWS Application Load Balancer. The Junior developer states they cannot configure this because standard DNS prohibits CNAME records at the Zone Apex", look for cloud-native solution. \*\*the correct cloud answer is to create an `A` record inside your Route 53 Hosted Zon, leave te subdomain prefix blank to target the Zone Apex, toggle 'Alias' to 'Yes', and select your ALB from the resource dropdown menu.
+**The Broken Naked Domain Launch**: If an exam scenario says, "Your marketing team just launched a brand new marketing campaign. They want users to be able to type the root naked domain name (`mybrand.com`) directly into their phone browsers to reach an application sitting behind an AWS Application Load Balancer. The Junior developer states they cannot configure this because standard DNS prohibits CNAME records at the Zone Apex", look for cloud-native solution. **the correct cloud answer is to create an `A` record inside your Route 53 Hosted Zone**, leave the subdomain prefix blank to target the Zone Apex, toggle 'Alias' to 'Yes', and select your ALB from the resource dropdown menu.
 ![Creating an Alias Record](./img/route-53-alias-record.png)

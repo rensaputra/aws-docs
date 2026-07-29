@@ -21,10 +21,11 @@ To manage your code smoothly inside the Beanstalk ecosystem, you must understand
              ├── Dev Environment ──► Runs Version 2.0 (Single Instance)
              └── Prod Environment ─► Runs Version 1.0 (High Availability)
 ```
+
 1. **The Application**: Think of this as your top-level project folder container. It acts as the umbrella workspace housing all your secondary configurations, platform codes, and environment stacks.
 2. **Application Versions**: Every time you compile a new code change, you zip it up and upload it as a uniquely labeled iteration asset (e.g., `v1.0`, `v2-beta`). **Behind the scenes, Beanstalk stores these deployable raw artifacts inside a highly durable Amazon S3 bucket**. If a new deployment breaks, you simply point your environment back to an older version label to roll back instantly!
-3. **The Environment**: The actual physical execution space running your code. An environment can only host **one single application version at a time**. However, you can spin up multiple environments simultaneously under the same parent application workspace—allowing you to easily isolate a cheap `dev-env` stack right alongside an ultra-resilient, multi-AZ `prod-env` cluster!
-![](./img/beanstalk-components.png)
+3. **The Environment**: The actual physical execution space running your code. An environment can only host **one single application version at a time**. However, you can spin up multiple environments simultaneously under the same parent application workspace—allowing you to easily isolate a cheap `dev-env` stack right alongside an ultra-resilient, multi-AZ `prod-env` cluster!  
+   ![](./img/beanstalk-components.png)
 
 ### Environment Architectural Tiers: Web vs. Worker
 
@@ -52,9 +53,11 @@ When spinning up a new Beanstalk environment, your choice of deployment topology
 - **High Availability Mode (The Production Standard)**: Provisions a fully redundant **Elastic Load Balancer** sitting right out in front of an automated **Auto Scaling Group** that scales your EC2 server instances smoothly across multiple **Availability Zones (AZs)**. This is the mandatory choice for production workloads, guaranteeing that if a single AWS data center experiences a physical hardware crash, your application shifts traffic to alternate zones cleanly without a drop of downtime!
 
 ![](./img/beanstalk-deployment-modes.png)
+
 ## Exam Tips
 
 **The Custom Environment Architecture Triage**: Imagine an exam scenario asks, _"Your development team needs to deploy a custom internal tool written in an esoteric, niche programming language that is not natively included in the pre-configured AWS Elastic Beanstalk platform runtime lists. The application must still leverage Beanstalk's automated capacity provisioning and multi-AZ load balancing architecture. How can you deploy this workload cleanly with the lowest operational overhead?"_  
-**The textbook gold-standard answer is to package your application inside a custom Docker configuration block.**  
+**The textbook gold-standard answer is to package your application inside a custom Docker configuration block.**
+
 - **The Trap**: Avoid distractors that suggest migrating your entire team away from Beanstalk over to self-managed EC2 or EKS clusters just because the language runtime isn't explicitly listed in the baseline dropdown menu. This destroys development velocity.
 - **The Reality**: While Beanstalk natively supports language engines like Node.js, Python, Go, Java, and PHP out of the box, it also provides robust, premium **Docker Platform Branches**. By wrapping your esoteric code structure inside a standard `Dockerfile`, you can upload that bundle straight into a Beanstalk Docker environment. Beanstalk will pull down the container layers, build out the infrastructure layout, and manage the scaling loops exactly like a standard app—giving you ultimate execution flexibility!
