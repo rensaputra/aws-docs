@@ -37,6 +37,7 @@
     "shoutout",
     "standups",
     "subnetting",
+    "unscored",
     "unvetted"
   ],
   "ignorePaths": [
@@ -77,6 +78,7 @@
     "NACLs",
     "NTLSCBFI",
     "Nami",
+    "OCSP",
     "PITR",
     "Petstore",
     "RumahWeb",
