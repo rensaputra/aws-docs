@@ -1,0 +1,117 @@
+---
+sidebar_position: 1
+---
+
+# AWS Final Cleanup
+
+Congratulations on finishing all the hands-on modules for the DVA-C02 course 🎉. You have built, deployed, traced, and secured across practically the entire core AWS suite.
+
+Before taking your victory lap, executing a **meticulous account cleanup** is your final operational play. Leaving paid resources running in secondary regions is the #1 reason engineers get surprise bills on active cloud accounts!
+
+Here is your **Final AWS Teardown Checklist**, ordered by dependency sequence so you don't run into annoying `DependencyViolation` or deletion block errors.
+
+---
+
+## 🧹 The Tactical Multi-Region Teardown Sequence
+
+Execute these steps in **every region** you touched during your labs (e.g., `us-east-1` N. Virginia, `ap-southeast-2` Sydney):
+
+```text
+       ┌────────────────────────────────────────────────────────────────────────┐
+       │                     TEARDOWN DEPENDENCY PIPELINE                       │
+       └───────────────────────────┬────────────────────────────────────────────┘
+                                   │
+  1. 💣 Infrastructure Stacks     ▼  (CloudFormation Stack Deletion)
+  2. 🌐 Edge & Load Balancers     ▼  (ALBs, NLBs, CloudFront, Route 53 CNAMEs)
+  3. 📦 Containers & Compute      ▼  (ECS, EKS, Elastic Beanstalk, EC2 Instances)
+  4. 💾 Stateful Databases        ▼  (RDS, Aurora, DynamoDB Tables, ElastiCache)
+  5. 🌊 Streaming & Queuing       ▼  (Kinesis Data Streams, SQS, SNS Topics)
+  6. 🗄️ Storage Buckets           ▼  (Empty S3 Buckets, Delete ECR Repositories)
+  7. ⚙️ App Dev & Security        ▼  (CodePipeline, Secrets Manager, AppConfig, Lambda)
+  8. 🔑 IAM & Global Policies     ▼  (Delete Roles/Users LAST!)
+```
+
+---
+
+## 📋 The High-Yield Billing Hazard Checklist
+
+### 🔴 1. Critical Paid Resources (Delete Immediately!)
+
+- **Amazon Kinesis Data Streams:** **High-Cost Hazard!** Streams charge _per shard hour_ regardless of whether data is flowing. Terminate all streams.
+- **Elastic Load Balancers (ALBs / NLBs):** Charge per hour + LCU (Load Balancer Capacity Units) usage. If left unmanaged outside CloudFormation, delete them via the EC2 Console.
+- **NAT Gateways:** Charge $0.045+ per hour plus data processing fees. Make sure to release associated **Elastic IPs (EIPs)** as well, as unattached EIPs incur an hourly charge!
+- **Amazon RDS / Aurora Databases:** Delete DB instances and clusters (disable _Deletion Protection_ if enabled, and skip snapshot creation if you don't need the final backup).
+- **AWS Secrets Manager:** Charges $0.40 per secret/month. Force-delete test secrets via CLI if you want to bypass the 7-to-30-day recovery window:
+
+```bash
+aws secretsmanager delete-secret --secret-id prod/myapp/my-secret-api --force-delete-without-recovery
+```
+
+---
+
+### 🟡 2. Free-Tier / Storage Cleanup
+
+- **Amazon S3:** S3 storage is cheap, but left-over versioned objects or failed multipart uploads can add up over time. **Empty the bucket contents first**, then delete the bucket.
+- **Amazon DynamoDB:** Free tier includes 25 WCU / 25 RCU total across your account. Delete any demo tables so they don't consume your free-tier capacity ceiling!
+- **AWS Lambda & API Gateway:** These cost nothing at rest (pay per invocation/request), but deleting unused functions and REST/HTTP APIs keeps your environment squeaky clean.
+- **AWS Systems Manager Parameter Store:** Standard parameters are free, but delete test parameters so your application namespace stays organized.
+
+---
+
+### 🟢 3. The CloudFormation Power Shortcut
+
+If you deployed your labs using **AWS CloudFormation**, you get the ultimate fast-forward button!
+
+1. Navigate to the CloudFormation Console in your active region.
+2. Select your stack and click **Delete**.
+3. CloudFormation automatically tears down the EC2 instances, Target Groups, Security Groups, IAM Roles, and subnets in exact reverse-dependency order!
+
+---
+
+## 🛠️ Advanced Tooling Note: Automated Account Reset
+
+If you used a standalone sandbox or dedicated lab account and want to perform a complete "factory reset" across all regions without clicking through hundreds of console UI pages, open-source engineers use **`aws-nuke`**.
+
+It scans all regions, respects resource exclusion filters (so you don't delete your root IAM admin identity), and wipes out all provisioned resources automatically.
+
+---
+
+## 🏆 Final Victory Checklist
+
+Here is a list of services we touched on this course, make sure you don't forget anything in your cleanup.
+
+It's also a good time to review all your learning :)
+
+- [ ] EC2 instances
+- [ ] Elastic Load Balancer
+- [ ] Launch Configurations
+- [ ] Auto Scaling Groups
+- [ ] Elastic IPs
+- [ ] Security Groups
+- [ ] EBS Volumes
+- [ ] Key Pairs
+- [ ] ECS environments (cluster, service, task def, ECR)
+- [ ] Elastic Beanstalk applications & environments
+- [ ] AWS Lambda functions
+- [ ] S3 files & buckets
+- [ ] RDS database
+- [ ] DynamoDB tables & indexes
+- [ ] ElastiCache cluster
+- [ ] Route53
+- [ ] API Gateway
+- [ ] Kinesis Streams
+- [ ] SNS Topics
+- [ ] SQS Queues
+- [ ] CodeCommit
+- [ ] CodeBuild
+- [ ] CodePipeline
+- [ ] CloudWatch Logs
+- [ ] CloudWatch Metrics
+- [ ] CloudWatch Dashboards
+- [ ] CloudWatch Alerts
+- [ ] CloudWatch Rules
+- [ ] CloudFormation Stacks
+- [ ] SSM Parameter Store
+- [ ] IAM User / Groups / Roles / Policies
+
+That was a lot of services, but you did it!
