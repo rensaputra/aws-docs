@@ -1,0 +1,55 @@
+---
+sidebar_position: 3
+---
+
+# Exam Tips - AWS Certified Developer Associate
+
+That's a wrap on the core content! Moving from absorbing all that theory to executing under exam conditions comes down to three things: **building hands-on muscle memory**, **mastering process of elimination**, and **targeting your high-yield revision**.
+
+Here is your high-yield game plan for exam day.
+
+---
+
+## 🛠️ 1. Practice Projects to Build Real Muscle Memory
+
+Reading slides won't build the intuition needed for subtle code/SDK questions. If you want to practice in your own sandbox, build these tiny weekend projects using the AWS SDK or CLI:
+
+- **The Cost-Saver Script:** Write a Python/Node.js script using the AWS SDK (`boto3` / `@aws-sdk`) to iterate through EC2 instances in a region and automatically stop any instance with average CPU utilization under 10% over the last week.
+- **Automated EBS Snapshotter:** Build a Lambda function triggered by Amazon EventBridge on a cron schedule that enumerates EBS volumes, creates snapshots, and deletes snapshots older than 7 days.
+- **Serverless Decoupling Pipeline:** Build a mini-app where API Gateway receives a payload, drops it into an SQS queue, a Lambda worker processes the queue item, and writes the output to DynamoDB while emitting custom CloudWatch metrics.
+
+---
+
+## 🎯 2. Tactical Exam Room Execution
+
+When reading DVA-C02 questions, remember that AWS questions test **best practices and lowest operational overhead**:
+
+1. **Eliminate Over-Engineered Distractors ❌:** If an answer choice requires setting up custom EC2 cron jobs or manually running bash scripts to manage a serverless workflow, **cross it out**. Native AWS services (like EventBridge, Step Functions, or AppConfig) are almost always preferred.
+2. **Scan for Keyword Triggers 🔍:**
+   - _"Decouple components / buffer spike traffic"_ ──► **Amazon SQS**
+   - _"Real-time user authentication / JWT tokens"_ ──► **Amazon Cognito User Pools**
+   - _"Trace microservice requests across boundary calls"_ ──► **AWS X-Ray (`AWSXRayRecorder`)**
+   - _"Store DB credentials with automated 30-day rotation"_ ──► **AWS Secrets Manager**
+   - _"Deploy dynamic configuration flags without redeploying code"_ ──► **AWS AppConfig**
+3. **No Negative Marking:** There is **no penalty for guessing**. Answer every question—if you are unsure, eliminate 1–2 obvious wrong answers, pick the most sensible managed option, flag it, and move forward.
+
+---
+
+## 📄 3. High-Yield Whitepapers & Service FAQs
+
+If you have extra review time, don't read 400 pages of documentation line-by-line. Skim these specific sections:
+
+```text
+                               ┌────────────────────────────────────────────────────────┐
+                               │             HIGH-YIELD REVISION RESOURCES              │
+                               └───────────────────────────┬────────────────────────────┘
+                                                           │
+             ┌─────────────────────────────────────────────┼─────────────────────────────────────────────┐
+             ▼                                             ▼                                             ▼
+📜 Whitepapers to Skim                         ❓ High-Priority Service FAQs                 📘 Architecture Patterns
+  • AWS Well-Architected Framework              • AWS Lambda FAQ                              • Serverless Architectures with AWS Lambda
+  • Blue/Green Deployments on AWS               • Amazon DynamoDB FAQ                         • Microservices on AWS
+  • Development & CI/CD Best Practices          • Amazon SQS & SNS FAQs                       • Containerized Microservices on ECS
+```
+
+- **Service FAQs:** Look specifically at the **AWS Lambda FAQ**, **Amazon DynamoDB FAQ**, and **AWS KMS FAQ**. FAQs directly address edge cases and limits that often show up as exam distractors!
