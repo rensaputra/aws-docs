@@ -13,7 +13,7 @@ The security verification loop relies on standard asymmetric RSA **cryptography*
 ### 🗝️ The Division of Keys:
 
 - **The Private Key (Keep Secret)**: Your application backend nodes (like an Amazon EC2 instance fleet or an AWS Lambda function running inside a private subnet) store this file securely. Your code uses it to mathematically sign user strings and append the query params (`?X-Amz-Signature=...`).
-- **The Public Key (Share Globally)**: You upload this public file straight into the CloudFront control plane. S3 duplicates this key across hundreds of global Edge locations so the nodes can decrypt and verify your application's signature hashes on the fly.
+- **The Public Key (Share Globally)**: You upload this public file straight into the CloudFront control plane. CloudFront duplicates this key across hundreds of global Edge locations so the nodes can decrypt and verify your application's signature hashes on the fly.
 
 ### Step-by-Step Lab Execution Checklist
 
@@ -43,15 +43,15 @@ The security verification loop relies on standard asymmetric RSA **cryptography*
 - **Assemble the Matrix**
   - **Name**: Type `demo-trusted-key-group`.
   - **Public keys**: Click inside the dropdown selector wrapper and check the box next to your newly registered `demo-public-key-v2`.
-  - _Note_: S3 lets you bundle up to 5 separate public keys simultaneously inside a single key group container, allowing you to execute zero-downtime rolling key rotations with absolute ease!
+  - _Note_: CloudFront lets you bundle up to 5 separate public keys simultaneously inside a single key group container, allowing you to execute zero-downtime rolling key rotations with absolute ease!
 - Click **Create key group**. This key group ARN can now be attached straight to any custom CloudFront behavior to enforce strict content gating.
   ![](./img/create-key-group.png)
 
 #### Phase 4: Auditing the Legacy Paradigm (The Root Account Trap)
 
 - To fully witness why the older system fails production audits, Stephane shows the legacy fallback sequence:
-- Navigate to your top-right profile name dropdown wrapper while logged in strictly as the **AWS Account Root User** and click **My Security Credentials**.
-- Locate the old, hidden **CloudFront key pairs** section container card.
+  - Navigate to your top-right profile name dropdown wrapper while logged in strictly as the **AWS Account Root User** and click **My Security Credentials**.
+  - Locate the old, hidden **CloudFront key pairs** section container card.
 - **The Structural Roadblock**: Notice how this panel explicitly forces you to use the master account email root user just to download a public/private credential token.
 - Because this panel is outside of standard IAM resource mappings, you are completely blocked from using automated deployment frameworks (like CloudFormation or Terraform) to programmatically cycle these keys, leaving your architecture highly vulnerable to key leakage or credential stagnation.
 

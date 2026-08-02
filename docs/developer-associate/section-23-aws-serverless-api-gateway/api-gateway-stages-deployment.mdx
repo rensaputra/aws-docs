@@ -4,7 +4,7 @@ sidebar_position: 4
 
 # API Gateway Stages and Deployment
 
-Forgetting to execute a fresh infrastructure deployment after tweaking your route parameters is the absolute #1 reason developers pull their hair out wondering why their API updates aren't live, bro! 🥋🚀
+Forgetting to execute a fresh infrastructure deployment after tweaking your route parameters is the absolute #1 reason developers pull their hair out wondering why their API updates aren't live. 🥋🚀
 
 In API Gateway, your workspace configuration acts like a draft sheet. The outside world doesn't see a single change until you hit **Deploy API** and push that configuration snapshot directly into an active **Stage** (like `dev`, `test`, or `prod`).
 
@@ -33,7 +33,7 @@ $$\mathbf{\$stageVariables.variableName}$$
 
 #### 🎯 Core Production Use Cases:
 
-1. **HTTP Backend Switching:** You can set the backend integration target of a `GET /orders` path to `http://$stageVariables.backendUrl/orders`. On your `dev` stage, the variable points to an internal staging box, while on your `prod` stage, it automatically resolves to your active production enterprise load balancer, bro!
+1. **HTTP Backend Switching:** You can set the backend integration target of a `GET /orders` path to `http://$stageVariables.backendUrl/orders`. On your `dev` stage, the variable points to an internal staging box, while on your `prod` stage, it automatically resolves to your active production enterprise load balancer.
 2. **Mapping Template Injections:** Pass custom feature flags, region identifiers, or database connection strings straight into the request context payload before it reaches your processing layers.
    ![](./img/stage-variables.png)
 
@@ -58,7 +58,7 @@ The industry-standard solution is to combine **Stage Variables** with **Lambda A
 
 #### ⚡ The Operational Payoff:
 
-Now, your API Gateway configuration is 100% frozen and static, bro! When your development team wants to execute a **Canary Deployment** or run a Blue-Green code swap, they don't touch API Gateway at all.
+Now, your API Gateway configuration is 100% frozen and static. When your development team wants to execute a **Canary Deployment** or run a Blue-Green code swap, they don't touch API Gateway at all.
 
 They modify the **Lambda Alias configuration** on the function side, shifting the weight metrics so the `PROD` alias routes $95\%$ of incoming traffic to `Version_1` and $5\%$ to `Version_2`. Because API Gateway evaluates the alias string at runtime, the traffic splits instantly and smoothly in the field without a single API redeployment.
 ![](./img/lambda-alias.png)
