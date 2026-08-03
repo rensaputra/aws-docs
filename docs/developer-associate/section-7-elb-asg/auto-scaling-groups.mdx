@@ -4,13 +4,13 @@ sidebar_position: 14
 
 # Auto Scaling Groups
 
-If ELB is the traffic controller of the cloud, **Auto Scaling Groups (ASGs)** is the muscle. It autoates the raw elasticity of AWS so you never have to manually scalte out/in a fleet of EC2 instance in the middle of traffic spike again.
+If ELB is the traffic controller of the cloud, **Auto Scaling Groups (ASGs)** is the muscle. It automates the raw elasticity of AWS so you never have to manually scale out/in a fleet of EC2 instance in the middle of traffic spike again.
 
 ## Key Takeaways
 
 ### High-Level Summary
 
-An Auto Scaling Group is a logical clustering of EC2 instances running across multiple AZs. Its core purpose is twofold: **Scale Out** (add servers automatically when load increases) and **Scale In** (terminate servers automatically when traffic drops to save money). It acts as a self-healign system that continously maintains a target fleet size based on health metrics and capacity boundaries.
+An Auto Scaling Group is a logical clustering of EC2 instances running across multiple AZs. Its core purpose is twofold: **Scale Out** (add servers automatically when load increases) and **Scale In** (terminate servers automatically when traffic drops to save money). It acts as a self-healing system that continuously maintains a target fleet size based on health metrics and capacity boundaries.
 
 ### Key Architecture & Capacity Controls
 
@@ -32,7 +32,7 @@ On the exam, Launch Configurations are completely legacy. Always choose **Launch
 
 | Feature                    | Launch Configurations (Legacy)                                                                             | Launch Templates (Modern Best Practice)                                                                    |
 | -------------------------- | ---------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
-| Versioning                 | ❌ No. To change an AMI or instance type, you must create a brand-new file from scratch and remap the ASG. | ✅ Yes. Supports multiple numbered versions. You can point your ASG to $Latest or $Default effortlessly.   |
+| Versioning                 | ❌ No. To change an AMI or instance type, you must create a brand-new file from scratch and remap the ASG. | ✅ Yes. Supports multiple numbered versions. You can point your ASG to \$Latest or $Default effortlessly.  |
 | Mixed Instance Types       | ❌ Only supports launching one exact instance type (e.g., only t3.micro).                                  | ✅ Yes. Allows you to mix different instance sizes and combine On-Demand and Spot instances in one ASG.    |
 | Parametrized Configuration | ❌ Hardcoded variables only.                                                                               | ✅ Yes. Fully integrates with advanced features like Capacity Reservations and Systems Manager parameters. |
 
