@@ -48,7 +48,6 @@ const config: Config = {
         indexPages: false,
         highlightSearchTermsOnTargetPage: true,
         removeDefaultStopWordFilter: true,
-        removeDefaultStemmer: true,
       },
     ],
   ],
