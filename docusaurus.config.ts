@@ -47,7 +47,6 @@ const config: Config = {
         indexBlog: false,
         indexPages: false,
         highlightSearchTermsOnTargetPage: true,
-        removeDefaultStopWordFilter: true,
       },
     ],
   ],
