@@ -33,6 +33,28 @@ jobs:
       - name: Build website
         run: npm run build
 
+      - name: Checkout gh-pages branch
+        uses: actions/checkout@v4
+        continue-on-error: true
+        with:
+          ref: gh-pages
+          path: gh-pages-branch
+          fetch-depth: 1
+
+      - name: Preserve PR previews
+        run: |
+          if [ -d "gh-pages-branch" ]; then
+            if ls gh-pages-branch/pr-* 1> /dev/null 2>&1; then
+              echo "Found PR previews, copying to build directory..."
+              cp -r gh-pages-branch/pr-* ./build/
+            else
+              echo "No PR previews found."
+            fi
+            rm -rf gh-pages-branch
+          else
+            echo "gh-pages branch not found, skipping PR preview preservation."
+          fi
+
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
