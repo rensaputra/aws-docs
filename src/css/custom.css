@@ -30,10 +30,11 @@
   --ifm-code-font-size: 95%;
   --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.1);
 
-  /* Navbar styling (Squid Ink) for Light Mode */
-  --ifm-navbar-background-color: #232F3E;
-  --ifm-navbar-link-color: #ffffff;
+  /* Navbar styling for Light Mode */
+  --ifm-navbar-background-color: #ffffff;
+  --ifm-navbar-link-color: #0f1b2a;
   --ifm-navbar-link-hover-color: var(--ifm-color-primary);
+  --ifm-navbar-search-background-color: #f2f3f3;
 
   /* Footer styling (Squid Ink) */
   --ifm-footer-background-color: #232F3E;
@@ -71,8 +72,8 @@
   color: #0f1c2b !important;
 }
 
-/* Fix navbar search bar visibility in Squid Ink background */
-.navbar__search-input {
+/* Fix navbar search bar visibility in dark mode */
+[data-theme='dark'] .navbar__search-input {
   background-color: rgba(255, 255, 255, 0.1);
   color: #ffffff;
 }
