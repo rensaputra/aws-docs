@@ -16,7 +16,7 @@ A guide to picking the right storage drive based on performance needs and cost c
 
 ### General Purpose SSDs: gp2 vs. gp3
 
-- **gp2 (Older gen)**: Storage size and performance are **linked**. If you want more IOPS, you are forced to pay for a bigger volume size (you get 3 IOPS per GB up to a max of 16,000 IOPS).
+- **gp2 (Older gen)**: Storage size and performance are **linked**. If you want more IOPS, you are forced to pay for a bigger volume size (you get 3 IOPS per GB up to a max of 16,000 IOPS, you will maxed out the IOPS at 5,334 GB and above).
 - **gp3 (Newer gen)**: Storage size and performance are **decoupled**. It gives you a baseline of 3,000 IOPS and 125 MB/s throughput out of the box, and you can scale those performance numbers up independently without buying more gigabytes.
 - _Use Cases_: Dev/test environment, virtual desktop, low-latency web server backends.
 
@@ -26,6 +26,7 @@ WHen `gp3` isn't fast enough and you need sustained mission-critical performance
 
 - **The Metrics**: Use these if you need **more than 16,000 IOPS** per volume. `io1` maxes out at 64,000 IOPS, while `io2 Block Express` goes wild up to **256,000 IOPS** with sub-millisecond latency.
 - **Developer Superpower**: Only the `io1` and `io2` families support **EBS Multi-Attach** (allowing the raw network rive to be hooked up to multiple Nitro instances at once).
+- **Maximum Provisioned IOPS Ratio**: 50 IOPS per GB for `io1` and 1000 IOPS per GB for `io2 Block Express`.
 - _Use Cases_: Critical business applications, heavy write relational databases (like large PostgreSQL or MySQL setups).
 
 ![EBS Volume Types SSD](./img/ebs-volume-types-ssd.png)

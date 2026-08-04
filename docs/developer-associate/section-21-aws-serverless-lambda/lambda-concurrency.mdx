@@ -69,3 +69,22 @@ You instruct AWS to pre-warm a designated number of execution instances _before_
 - **The Database Safety Value Scenario:** If an exam scenario says: _"A high-volume streaming system processes data using a Lambda function that writes records down to an internal relational RDS database. During traffic spikes, Lambda auto-scales aggressively and exhausts the database's maximum available connection pool, crashing the database server. What should you configure?"_
   - **The Correct Answer:** Apply a strict **Reserved Concurrency** limit onto that specific Lambda function to perfectly match the maximum connection capacity of the downstream RDS database instance, locking down your scaling velocity and saving your database layer from exploding, bro!
 - **The Cold Start Elimination Architecture:** If a prompt states that a company is migrating a legacy web API over to an API Gateway + AWS Lambda stack, but the product managers are rejecting the architecture because the very first web visitor after an idle period experiences an unacceptable 3-second page loading lag—look straight for **Provisioned Concurrency Configured on a specific Function Version or Alias** to wipe out that initialization cold start permanently!
+
+### Practice Scenario
+
+**Scenario**: The development team at a retail company is gearing up for the upcoming Thanksgiving sale and wants to make sure that the application's serverless backend running via Lambda functions does not hit latency bottlenecks as a result of the traffic spike.
+**As a Developer Associate, which of the following solutions would you recommend to address this use-case?**
+
+- [ ] Add an Application Load Balancer in front of the Lambda functions.
+- [ ] No need to make any special provisions as Lambda is automatically scalable because of its serverless nature.
+- [ ] Configure Application Auto Scaling to manage Lambda reserved concurrency on a schedule
+- [ ] Configure Application Auto Scaling to manage Lambda provisioned concurrency on a schedule
+
+<details>
+<summary>Correct Answer</summary>
+
+Configure Application Auto Scaling to manage Lambda provisioned concurrency on a schedule.
+You can configure both reserved and provisioned concurrency for a Lambda function. However, **reserved concurrency is used to limit the maximum number of concurrent executions** for a Lambda function, while **provisioned concurrency is used to pre-warm a certain number of execution environments** to reduce cold start latency. In this case, since the goal is to address latency bottlenecks during a traffic spike, configuring provisioned concurrency on a schedule would be the appropriate solution. Please see note for more details:
+![](./img/lambda-concurrency-practice-scenario.png)
+
+</details>
