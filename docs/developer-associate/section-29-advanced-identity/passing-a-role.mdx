@@ -110,3 +110,52 @@ In order for a user to create a Lambda function and assign it the `DemoLambdaRol
 
 - **The Service Role Assignment Error 🚨:** If an exam scenario describes a developer attempting to create an AWS Lambda function or deploy an ECS task, but gets an authorization error when selecting the execution role—**look straight for the answer choice stating the developer is missing the `iam:PassRole` permission on their IAM identity policy!**
 - **The Granular Access Control Question:** If a prompt asks how to allow junior engineers to spin up CloudFormation stacks containing Lambda functions while preventing them from granting those functions administrative permissions—**select the option that grants the engineers `iam:PassRole` limited explicitly to specific, pre-approved execution role ARNs.**
+
+### Scenario Practice
+
+**Scenario**: The development team at a HealthCare company has deployed EC2 instances in AWS Account A. These instances need to access patient data with Personally Identifiable Information (PII) on multiple S3 buckets in another AWS Account B.
+
+As a Developer Associate, which of the following solutions would you recommend for the given use-case?
+
+- [ ] Create an IAM role with S3 access in Account B and set Account A as a trusted entity. Create another role (instance profile) in Account A and attach it to the EC2 instances in Account A and add an inline policy to this role to assume the role from Account B
+- [ ] Copy the underlying AMI for the EC2 instances from Account A into Account B. Launch EC2 instances in Account B using this AMI and then access the PII data on Amazon S3 in Account B
+- [ ] Create an IAM role (instance profile) in Account A and set Account B as a trusted entity. Attach this role to the EC2 instances in Account A and add an inline policy to this role to access S3 data from Account B
+- [ ] Add a bucket policy to all the Amazon S3 buckets in Account B to allow access from EC2 instances in Account A
+
+<details>
+<summary>Correct Answer</summary>
+
+- [x] Create an IAM role with S3 access in Account B and set Account A as a trusted entity. Create another role (instance profile) in Account A and attach it to the EC2 instances in Account A and add an inline policy to this role to assume the role from Account B
+  - You can give EC2 instances in one account ("account A") permissions to assume a role from another account ("account B") to access resources such as S3 buckets. You need to create an IAM role in Account B and set Account A as a trusted entity. Then attach a policy to this IAM role such that it delegates access to Amazon S3 like so -
+  ```json
+  {
+    "Version": "2012-10-17",
+    "Statement": [
+      {
+        "Effect": "Allow",
+        "Action": "s3:*",
+        "Resource": [
+          "arn:aws:s3:::awsexamplebucket1",
+          "arn:aws:s3:::awsexamplebucket1/*",
+          "arn:aws:s3:::awsexamplebucket2",
+          "arn:aws:s3:::awsexamplebucket2/*"
+        ]
+      }
+    ]
+  }
+  ```
+  Then you can create another role (instance profile) in Account A and attach it to the EC2 instances in Account A and add an inline policy to this role to assume the role from Account B like so -
+  ```json
+  {
+    "Version": "2012-10-17",
+    "Statement": [
+      {
+        "Effect": "Allow",
+        "Action": "sts:AssumeRole",
+        "Resource": "arn:aws:iam::AccountB_ID:role/ROLENAME"
+      }
+    ]
+  }
+  ```
+
+</details>

@@ -49,6 +49,26 @@ Parameters:
     NoEcho: true                 # Masks entry in UI and deletes from cloud logging
 ```
 
+### Parameter Types
+
+Parameter types are the data type definitions that enforce what kind of input is allowed. The exam loves to test your knowledge of these types, especially when it comes to security and resource referencing.
+
+CloudFormation currently supports the following parameter types:
+
+```
+String – A literal string
+Number – An integer or float
+List<Number> – An array of integers or floats
+CommaDelimitedList – An array of literal strings that are separated by commas
+AWS::EC2::KeyPair::KeyName – An Amazon EC2 key pair name
+AWS::EC2::SecurityGroup::Id – A security group ID
+AWS::EC2::Subnet::Id – A subnet ID
+AWS::EC2::VPC::Id – A VPC ID
+List<AWS::EC2::VPC::Id> – An array of VPC IDs
+List<AWS::EC2::SecurityGroup::Id> – An array of security group IDs
+List<AWS::EC2::Subnet::Id> – An array of subnet IDs
+```
+
 ## Exam Tips
 
 - **The NoEcho Credential Protection**: The exam loves to test you on security compliance. If a question describes a scenario where database master credentials or private API keys are being passed into a CloudFormation template and showing up in plain text inside the console logs, the fix is to append NoEcho: true immediately onto that specific parameter definition.

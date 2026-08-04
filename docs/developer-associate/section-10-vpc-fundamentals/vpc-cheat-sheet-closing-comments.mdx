@@ -21,7 +21,7 @@ sidebar_position: 5
 
 - **Network ACLs (NACLs)**: The outer defense rim. Operates at the **Subnet level**. They are completely **stateless** (you must explicitly map both inbound and outbound return rules for ephemeral ports) and support both **Allow and Deny rules**.
 - **Security Groups (SGs)**: The inner host shield. Operates at the **Instance/ENI level**. They are completely **stateful** (return traffic is cleared automatically) and support **Allow rules only**. They can uniquely reference other SGs for smart internal microservice traffic rules.
-- **VPC Flow Logs**: The network radar. Captures raw IP metadata flows (`ACCEPT` vs `REJECT` packets) at te VPC, Subnet, or ENI level. Your number-one triage tool for debugging connection timeous or firewall blocks.
+- **VPC Flow Logs**: The network radar. Captures raw IP metadata flows (`ACCEPT` vs `REJECT` packets) at the VPC, Subnet, or ENI level. Your number-one triage tool for debugging connection timeous or firewall blocks.
 
 ## ⛓️ Advanced Connectivity
 
@@ -31,3 +31,31 @@ sidebar_position: 5
   - _Interface Endpoints_: Powered by AWS PrivateLink, puts a physical private ENI IP inside your subnet to hook up the rest of the AWS catalog (SQS, SNS, Secrets Manager).
 - **Site-to-Site VPN**: Instantly deploys an encrypted IPsec tunnel connecting an on-prem building to your VPC **over the open public internet**. Fast and cheap to deploy.
 - **Direct Connect (DX)**: Physically drops a dedicated high-speed private fiber connection from your physical datacenter straight into an AWS location. Zero internet involvement, maximum speed, but takes weeks to provision.
+
+## Scenario Practice
+
+**Scenario**: A company is using a Border Gateway Protocol (BGP) based AWS VPN connection to connect from its on-premises data center to Amazon EC2 instances in the company’s account. The development team can access an EC2 instance in subnet A but is unable to access an EC2 instance in subnet B in the same VPC.
+
+Which logs can be used to verify whether the traffic is reaching subnet B?
+
+- [ ] BGP logs
+- [ ] VPC Flow Logs
+- [ ] Subnet logs
+- [ ] VPN logs
+
+<details>
+<summary>Correct Answer</summary>
+
+- [x] VPC Flow Logs
+  - VPC Flow Logs is a feature that enables you to capture information about the IP traffic going to and from network interfaces in your VPC. Flow log data can be published to Amazon CloudWatch Logs or Amazon S3. After you've created a flow log, you can retrieve and view its data in the chosen destination.
+
+    You can create a flow log for a VPC, a subnet, or a network interface. If you create a flow log for a subnet or VPC, each network interface in that subnet or VPC is monitored.
+
+    Flow log data for a monitored network interface is recorded as flow log records, which are log events consisting of fields that describe the traffic flow.
+
+    To create a flow log, you specify:
+    - The resource for which to create the flow log
+    - The type of traffic to capture (accepted traffic, rejected traffic, or all traffic)
+    - The destinations to which you want to publish the flow log data
+
+</details>
