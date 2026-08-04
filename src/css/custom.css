@@ -17,63 +17,92 @@
   /* AWS Typography and Styling */
   --ifm-font-family-base: "Amazon Ember", "Helvetica Neue", Roboto, Arial, sans-serif;
   --ifm-global-radius: 2px;
+  --ifm-heading-color: #16191f;
+  --ifm-font-color-base: #16191f;
 
-  /* AWS Amazon Orange Palette */
-  --ifm-color-primary: #ff9900;
-  --ifm-color-primary-dark: #e68a00;
-  --ifm-color-primary-darker: #d98200;
-  --ifm-color-primary-darkest: #b36b00;
-  --ifm-color-primary-light: #ffa31a;
-  --ifm-color-primary-lighter: #ffaa2b;
-  --ifm-color-primary-lightest: #ffbe5e;
+  /* AWS Blue Palette for Light Mode */
+  --ifm-color-primary: #0073bb;
+  --ifm-color-primary-dark: #00619e;
+  --ifm-color-primary-darker: #005a93;
+  --ifm-color-primary-darkest: #004a7a;
+  --ifm-color-primary-light: #0085d8;
+  --ifm-color-primary-lighter: #008ee7;
+  --ifm-color-primary-lightest: #1a9cff;
 
   --ifm-code-font-size: 95%;
   --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.1);
 
-  /* Navbar styling for Light Mode */
+  /* Navbar styling (White) for Light Mode */
   --ifm-navbar-background-color: #ffffff;
-  --ifm-navbar-link-color: #0f1b2a;
+  --ifm-navbar-link-color: #16191f;
   --ifm-navbar-link-hover-color: var(--ifm-color-primary);
   --ifm-navbar-search-background-color: #f2f3f3;
+  --ifm-navbar-shadow: 0 1px 1px 0 rgba(0,28,36,.3), 1px 1px 1px 0 rgba(0,28,36,.15), -1px 1px 1px 0 rgba(0,28,36,.15);
 
   /* Footer styling (Squid Ink) */
   --ifm-footer-background-color: #232F3E;
   --ifm-footer-title-color: #ffffff;
   --ifm-footer-link-color: #cccccc;
-  --ifm-footer-link-hover-color: var(--ifm-color-primary);
+  --ifm-footer-link-hover-color: #ffffff;
+
+  /* Additional AWS Docs mimicry */
+  --ifm-menu-color: #16191f;
+  --ifm-menu-color-active: var(--ifm-color-primary);
+  --ifm-menu-color-background-active: transparent;
+  --ifm-menu-color-background-hover: #f2f3f3;
 }
 
 [data-theme='dark'] {
-  /* AWS Amazon Orange Palette (Keep the same in dark mode) */
-  --ifm-color-primary: #ff9900;
-  --ifm-color-primary-dark: #e68a00;
-  --ifm-color-primary-darker: #d98200;
-  --ifm-color-primary-darkest: #b36b00;
-  --ifm-color-primary-light: #ffa31a;
-  --ifm-color-primary-lighter: #ffaa2b;
-  --ifm-color-primary-lightest: #ffbe5e;
+  /* Lighter AWS Blue Palette for Dark Mode Contrast */
+  --ifm-color-primary: #44b9ff;
+  --ifm-color-primary-dark: #26afff;
+  --ifm-color-primary-darker: #17a9ff;
+  --ifm-color-primary-darkest: #0096f2;
+  --ifm-color-primary-light: #62c3ff;
+  --ifm-color-primary-lighter: #71c8ff;
+  --ifm-color-primary-lightest: #9ed9ff;
 
-  /* AWS Dark Mode Backgrounds */
-  --ifm-background-color: #0f1c2b; /* Darker navy for main background */
-  --ifm-background-surface-color: #232f3e; /* Squid ink for surface elements */
+  /* Standard AWS Squid Ink Dark Mode Backgrounds */
+  --ifm-background-color: #16191f; /* A darker shade for main background commonly used */
+  --ifm-background-surface-color: #232F3E; /* Squid ink for surface elements/navbar */
+  --ifm-heading-color: #ffffff;
+  --ifm-font-color-base: #eaeded;
 
   --ifm-navbar-background-color: #232F3E;
-  --ifm-footer-background-color: #232F3E;
+  --ifm-navbar-link-color: #ffffff;
+  --ifm-footer-background-color: #16191f;
+
+  --ifm-menu-color: #eaeded;
+  --ifm-menu-color-background-hover: rgba(255, 255, 255, 0.05);
 
   --docusaurus-highlighted-code-line-bg: rgba(255, 255, 255, 0.1);
 }
 
+/* AWS Style Links */
+a {
+  text-decoration: none;
+}
+a:hover {
+  text-decoration: underline;
+}
+
 /* AWS Style Primary Buttons */
 .button--primary {
-  color: #0f1c2b !important;
+  color: #ffffff !important;
   font-weight: 700;
+  border-color: var(--ifm-color-primary);
 }
-.button--primary:hover {
-  color: #0f1c2b !important;
+[data-theme='dark'] .button--primary {
+  color: #16191f !important;
 }
 
 /* Fix navbar search bar visibility in dark mode */
 [data-theme='dark'] .navbar__search-input {
   background-color: rgba(255, 255, 255, 0.1);
   color: #ffffff;
+}
+
+/* Menu items should not have a background when active, just bold font like AWS Docs */
+.menu__link--active {
+  font-weight: 700;
 }
