@@ -74,3 +74,21 @@ Now that both configuration contexts live inside your machine, you can shift bet
 ```math
 \text{Target Environment} = \text{\texttt{aws s3 ls --profile my-other-account}}
 ```
+
+## Scenario Practice
+
+**Scenario**: You are a development team lead setting permissions for other IAM users with limited permissions. On the AWS Management Console, you created a dev group where new developers will be added, and on your workstation, you configured a developer profile. You would like to test that this user cannot terminate instances.  
+Which of the following options would you execute?
+
+- [ ] Retrieve the policy using the EC2 metadata service and use the IAM policy simulator
+- [ ] Use the AWS CLI --test option
+- [ ] Use the AWS CLI --dry-run option
+- [ ] Using the CLI, create a dummy EC2 and delete it using another CLI call
+
+<details>
+<summary>Correct Answer</summary>
+
+- [x] Use the AWS CLI --dry-run option
+  - The --dry-run option checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is DryRunOperation, otherwise, it is UnauthorizedOperation.
+
+</details>

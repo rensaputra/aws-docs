@@ -53,3 +53,24 @@ When you need to hook your physical office building or corporate data center ser
 
 **The Isolated Lambda Secrets Fetch**: If an exam scenario says, _"You have written a serverless AWS Lambda function running inside a locked-down private custom VPC subnet to securely process database changes. The code needs to fetch a database password string from AWS Secrets Manager. The code needs to fetch a database password string from AWS Secrets Manager. However, company security compliance rules strictly forbids this private subnet from containing a route to a NAT Gateway or having any public internet access. How do you resolve this connection issue?"_  
 **The definitive cloud answer is to provision an Interface VPC Endpoint for Secrets Manager inside that specific private subnet**. This drops a local, private network interface card (`10.0.x.x`) straight into your subnet block. Your Lambda function can now execute standard AWS SDK fetch commands against Secret Manager securely using the internal AWS fiber network, keeping your configuration 100% complaint and fully air-gapped from the public web!
+
+### Scenario Practice
+
+**Scenario**: A CRM application is hosted on Amazon EC2 instances with the database tier using DynamoDB. The customers have raised privacy and security concerns regarding sending and receiving data across the public internet.
+
+As a developer associate, which of the following would you suggest as an optimal solution for providing communication between EC2 instances and DynamoDB without using the public internet?
+
+- [ ] Create an Internet Gateway to provide the necessary communication channel between EC2 instances and DynamoDB
+- [ ] Configure VPC endpoints for DynamoDB that will provide required internal access without using public internet
+- [ ] The firm can use a virtual private network (VPN) to route all DynamoDB network traffic through their own corporate network infrastructure
+- [ ] Create a NAT Gateway to provide the necessary communication channel between EC2 instances and DynamoDB
+
+<details>
+<summary>Correct Answer</summary>
+
+- [x] Configure VPC endpoints for DynamoDB that will provide required internal access without using public internet
+  - When you create a VPC endpoint for DynamoDB, any requests to a DynamoDB endpoint within the Region (for example, dynamodb.us-west-2.amazonaws.com) are routed to a private DynamoDB endpoint within the Amazon network. You don't need to modify your applications running on EC2 instances in your VPC. The endpoint name remains the same, but the route to DynamoDB stays entirely within the Amazon network, and does not access the public internet. You use endpoint policies to control access to DynamoDB. Traffic between your VPC and the AWS service does not leave the Amazon network.
+    Using Amazon VPC Endpoints to Access DynamoDB:
+    ![](./img/vpc-endpoint-dynamodb.png)
+
+</details>

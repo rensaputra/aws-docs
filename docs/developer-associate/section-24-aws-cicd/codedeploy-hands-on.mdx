@@ -68,7 +68,10 @@ Before you touch a single server or deployment console, you must build the under
   - `BeforeInstall`: Spins up custom scripts to pre-install dependencies (like configuring an Apache `httpd` web server engine).
   - `Install`: CodeDeploy maps and copies files out of your zip artifact straight down into the target host directory path (e.g., `/var/www/html`).
   - `ApplicationStart`: Triggers scripts to execute a graceful boot loop on your service stack.
-  - `ApplicationStop`: Fires scripts to gracefully stop your service stack before a new deployment run.
+  - `ApplicationStop`: Fires scripts to gracefully stop your service stack before a new deployment run.  
+    ![](./img/codedeploy-appspec.png)
+    Full lifecycle hook documentation is available here: [CodeDeploy Lifecycle Event Hooks](https://docs.aws.amazon.com/codedeploy/latest/userguide/reference-appspec-file-structure-hooks.html#reference-appspec-file-structure-hooks-run-order).
+
 - **Grab the Data Pointer:** Click on your uploaded zip object inside the S3 dashboard and copy its unique **S3 URI** path string to your clipboard.
 
 ---

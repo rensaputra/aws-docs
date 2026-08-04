@@ -51,3 +51,14 @@ On the exam, Launch Configurations are completely legacy. Always choose **Launch
 - **The Self-Healing DB Trap**: The exam loves to test your understanding of ASG Auto-recreation behavior. If a question says, "You have a specialized backend application instance inside an ASG, you need to perform manual troubleshooting on its local system logs without the ASG terminating it or trying to spawn a duplicate node", your play is to **Put the instance into Standby state**. This temporarily removes it from the load balancer and ASG health logic without deleting the underlying server.
 
 - **The Cost Optimization Play**: If a scenario demands a high-volume processing architecture that must scale out massively but at the absolute lowest cost imaginable, look of a **Launch Template** setup configured to utilize **Spot Instance** for the scale-out capacity, matched with an ASG policy that triggers via custom CloudWatch metrics.
+
+### Practice Scenario
+
+- **Scenario**: You create an Auto Scaling group to work with an Application Load Balancer. The scaling group is configured with a minimum size value of 5, a maximum value of 20, and the desired capacity value of 10. One of the 10 EC2 instances has been reported as unhealthy.
+  - Which of the following actions will take place?
+    - [ ] The ASG will detach the EC2 instance from the group, and leave it running
+    - [ ] The ASG will terminate the EC2 Instance
+    - [ ] The ASG will keep the instance running and re-start the application
+    - [ ] The ASG will format the root EBS drive on the EC2 instance and run the User Data again
+  - **Correct Answer**: The ASG will terminate the EC2 Instance.  
+    When ASG finds an instance is unhealthy, it terminates that instance and launches a new one

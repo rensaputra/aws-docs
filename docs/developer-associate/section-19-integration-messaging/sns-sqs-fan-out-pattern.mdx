@@ -46,7 +46,7 @@ By default, every subscriber queue attached to an SNS topic receives an identica
 // Example: Filter policy attached to the 'Placed-Orders-Queue' subscription
 {
   "State": ["Placed"]
-}s
+}
 ```
 
 ![](./img/sns-filter.png)
@@ -84,11 +84,35 @@ To make the Fan-Out pattern work, you can't just link the services and pray. You
 
 ### Practice Scenario
 
-**Scenario**: A cloud developer is configuring an Amazon S3 bucket to trigger automated processing workflows. When a customer uploads a new document, a data-extraction microservice must ingest the file, and an archival backup microservice must simultaneously index the metadata. Both systems use independent Amazon SQS standard queues. The developer discovers that Amazon S3 cannot natively send the same object creation event to two different SQS queues. What is the recommended architectural pattern to resolve this restriction?
+**Scenario 1**: A cloud developer is configuring an Amazon S3 bucket to trigger automated processing workflows. When a customer uploads a new document, a data-extraction microservice must ingest the file, and an archival backup microservice must simultaneously index the metadata. Both systems use independent Amazon SQS standard queues. The developer discovers that Amazon S3 cannot natively send the same object creation event to two different SQS queues. What is the recommended architectural pattern to resolve this restriction?
 
-- **A**. Update the S3 bucket configuration to execute a `PurgeQueue` API call sequence across both clusters.
-- **B**. Route the S3 object creation event directly to an Amazon SNS topic, and subscribe both SQS queues to that topic using appropriate queue access policies.
-- **C**. Build a CloudFormation StackSet template to execute a centralized script via .ebextensions.
-- **D**. Migrate the SQS infrastructure over to an external JSON policy schema running on an EC2-backed database instance.
+- [ ] Update the S3 bucket configuration to execute a `PurgeQueue` API call sequence across both clusters.
+- [ ] Route the S3 object creation event directly to an Amazon SNS topic, and subscribe both SQS queues to that topic using appropriate queue access policies.
+- [ ] Build a CloudFormation StackSet template to execute a centralized script via .ebextensions.
+- [ ] Migrate the SQS infrastructure over to an external JSON policy schema running on an EC2-backed database instance.
 
-**Correct Answer: B**. This is the textbook definition of the Fan-Out Pattern. By dropping an SNS topic between S3 and your SQS queues, you gracefully bypass the single-destination notification limit of S3, cloning the event block out to both queues flawlessly without any data drops, bro!
+<details>
+<summary>Correct Answer</summary>
+
+- [x] Route the S3 object creation event directly to an Amazon SNS topic, and subscribe both SQS queues to that topic using appropriate queue access policies.
+  - This is the textbook definition of the Fan-Out Pattern. By dropping an SNS topic between S3 and your SQS queues, you gracefully bypass the single-destination notification limit of S3, cloning the event block out to both queues flawlessly without any data drops.
+
+</details>
+
+**Scenario 2**: An e-commerce company manages a microservices application that receives orders from various partners through a customized API for each partner exposed via Amazon API Gateway. The orders are processed by a shared Lambda function.
+
+How can the company notify each partner regarding the status of their respective orders in the most efficient manner, without affecting other partners' orders? Also, the solution should be scalable to accommodate new partners with minimal code changes required.
+
+- [ ] Set up a separate SNS topic for each partner. Modify the Lambda function to publish messages for each partner to the partner's SNS topic
+- [ ] Set up a separate SNS topic for each partner and subscribe each partner to the respective SNS topic. Modify the Lambda function to publish messages with specific attributes to the partner's SNS topic and apply the appropriate filter policy to the topic subscriptions
+- [ ] Set up an SNS topic and subscribe each partner to the SNS topic. Modify the Lambda function to publish messages with specific attributes to the SNS topic and apply the appropriate filter policy to the topic subscriptions
+- [ ] Set up a separate Lambda function for each partner. Set up an SNS topic and subscribe each partner to the SNS topic. Modify each partner's Lambda function to publish messages with specific attributes to the SNS topic and apply the appropriate filter policy to the topic subscriptions
+
+<details>
+<summary>Correct Answer</summary>
+- [x] Set up an SNS topic and subscribe each partner to the SNS topic. Modify the Lambda function to publish messages with specific attributes to the SNS topic and apply the appropriate filter policy to the topic subscriptions
+  - By default, an Amazon SNS topic subscriber receives every message that's published to the topic. To receive only a subset of the messages, a subscriber must assign a filter policy to the topic subscription. A filter policy is a JSON object containing properties that define which messages the subscriber receives. Amazon SNS supports policies that act on the message attributes or the message body, according to the filter policy scope that you set for the subscription. Filter policies for the message body assume that the message payload is a well-formed JSON object.
+
+    For the given use case, you can change the Lambda function to publish messages with specific attributes to the single SNS topic and apply the appropriate filter policy to the topic subscriptions for each of the partners. This is also easily scalable for new partners since only the filter policy needs to be set up for the new partner.
+
+</details>

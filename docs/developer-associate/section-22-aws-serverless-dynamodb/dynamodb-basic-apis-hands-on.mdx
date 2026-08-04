@@ -69,3 +69,20 @@ $$\text{Scan Execution (Monolithic)} \implies \text{Read Every Background Partit
 ## Exam Tips
 
 - **The Index Query Constraint:** If an exam question presents a scenario where a frontend app needs to let users look up blog posts by typing keywords found inside the `content` body text, and asks if you should use the `Query` API on the base table—**the answer is no** You can _only_ query against your designated Partition Key and Sort Key attributes. To unlock optimized lookups on non-key columns without resorting to high-cost Scans, you must build a **Secondary Index**.
+
+### Practice Scenario
+
+**Scenario**: A development team is working on an AWS Lambda function that accesses DynamoDB. The Lambda function must do an upsert, that is, it must retrieve an item and update some of its attributes or create the item if it does not exist. **Which of the following represents the solution with MINIMUM IAM permissions that can be used for the Lambda function to achieve this functionality?**
+
+- [ ] `dynamodb:UpdateItem`, `dynamodb:GetItem`
+- [ ] `dynamodb:AddItem`, `dynamodb:GetItem`
+- [ ] `dynamodb:GetRecords`, `dynamodb:PutItem`, `dynamodb:UpdateTable`
+- [ ] `dynamodb:UpdateItem`, `dynamodb:GetItem`, `dynamodb:PutItem`
+
+<details>
+<summary>Correct Answer</summary>
+
+`dynamodb:UpdateItem`, `dynamodb:GetItem`.  
+Why? Because `UpdateItem` can be used to update an existing item or create a new item if it does not exist (upsert). You can also perform a conditional update on an existing item (insert a new attribute name-value pair if it doesn't exist, or replace an existing name-value pair if it has certain expected attribute values).
+
+</details>
