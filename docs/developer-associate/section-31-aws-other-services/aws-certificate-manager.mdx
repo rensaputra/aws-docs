@@ -67,3 +67,24 @@ Before ACM issues a certificate for `example.com`, you must prove domain ownersh
 - **The CloudFront Certificate Missing Trap 🚨:** If a developer requests an ACM SSL/TLS certificate for a web application, but cannot see the certificate inside the CloudFront Console dropdown menu—**the root cause is that the ACM certificate was requested in a local region instead of `us-east-1`!**
 - **Cost-Effective In-Flight Encryption:** Public SSL/TLS certificates issued directly by AWS Certificate Manager are **100% FREE** when used with integrated services (ALB, CloudFront, API Gateway).
 - **Auto-Renewal Failure:** If an ACM certificate fails to renew automatically under DNS validation, check if a developer accidentally deleted the ACM-generated CNAME validation record from Route 53!
+
+### Scenario Practice
+
+**Scenario:** To enable HTTPS connections for his web application deployed on the AWS Cloud, a developer is in the process of creating server certificate.
+Which AWS entities can be used to deploy SSL/TLS server certificates? (Select two)
+
+- [ ] IAM
+- [ ] AWS Systems Manager
+- [ ] AWS Secrets Manager
+- [ ] AWS CloudFormation
+- [ ] AWS Certificate Manager
+
+<details>
+  <summary>Correct Answer</summary>
+
+- [x] IAM
+  - IAM is used as a certificate manager only when you must support HTTPS connections in a Region that is not supported by ACM. IAM securely encrypts your private keys and stores the encrypted version in IAM SSL certificate storage. IAM supports deploying server certificates in all Regions, but you must obtain your certificate from an external provider for use with AWS. You cannot upload an ACM certificate to IAM. Additionally, you cannot manage your certificates from the IAM Console.
+- [x] AWS Certificate Manager
+  - AWS Certificate Manager (ACM) is the preferred tool to provision, manage, and deploy server certificates. With ACM you can request a certificate or deploy an existing ACM or external certificate to AWS resources. Certificates provided by ACM are free and automatically renew. In a supported Region, you can use ACM to manage server certificates from the console or programmatically.
+
+</details>
