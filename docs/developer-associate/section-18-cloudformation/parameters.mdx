@@ -74,9 +74,9 @@ List<AWS::EC2::Subnet::Id> – An array of subnet IDs
 - **The NoEcho Credential Protection**: The exam loves to test you on security compliance. If a question describes a scenario where database master credentials or private API keys are being passed into a CloudFormation template and showing up in plain text inside the console logs, the fix is to append NoEcho: true immediately onto that specific parameter definition.
 - **Pseudo Parameter Portability**: If a scenario requires you to construct an Amazon Resource Name (ARN) string dynamically within a template across multiple regions and accounts without hardcoding metadata, use sub-string interpolation combining pseudo parameters: `!Sub "arn:aws:s3:::my-app-bucket-${AWS::AccountId}-${AWS::Region}"`.
 
-### Practice Scenario
+### Practice Test
 
-**Scenario**: A cloud engineer is updating a shared AWS CloudFormation template that provisions backend database components. The security engineering team notes that during stack creation, the sensitive administrator password parameter value is exposed in plain text within the stack's event description deployment logs. Which property must the developer add to the password parameter configuration block to hide this sensitive string?
+**Question**: A cloud engineer is updating a shared AWS CloudFormation template that provisions backend database components. The security engineering team notes that during stack creation, the sensitive administrator password parameter value is exposed in plain text within the stack's event description deployment logs. Which property must the developer add to the password parameter configuration block to hide this sensitive string?
 
 - **A**. NoEcho: true
 - **B**. Masked: true

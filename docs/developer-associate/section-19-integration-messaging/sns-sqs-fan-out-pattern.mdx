@@ -82,7 +82,7 @@ To make the Fan-Out pattern work, you can't just link the services and pray. You
 - **The S3 Multi-Destination Notification Trap**: Look for questions where an application needs to run an image-resizing Lambda function and log an audit entry in a separate SQS queue whenever a file hits S3. The distractors will suggest creating two separate S3 notification rules. The right answer is to **send the S3 notification to an SNS Topic**, then subscribe both the Lambda function and the SQS queue to that topic.
 - **The FIFO Compatibility Boundary**: If a scenario states that messages across a fan-out topology must maintain ordering per client session, make sure you pick the option where an SNS FIFO Topic routes exclusively to SQS FIFO Queues. Any option pairing an SNS FIFO topic with standard components is wrong.
 
-### Practice Scenario
+### Practice Test
 
 **Scenario 1**: A cloud developer is configuring an Amazon S3 bucket to trigger automated processing workflows. When a customer uploads a new document, a data-extraction microservice must ingest the file, and an archival backup microservice must simultaneously index the metadata. Both systems use independent Amazon SQS standard queues. The developer discovers that Amazon S3 cannot natively send the same object creation event to two different SQS queues. What is the recommended architectural pattern to resolve this restriction?
 

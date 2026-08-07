@@ -52,9 +52,9 @@ Here is the exact structural topology of a production Stack Policy designed to a
 - **JSON Only Constraint**: If an exam distractor suggests writing a Stack Policy inside your standard YAML template under the Resources section, it is a trap. **Stack Policies are external JSON documents that are attached via stack options properties or CLI flags at the environment orchestration layer**.
   ![](./img/cloudformation-stack-policy.png)
 
-### Practice Scenario
+### Practice Test
 
-**Scenario**: A software engineer attempts to run a CloudFormation stack update to increase the instance size of an EC2 compute cluster. The developer has full IAM administrative access to the AWS account. However, the stack update fails immediately with an error message stating that the modification is not authorized by the stack policy. What is the root cause of this failure?
+**Question**: A software engineer attempts to run a CloudFormation stack update to increase the instance size of an EC2 compute cluster. The developer has full IAM administrative access to the AWS account. However, the stack update fails immediately with an error message stating that the modification is not authorized by the stack policy. What is the root cause of this failure?
 
 - **A**. An attached external Stack Policy contains a statement that explicitly denies update actions on that specific resource, overriding the user's admin credentials.
 - **B**. The developer’s personal IAM User policy lacks the `iam:PassRole` token permission parameter string.

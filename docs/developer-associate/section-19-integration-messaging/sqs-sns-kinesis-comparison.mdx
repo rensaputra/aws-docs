@@ -50,9 +50,9 @@ Lock these core metrics, scaling limits, and feature flags into your memory befo
 - **Choose SNS when**: You need to trigger multiple disparate backend infrastructures simultaneously off a single event notification. The key phrases are **"pub/sub," "broadcast notifications," "fan-out to multiple queues," or "subscription filter policies."**
 - **Choose Kinesis when**: You are ingesting an astronomical torrent of telemetry, server logs, or clickstream events. The key phrases are **"real-time big data," "sub-second data streaming," "clickstream logging," or "independently replaying historical data blocks."**
 
-### Practice Scenario
+### Practice Test
 
-**Scenario**: A cloud architect is designing an infrastructure pattern for an online multiplayer game application. The architecture must handle millions of continuous **real-time player action logs per second**. Two separate downstream systems must consume these logs simultaneously: a real-time player leaderboards dashboard and a security auditing engine that checks for compliance breaches. If either system crashes, it must be able to reboot and catch up on missing events by re-reading the log history from the last 24 hours. Which service satisfies these requirements?
+**Question**: A cloud architect is designing an infrastructure pattern for an online multiplayer game application. The architecture must handle millions of continuous **real-time player action logs per second**. Two separate downstream systems must consume these logs simultaneously: a real-time player leaderboards dashboard and a security auditing engine that checks for compliance breaches. If either system crashes, it must be able to reboot and catch up on missing events by re-reading the log history from the last 24 hours. Which service satisfies these requirements?
 
 - **A**. Amazon SQS standard queues configured with an extended message-level delay timer setup.
 - **B**. An Amazon SNS FIFO topic configured with subscription rules routing straight to individual Lambda functions.

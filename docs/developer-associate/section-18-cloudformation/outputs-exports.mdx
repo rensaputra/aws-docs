@@ -62,9 +62,9 @@ Resources:
 - **The Multi-Stack Collaboration Pattern**: The developer exam heavily favors architectural scalability. If a question states: _"A company's security engineering team creates and maintains all network security groups, while the development team builds independent application environments that must reuse those exact security groups. What is the most efficient configuration strategy?"_ Look for an answer that uses **CloudFormation Stacks with `Outputs`, unique Export Names, and `!ImportValue` inside the application templates**.
 - **Tracking Down Deletion Failures**: If you face a scenario where a CloudFormation stack keeps throwing a `Delete_Failed` status, and the error logs read that an exported resource name is currently referenced by another stack, the solution is: **Locate and delete or update the dependent consumer stack first, then delete the base layer stack**.
 
-### Practice Scenario
+### Practice Test
 
-**Scenario**: A cloud software engineer is trying to delete a legacy network foundation AWS CloudFormation stack named `Network-Base-Stack`. However, the deletion process immediately fails with an error stating that the export value `VPC-Production-ID` is currently in use by other active stacks. What step must the developer perform to successfully clean up and delete the stack?
+**Question**: A cloud software engineer is trying to delete a legacy network foundation AWS CloudFormation stack named `Network-Base-Stack`. However, the deletion process immediately fails with an error stating that the export value `VPC-Production-ID` is currently in use by other active stacks. What step must the developer perform to successfully clean up and delete the stack?
 
 - **A**. Edit the template of `Network-Base-Stack` to drop the Outputs block entirely and run an inline Stack Update.
 - **B**. Identify all dependent consumer stacks referencing `VPC-Production-ID`, update or delete those consumer stacks to remove the dependency references, and then re-execute the deletion on `Network-Base-Stack`.

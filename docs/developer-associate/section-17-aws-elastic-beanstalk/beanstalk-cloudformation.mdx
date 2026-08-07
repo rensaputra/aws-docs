@@ -38,9 +38,9 @@ Elastic Beanstalk isn't actually a standalone provisioning engine. Under the hoo
 - **The Underlying Technology Matchup**: Keep an eye out for conceptual architecture questions asking which core AWS service handles the actual provisioning execution loops behind the Elastic Beanstalk engine. The answer is **AWS CloudFormation**.
 - **Unlocking Extensibility via Resources**: If a scenario presents a situation where a development team wants to launch an application inside Elastic Beanstalk but requires an auxiliary AWS resource that is not available as a selectable option inside the native Beanstalk console user interface, look for the option that mentions: Add a custom `.config` file into the `.ebextensions/` folder and define the resource using a CloudFormation standard Resources block.
 
-### Practice Scenario
+### Practice Test
 
-**Scenario**: A company uses AWS Elastic Beanstalk to host its core corporate web application. The development lead wants to ensure that a dedicated Amazon S3 bucket used for processing uploaded assets is automatically provisioned alongside any new deployment environment stack instance. The configuration must be managed strictly as code within the source bundle. How can this requirement be achieved?
+**Question**: A company uses AWS Elastic Beanstalk to host its core corporate web application. The development lead wants to ensure that a dedicated Amazon S3 bucket used for processing uploaded assets is automatically provisioned alongside any new deployment environment stack instance. The configuration must be managed strictly as code within the source bundle. How can this requirement be achieved?
     - **A**. Write a shell script inside the `cron.yaml` template file to programmatically call the aws s3 mb CLI command.
     - **B**. Create a custom configuration file ending in `.config` inside the root `.ebextensions/` directory, and declare the S3 bucket resource schema using native **AWS CloudFormation** syntax under the Resources section.
     - **C**. Manually deploy an independent **AWS Systems Manager (SSM)** automation document to pre-create the bucket boundaries.

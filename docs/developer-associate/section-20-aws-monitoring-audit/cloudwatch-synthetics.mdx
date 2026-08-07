@@ -36,7 +36,7 @@ You don't always have to write complex Puppeteer scripts from scratch, bro. AWS 
 - **The Synthetic User Keyword**: Whenever a scenario outlines a requirement to _"simulate user behavior on a website schedule,"_ _"capture screenshots of frontend UI bugs automatically,"_ or _"continuously crawl a page to identify broken hyperlinks,"_ look directly for CloudWatch Synthetics Canaries.
 - **Distinguishing from Route 53 Health Checks**: While Route 53 health checks can ping an endpoint to see if a server is online, they _cannot_ click an "Add to Cart" button or handle multi-step form authentication. If the question requires **simulating an actual login or transactional workflow path**, standard health checks fail—you _must_ select a Canary.
 
-### Practice Scenario
+### Practice Test
 
 Scenario: A cloud developer is maintaining a high-traffic retail storefront web application. The company wants to receive an immediate text notification if the website's checkout sequence fails—specifically, when a user enters valid credit card fields on the checkout page and clicks "Submit Order," but receives an internal server error. The backend instances report normal CPU usage. How can the developer implement this validation layer with minimal infrastructure overhead?
 

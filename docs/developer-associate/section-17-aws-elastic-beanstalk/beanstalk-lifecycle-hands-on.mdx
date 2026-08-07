@@ -36,9 +36,9 @@ AWS restricts every account to a hard ceiling of **1,000 application versions pe
 - **The 1,000 Version Error Scenario**: If an exam question describes a scenario where your CI/CD pipelines (like CodePipeline or Jenkins) suddenly start failing to upload new application deployment packages to Elastic Beanstalk with a limit-exceeded error, the root cause is that you hit the 1,000 version cap. The solution is to configure an **Application Lifecycle Policy**.
 - **The "Accidental Production Deletion" Distractor**: Watch out for trick questions that ask: "If I set a lifecycle policy to keep only 5 versions, will my older production environment break?" The answer is No. Active environment versions are explicitly excluded from lifecycle deletions.
 
-### Practice Scenario
+### Practice Test
 
-**Scenario**: A company has been deploying updates daily to an AWS Elastic Beanstalk application over the past two years. During a recent release, the automated build tool throws an error stating that no new application versions can be created. The developer needs to resolve this issue immediately and ensure that future automated deployments do not get blocked, while still keeping historical source bundles in place for rollback safety. What should the developer do?
+**Question**: A company has been deploying updates daily to an AWS Elastic Beanstalk application over the past two years. During a recent release, the automated build tool throws an error stating that no new application versions can be created. The developer needs to resolve this issue immediately and ensure that future automated deployments do not get blocked, while still keeping historical source bundles in place for rollback safety. What should the developer do?
     - **A**. Request an AWS Service Limit increase for Elastic Beanstalk instances in the AWS Service Quotas console.
     - **B**. Enable an Application Lifecycle Policy in the Beanstalk settings, set a maximum version count constraint, and select the option to retain the source bundle in Amazon S3.
     - **C**. Delete the entire Elastic Beanstalk application tier and recreate it to clear the system cache.

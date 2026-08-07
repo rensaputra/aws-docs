@@ -49,9 +49,9 @@ To extract a value dynamically using the `!FindInMap` shorthand syntax model com
 - **Baking Cross-Region Portability**: This scenario shows up constantly on the developer exam. If a question states: _"A developer is designing a unified CloudFormation template that must deploy compute infrastructure across `us-east-1`, `eu-west-1`, and `ap-southeast-2`. The template fails because AMI IDs differ by region. What is the most operationally efficient way to resolve this?"_ Look for an answer that defines a **Region Map** inside the Mappings block and uses `!FindInMap` combined with the `AWS::Region` **pseudo parameter**.
 - **Syntax Order Check**: Make sure you memorize the exact positional argument order for `!FindInMap`. The matrix array index syntax must be exactly: `[ MapName, TopLevelKey, SecondLevelKey ]`. Any distractor switching the keys around or omitting the map handle is absolute bait.
 
-### Practice Scenario
+### Practice Test
 
-**Scenario**: A cloud software developer wants to build a standardized AWS CloudFormation template to deploy microservices into two separate hosting environments: `development` and `production`. The template must automatically assign a `t3.medium` instance type if the stack is launched as development, and a `c6i.large` instance type if it is launched as production. The setup must be completely hardcoded inside the template code to prevent human data-entry mistakes. How should this architecture be defined?
+**Question**: A cloud software developer wants to build a standardized AWS CloudFormation template to deploy microservices into two separate hosting environments: `development` and `production`. The template must automatically assign a `t3.medium` instance type if the stack is launched as development, and a `c6i.large` instance type if it is launched as production. The setup must be completely hardcoded inside the template code to prevent human data-entry mistakes. How should this architecture be defined?
 
 - **A**. Declare a dynamic Parameters block with an `AllowedValues` restriction and force developers to type the instance size manually during pipeline execution.
 - **B**. Create an environment lookup matrix inside the Mappings block, and use the `!FindInMap` intrinsic function under the **EC2 instance InstanceType** property to resolve the size based on an environment identifier key.

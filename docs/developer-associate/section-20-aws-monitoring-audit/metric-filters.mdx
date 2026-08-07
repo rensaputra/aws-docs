@@ -23,9 +23,9 @@ The entire processing pipeline moves sequentially from text generation down to r
 - **The Historical Baseline Trap**: If an exam scenario says: _"A developer deployed a metric filter to track database connectivity errors and immediately checked the newly generated graph, but notices the timeline is completely blank despite the log group containing thousands of error lines from earlier today"_ the answer is that **Metric filters are not retroactive**. You must generate new traffic to populate the metric data points.
 - **Minimizing Application Code Overhead**: If a question asks how to implement an alerting framework that fires an SMS whenever an application encounters a specific critical error code without editing the core application code or installing third-party runtimes, select CloudWatch Logs Metric Filters attached to an SNS notification topic.
 
-### Practice Scenario
+### Practice Test
 
-**Scenario**: A software engineer wants to monitor a legacy application hosted on an EC2 instance that streams its application text output directly into a CloudWatch Log Group via the Unified Agent. The engineer needs to be notified via email immediately if the word "CRITICAL_FAILURE" appears more than 5 times within any 60-second window. What configuration achieves this with the least amount of management overhead?
+**Question**: A software engineer wants to monitor a legacy application hosted on an EC2 instance that streams its application text output directly into a CloudWatch Log Group via the Unified Agent. The engineer needs to be notified via email immediately if the word "CRITICAL_FAILURE" appears more than 5 times within any 60-second window. What configuration achieves this with the least amount of management overhead?
 
 - **A**. Trigger a recurring `CreateExportTask` script string sequence to evaluate local files every 60 seconds.
 - **B**. Create a CloudWatch Logs Metric Filter on the log group with the filter pattern set to "CRITICAL_FAILURE". Map it to a custom metric namespace, and configure a CloudWatch Alarm on that metric that triggers an Amazon SNS topic when the threshold crosses 5 within 1 minute.

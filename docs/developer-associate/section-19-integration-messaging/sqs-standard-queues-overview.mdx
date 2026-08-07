@@ -82,7 +82,7 @@ This structural workflow illustrates how a standard queue isolates a user-facing
 - **The SQS Horizontal Scaling Metric**: This shows up constantly on the exam. If you are configuring an Auto Scaling Group to spin up more EC2 worker instances based on the size of an SQS queue, you cannot scale using standard metrics like instance `CPUUtilization`. Instead, you must track the SQS CloudWatch metric: `ApproximateNumberOfMessagesVisible` (Queue Depth).
 - **The Idempotent Consumer Requirement**: Because standard queues guarantee _at-least-once_ delivery, exam scenarios will describe a system that occasionally runs duplicate jobs (e.g., charging a customer twice for an order). The developer solution is to **make the consumer application idempotent** by tracking unique message IDs in a deduplication database table (like Amazon DynamoDB) before running the backend transaction logic.
 
-### Practice Scenario
+### Practice Test
 
 Scenario: A developer is building a document processing system where an administrative frontend web application allows users to upload massive PDF files. A backend fleet of EC2 instances needs to parse these files and convert them into text formatting blocks. The processing script takes up to three minutes per document. To keep the website highly responsive, the developer wants to decouple these tiers using an Amazon SQS standard queue. During testing, the backend fleet occasionally processes the exact same document twice. What should the developer do to fix this while maintaining unlimited throughput scale?
 

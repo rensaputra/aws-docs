@@ -35,7 +35,7 @@ To active this in the AWS Console, either you can enable it during the initial s
 - **Preventing Global Stack Accidents**: If an exam prompt asks: _"An operations team wants to ensure that a critical production cloud infrastructure pipeline cannot be completely torn down or deleted by an accidental console action from a junior administrator"_ look for the option that specifies **Enabling Termination Protection on the CloudFormation Stack**.
 - **The Permission Lockdown Strategy**: To build a bulletproof security posture, pair this feature with IAM scoping. Ensure that junior devs have the right to create and update stacks, but explicitly omit `cloudformation:UpdateTerminationProtection` from their roles so they can never unlock the kill switch on their own.
 
-### Practice Scenario
+### Practice Test
 
 Scenario: A cloud engineer needs to update an automation pipeline that manages shared environments via AWS CloudFormation. The engineering manager demands a safeguard ensuring that the master networking infrastructure stack cannot be deleted under any circumstances by a standard automated script or an accidental CLI command. Which action fulfills this requirement?
 

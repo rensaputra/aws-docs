@@ -59,9 +59,9 @@ MyEIPAssociation:
 - **What is a Change Set**? The DVA-C02 exam loves to test your knowledge of safety tooling. If a question asks: _"How can a developer inspect the operational impact of a CloudFormation template update before modifying any live, running infrastructure?"_ the answer is always to Create a Change Set.
 - **Understanding Update Behavior (Replacement vs. In-Place)**: Pay close attention to scenario constraints. If a prompt mentions that an update requires **Replacement: True**, expect the underlying resource's Physical ID to change completely, and any local, non-persistent disk data on that specific EC2 instance to be lost. If it states **Replacement: False**, the update will occur in-place without destroying the resource.
 
-### Practice Scenario
+### Practice Test
 
-**Scenario**: A development team needs to update an existing AWS CloudFormation stack running a production web database instance. Because the stack manages critical infrastructure, the lead engineer wants to verify whether the proposed template changes will cause the existing database instance to be terminated and replaced with a fresh resource, or if the updates can be applied in-place. Which feature should the engineer use to get a comprehensive preview of this behavior?
+**Question**: A development team needs to update an existing AWS CloudFormation stack running a production web database instance. Because the stack manages critical infrastructure, the lead engineer wants to verify whether the proposed template changes will cause the existing database instance to be terminated and replaced with a fresh resource, or if the updates can be applied in-place. Which feature should the engineer use to get a comprehensive preview of this behavior?
 
 - **A**. Execute a Stack Drift Detection scan via the AWS CLI.
 - **B**. Create a CloudFormation Change Set and evaluate the "Replacement" property metadata block.

@@ -56,9 +56,9 @@ Here is the exact security and integration checklist you need to follow to build
 - **The Real-Time / S3 Audit Trap**: If a question says: _"A compliance mandate requires all application error logs to be streamed into an S3 bucket immediately within a sub-minute timeframe for analysis"_ the distractor choice will suggest using `CreateExportTask` daily. That is wrong. To dump logs into S3 in near real-time, you must **attach a Subscription Filter pointing to an Amazon Data Firehose pipeline**, which then buffers and flushes the data straight into S3.
 - **Identifying the Aggregation Failure**: If cross-account log forwarding fails, double-check your security components. Make sure the recipient account has both a Resource-Based Destination Policy explicitly authorizing the sender's account ID, and an IAM Role with write access to the Kinesis stream that the sender account is explicitly allowed to assume.
 
-### Practice Scenario
+### Practice Test
 
-**Scenario**: A software engineer is configuring log monitoring for a high-security banking microservice running on AWS Lambda. The application logs are currently written to a standard **CloudWatch Log Group**. The security operations team requires these logs to be parsed, analyzed, and indexed inside an **Amazon OpenSearch Service** domain in real time to trigger instant security alerts if an anomaly occurs. What is the most operationally efficient architectural solution to build this?
+**Question**: A software engineer is configuring log monitoring for a high-security banking microservice running on AWS Lambda. The application logs are currently written to a standard **CloudWatch Log Group**. The security operations team requires these logs to be parsed, analyzed, and indexed inside an **Amazon OpenSearch Service** domain in real time to trigger instant security alerts if an anomaly occurs. What is the most operationally efficient architectural solution to build this?
 
 - **A**. Execute a recurring `CreateExportTask` script loop string every 10 minutes to sync log directories.
 - **B**. Configure an `.ebextensions` configuration shell script inside an SQS standard queue.

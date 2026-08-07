@@ -109,9 +109,9 @@ The firewall constraint rule for the EC2 Instance Inbound Security Group is mode
 - **The Database Trap**: The exam loves to test your production separation of concerns. **Never** bundle an RDS database directly into your Beanstalk environment configuration file for production workloads. If you delete the Beanstalk environment to swap platforms, your production database gets wiped out. For production architectures, always provision the RDS instance externally and pass the endpoint via Beanstalk Environment Properties.
 - **Security Group Rules**: Make sure you recognize the secure pattern for an HA web app. The instances should never have `0.0.0.0/0` open on port 80. They must only accept traffic where the source is the ALB's security group ID.
 
-### Practice Scenario
+### Practice Test
 
-- **Scenario**: A developer is deploying a high-availability Node.js application using AWS Elastic Beanstalk. The security team mandates that backend EC2 instances must not be directly accessible from the public internet, but must still receive HTTP traffic. How should this be configured?
+- **Question**: A developer is deploying a high-availability Node.js application using AWS Elastic Beanstalk. The security team mandates that backend EC2 instances must not be directly accessible from the public internet, but must still receive HTTP traffic. How should this be configured?
 - **A**. Configure the EC2 instances with public IPs and set their security groups to allow inbound port 80 traffic from `0.0.0.0/0`.
 - **B**. Deploy a High Availability environment preset, which provisions an Application Load Balancer. Configure the EC2 instance security group to accept inbound port 80 traffic only from the Application Load Balancer's security group.
 - **C**. Deploy a Single Instance environment preset and manually attach an Internet Gateway directly to the EC2 instance.

@@ -53,7 +53,7 @@ Resources:
 - **The S3 Deletion Failure Trap**: This is an absolute classic. If the exam describes a scenario where a stack deletion gets stuck or errors out on an **Amazon S3 bucket** resource, look for the option pointing out that the **bucket contains data objects**, causing the standard delete operation to fail.
 - **Protecting Data from Accidental Deletion**: If a prompt states that a company wants to ensure that deleting an infrastructure stack never results in losing production database tables or block storage contents, look for options that explicitly append `DeletionPolicy: Retain` or `DeletionPolicy: Snapshot` to those specific resource schemas.
 
-### Practice Scenario
+### Practice Test
 
 Scenario: A software engineer is configuring an AWS CloudFormation template to deploy a microservice that uses an Amazon DynamoDB table to store user profile data. The business requires that if the CloudFormation stack is accidentally deleted, the data within the DynamoDB table must be preserved to prevent permanent data loss. How should the developer structure the template?
 

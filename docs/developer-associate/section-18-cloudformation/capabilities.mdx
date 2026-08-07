@@ -58,9 +58,9 @@ aws cloudformation create-stack \
 - **Spotting the Exception Fix**: If a scenario question states that a developer’s automated CI/CD pipeline (like AWS CodePipeline or a GitHub Actions runner) is throwing an `InsufficientCapabilitiesException` during the deployment of a CloudFormation template, look for the answer that mentions adding the `capabilities` **parameter** to the build script or checking the IAM acknowledgment box in the console.
 - **Choosing Between `CAPABILITY_IAM` vs. `CAPABILITY_NAMED_IAM`**: Read the prompt text carefully. If the question describes a template that spins up an IAM role without specifying a custom string name value, `CAPABILITY_IAM` is enough. If the template contains a property like `RoleName` or `UserName` with a hardcoded string, you must select `CAPABILITY_NAMED_IAM`.
 
-### Practice Scenario
+### Practice Test
 
-**Scenario**: A cloud developer is configuring an automated script to deploy an application infrastructure stack using the AWS CLI command `aws cloudformation create-stack`. The accompanying YAML template defines an `AWS::IAM::Policy` along with an `AWS::IAM::Role` resource that has its `RoleName` property hardcoded to `CorporateExecutionRole`. When the pipeline script runs, the execution fails immediately with an `InsufficientCapabilitiesException` error message. How can the developer correct the deployment script?
+**Question**: A cloud developer is configuring an automated script to deploy an application infrastructure stack using the AWS CLI command `aws cloudformation create-stack`. The accompanying YAML template defines an `AWS::IAM::Policy` along with an `AWS::IAM::Role` resource that has its `RoleName` property hardcoded to `CorporateExecutionRole`. When the pipeline script runs, the execution fails immediately with an `InsufficientCapabilitiesException` error message. How can the developer correct the deployment script?
 
 - **A**. Update the YAML configuration to wrap the IAM resources inside a CloudFormation `Conditions` logic gate.
 - **B**. Re-run the command after adding the flag parameter `--capabilities CAPABILITY_NAMED_IAM` directly into the AWS CLI execution string.

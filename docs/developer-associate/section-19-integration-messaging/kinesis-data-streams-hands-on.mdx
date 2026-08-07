@@ -101,9 +101,9 @@ aws kinesis get-records --shard-iterator <YOUR_MASSIVE_ITERATOR_STRING>
 - **The Shared vs. Enhanced Fan-Out Egress Shift**: The CLI steps we just executed map straight to the **Shared Consumer Model** (all workers share a global 2 MB/s read ceiling per shard via HTTP GET requests). If your application requires multiple independent analytical microservices to consume the stream simultaneously with minimal latency, you must enable **Enhanced Fan-Out** (each consumer gets a dedicated 2 MB/s push pipe using HTTP/2 streaming connections).
   ![](./img/enhanced-fanout.png)
 
-### Practice Scenario
+### Practice Test
 
-**Scenario**: A cloud developer is writing a custom worker microservice in Node.js to consume metrics from an Amazon Kinesis Data Stream. The developer successfully calls `get-shard-iterator` using the `TRIM_HORIZON` type parameter string and pulls the initial batch of records via `get-records`. However, during testing, the worker continuously processes the exact same initial batch of records over and over inside its execution loop without pulling new events. How should the developer correct this bug?
+**Question**: A cloud developer is writing a custom worker microservice in Node.js to consume metrics from an Amazon Kinesis Data Stream. The developer successfully calls `get-shard-iterator` using the `TRIM_HORIZON` type parameter string and pulls the initial batch of records via `get-records`. However, during testing, the worker continuously processes the exact same initial batch of records over and over inside its execution loop without pulling new events. How should the developer correct this bug?
 
 - **A**. Trigger a `PurgeQueue` API call execution sequence directly inside the consumer logic loop block.
 - **B**. Configure the producer cluster workspace to drop the binary format configurations wrapper.
