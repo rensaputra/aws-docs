@@ -57,7 +57,7 @@ This is an entirely online operation. Your application keeps processing traffic 
 
 ### Practice Test
 
-**Question**: A retail company is migrating its on-premises database to Amazon RDS for PostgreSQL. The company has read-heavy workloads. The development team at the company is looking at refactoring the code to achieve optimum read performance for SQL queries.  
+**Question 1**: A retail company is migrating its on-premises database to Amazon RDS for PostgreSQL. The company has read-heavy workloads. The development team at the company is looking at refactoring the code to achieve optimum read performance for SQL queries.  
 Which solution will address this requirement with the least current as well as future development effort?
 
 - [ ] Configure Elasticache for Memcached to act as a caching layer for Amazon RDS. Refactor the application code so that the queries use the Elasticache for Memcached endpoint
@@ -76,5 +76,25 @@ Which solution will address this requirement with the least current as well as f
 - [x] Set up Amazon RDS with one or more read replicas. Refactor the application code so that the queries use the endpoint for the read replicas
   - **Explanation**: Amazon RDS uses the PostgreSQL DB engine's built-in replication functionality to create a special type of DB instance called a read replica from a source DB instance. The source DB instance becomes the primary DB instance. Updates made to the primary DB instance are asynchronously copied to the read replica. You can reduce the load on your primary DB instance by routing read queries from your applications to the read replica. Using read replicas, you can elastically scale out beyond the capacity constraints of a single DB instance for read-heavy database workloads. For the given use case, you can achieve optimum read performance for SQL queries by using the read-replica endpoint for the read-heavy workload.  
     ![](./img/rds-read-replica.png)
+
+</details>
+
+**Question 2**: As a Senior Developer, you manage 10 Amazon EC2 instances that make read-heavy database requests to the Amazon RDS for PostgreSQL. You need to make this architecture resilient for disaster recovery.
+
+Which of the following features will help you prepare for database disaster recovery? (Select two)
+
+- [ ] Use RDS Provisioned IOPS (SSD) Storage in place of General Purpose (SSD) Storage
+- [ ] Enable the automated backup feature of Amazon RDS in a multi-AZ deployment that creates backups in a single AWS Region
+- [ ] Use cross-Region Read Replicas
+- [ ] Use database cloning feature of the RDS DB cluster
+- [ ] Enable the automated backup feature of Amazon RDS in a multi-AZ deployment that creates backups across multiple Regions
+
+<details>
+<summary>Correct Answer</summary>
+
+- [x] Enable the automated backup feature of Amazon RDS in a multi-AZ deployment that creates backups in a single AWS Region
+  - **Explanation**: The automated backup feature of Amazon RDS enables point-in-time recovery for your database instance. Amazon RDS will backup your database and transaction logs and store both for a user-specified retention period. If it’s a Multi-AZ configuration, backups occur on the standby to reduce I/O impact on the primary. **Automated backups are limited to a single AWS Region while manual snapshots and Read Replicas are supported across multiple Regions.**
+- [x] Use cross-Region Read Replicas
+  - **Explanation**: In addition to using Read Replicas to reduce the load on your source DB instance, you can also use Read Replicas to implement a DR solution for your production DB environment. If the source DB instance fails, you can promote your Read Replica to a standalone source server. Read Replicas can also be created in a different Region than the source database. Using a cross-Region Read Replica can help ensure that you get back up and running if you experience a regional availability issue.
 
 </details>

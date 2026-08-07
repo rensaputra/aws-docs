@@ -79,3 +79,22 @@ To construct complex logical routing paths inside your ASL JSON matrix, you stit
 
 - **The Multi-Function Orchestration Trap 🚨:** If an exam prompt presents a multi-stage workflow where an application must process a file, wait exactly 2 hours, run data analytics, and conditionally notify managers based on success or failure outcomes—**always pick AWS Step Functions over hacking custom timeout-tracking databases inside a single monolithic Lambda function.**
 - **The Concurrent Array Processing Choice:** If a scenario outlines an ETL data pipeline that needs to process a massive JSON array payload by fanning out identical analysis steps across all array members simultaneously at high concurrency—**look straight for deploying the `Map State` or `Parallel State` constructs right inside the structural ASL code block.**
+
+### Practice Test
+
+**Question 1:** A company wants to automate and orchestrate a multi-source high-volume flow of data in a scalable data management solution built using AWS services. The solution must ensure that the business rules and transformations run in sequence, handle reprocessing of data in case of errors, and require minimal maintenance.
+
+Which AWS service should the company use to manage and automate the orchestration of the data flows?
+
+- [ ] Amazon Kinesis Data Streams
+- [ ] AWS Glue
+- [ ] AWS Batch
+- [ ] AWS Step Functions
+
+<details>
+  <summary>Correct Answer</summary>
+
+- [x] AWS Step Functions
+  - **Explanation:** AWS Step Functions is a visual workflow service that helps developers use AWS services to build distributed applications, automate processes, orchestrate microservices, and create data and machine learning (ML) pipelines.
+
+</details>

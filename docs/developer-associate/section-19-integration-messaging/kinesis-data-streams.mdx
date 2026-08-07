@@ -45,11 +45,53 @@ When writing programmatic integrations for high-volume data streams, the standar
 
 ### Practice Test
 
-Scenario: A cloud software engineer is building a real-time analytics engine to monitor thousands of global IoT weather stations. Each station publishes a small metrics packet every half-second. The engineer wants a fleet of EC2 instances running a custom consumer application to read the telemetry data sequentially. If a consumer instance crashes mid-process, it must be able to recover and resume processing exactly where it left off without skipping records. Which implementation matches this requirement with optimal efficiency?
+**Question 1:** A cloud software engineer is building a real-time analytics engine to monitor thousands of global IoT weather stations. Each station publishes a small metrics packet every half-second. The engineer wants a fleet of EC2 instances running a custom consumer application to read the telemetry data sequentially. If a consumer instance crashes mid-process, it must be able to recover and resume processing exactly where it left off without skipping records. Which implementation matches this requirement with optimal efficiency?
 
-- **A**. Stream the payloads through an Amazon SNS standard topic and configure an `.ebextensions` rollback parameter.
-- **B**. Ingest the telemetry records into Amazon Kinesis Data Streams using a unique Station ID as the Partition Key, and leverage the Kinesis Client Library (KCL) to track state checkpoints.
-- **C**. Fire a continuous loop of `SendMessage` calls to an SQS Standard queue and trigger a global `PurgeQueue` API action string upon node failure.
-- **D**. Re-upload the metrics parsing script inside an external JSON CloudFormation template with a low visibility lock.
+- [ ] Stream the payloads through an Amazon SNS standard topic and configure an `.ebextensions` rollback parameter.
+- [ ] Ingest the telemetry records into Amazon Kinesis Data Streams using a unique Station ID as the Partition Key, and leverage the Kinesis Client Library (KCL) to track state checkpoints.
+- [ ] Fire a continuous loop of `SendMessage` calls to an SQS Standard queue and trigger a global `PurgeQueue` API action string upon node failure.
+- [ ] Re-upload the metrics parsing script inside an external JSON CloudFormation template with a low visibility lock.
 
-**Correct Answer: B**. Kinesis Data Streams paired with the KCL is the industry standard for real-time sequential ingestion. Using the Station ID as a partition key ensures that metrics for any given station land in order on the same shard, while the KCL automatically handles fault-tolerant checkpoint tracking to resume seamlessly if a node goes down.
+<details>
+  <summary>Correct Answer</summary>
+
+- [x] Ingest the telemetry records into Amazon Kinesis Data Streams using a unique Station ID as the Partition Key, and leverage the Kinesis Client Library (KCL) to track state checkpoints.
+  - **Explanation:** Kinesis Data Streams paired with the KCL is the industry standard for real-time sequential ingestion. Using the Station ID as a partition key ensures that metrics for any given station land in order on the same shard, while the KCL automatically handles fault-tolerant checkpoint tracking to resume seamlessly if a node goes down.
+
+</details>
+
+**Question 2:** A leading financial services company offers data aggregation services for Wall Street trading firms. The company bills its clients based on per unit of clickstream data provided to the clients. As the company operates in a regulated industry, it needs to have the same ordered clickstream data available for auditing within a window of 7 days.
+
+As a Developer Associate, which of the following AWS services do you think provides the ability to run the billing process and auditing process on the given clickstream data in the same order?
+
+- [ ] AWS Kinesis Data Analytics
+- [ ] AWS Kinesis Data Streams
+- [ ] Amazon SQS
+- [ ] AWS Kinesis Data Firehose
+
+<details>
+  <summary>Correct Answer</summary>
+
+- [x] AWS Kinesis Data Streams
+  - **Explanation:** Amazon Kinesis Data Streams (KDS) is a massively scalable and durable real-time data streaming service. KDS can continuously capture gigabytes of data per second from hundreds of thousands of sources such as website clickstreams, database event streams, financial transactions, social media feeds, IT logs, and location-tracking events. The data collected is available in milliseconds to enable real-time analytics use cases such as real-time dashboards, real-time anomaly detection, dynamic pricing, and more.
+
+    Amazon Kinesis Data Streams enables real-time processing of streaming big data. It provides ordering of records, as well as the ability to read and/or replay records in the same order to multiple Amazon Kinesis Applications. The Amazon Kinesis Client Library (KCL) delivers all records for a given partition key to the same record processor, making it easier to build multiple applications reading from the same Amazon Kinesis data stream (for example, to perform counting, aggregation, and filtering). Amazon Kinesis Data Streams is recommended when you need the ability to consume records in the same order a few hours later.
+
+    For example, you have a billing application and an audit application that runs a few hours behind the billing application. By default, records of a stream are accessible for up to 24 hours from the time they are added to the stream. You can raise this limit to a maximum of 365 days. For the given use-case, Amazon Kinesis Data Streams can be configured to store data for up to 7 days and you can run the audit application up to 7 days behind the billing application.
+
+    KDS provides the ability to consume records in the same order a few hours later  
+     ![](./img/kinesis-data-streams.jpg)
+
+<details>
+  <summary>Incorrect Answer</summary>
+
+- [ ] AWS Kinesis Data Firehose
+  - **Explanation:** Amazon Kinesis Data Firehose is the easiest way to load streaming data into data stores and analytics tools. It can capture, transform, and load streaming data into Amazon S3, Amazon Redshift, Amazon Elasticsearch Service, and Splunk, enabling near real-time analytics with existing business intelligence tools and dashboards you’re already using today. It is a fully managed service that automatically scales to match the throughput of your data and requires no ongoing administration. It can also batch, compress, and encrypt the data before loading it, minimizing the amount of storage used at the destination and increasing security. As Kinesis Data Firehose is used to load streaming data into data stores, therefore this option is incorrect.
+- [ ] AWS Kinesis Data Analytics
+  - **Explanation:** Amazon Kinesis Data Analytics is the easiest way to analyze streaming data in real-time. You can quickly build SQL queries and sophisticated Java applications using built-in templates and operators for common processing functions to organize, transform, aggregate, and analyze data at any scale. Kinesis Data Analytics enables you to easily and quickly build queries and sophisticated streaming applications in three simple steps: setup your streaming data sources, write your queries or streaming applications and set up your destination for processed data. As Kinesis Data Analytics is used to build SQL queries and sophisticated Java applications, therefore this option is incorrect.
+- [ ] Amazon SQS
+  - **Explanation:** Amazon Simple Queue Service (SQS) is a fully managed message queuing service that enables you to decouple and scale microservices, distributed systems, and serverless applications. SQS offers two types of message queues. Standard queues offer maximum throughput, best-effort ordering, and at-least-once delivery. SQS FIFO queues are designed to guarantee that messages are processed exactly once, in the exact order that they are sent. For SQS, you cannot have the same message being consumed by multiple consumers in the same order a few hours later, therefore this option is incorrect.
+
+</details>
+
+</details>

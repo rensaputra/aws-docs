@@ -112,3 +112,32 @@ Unlike standard IAM policies, **IAM policies ALONE are not enough to access a KM
 - **The Cross-Account Snapshot Sharing Trap 🚨:** If a scenario asks why an engineer cannot share an encrypted EBS snapshot with a secondary AWS account—**check if the snapshot is encrypted with an AWS Managed Key (`aws/ebs`). AWS Managed Keys CANNOT be shared cross-account! The snapshot must be re-encrypted using a Customer Managed Key with an updated Key Policy.**
 - **The CloudTrail Audit Requirement:** If a question asks how to track every single user, role, or service attempting to encrypt or decrypt data using KMS keys—**target Amazon CloudTrail integration! Every KMS API call (`kms:GenerateDataKey`, `kms:Decrypt`) is logged as a CloudTrail event.**
 - **Cross-Region Snapshot Copying:** If a prompt asks how to move an encrypted RDS database backup to another AWS region—**select the option that copies the snapshot to the target region while specifying a target region KMS key for re-encryption.**
+
+### Practice Test
+
+**Question 1:** A development team has created a new IAM user that has s3:putObject permission to write to an S3 bucket. This S3 bucket uses server-side encryption with AWS KMS managed keys (SSE-KMS) as the default encryption. Using the access key ID and the secret access key of the IAM user, the application received an access denied error when calling the PutObject API.
+
+As a Developer Associate, how would you resolve this issue?
+
+- [ ] Correct the policy of the IAM user to allow the `kms:GenerateDataKey` action
+- [ ] Correct the policy of the IAM user to allow the `s3:Encrypt` action
+- [ ] Correct the ACL of the S3 bucket to allow the IAM user to upload encrypted objects
+- [ ] Correct the bucket policy of the S3 bucket to allow the IAM user to upload encrypted objects
+
+<details>
+  <summary>Correct Answer</summary>
+
+- [x] Correct the policy of the IAM user to allow the `kms:GenerateDataKey` action
+  - **Explanation:** Correct the policy of the IAM user to allow the `kms:GenerateDataKey` action - You can protect data at rest in Amazon S3 by using three different modes of server-side encryption: SSE-S3, SSE-C, or SSE-KMS. SSE-KMS requires that AWS manage the data key but you manage the customer master key (CMK) in AWS KMS. You can choose a customer managed CMK or the AWS managed CMK for Amazon S3 in your account. If you choose to encrypt your data using the standard features, AWS KMS and Amazon S3 perform the following actions:
+    1. Amazon S3 requests a plaintext data key and a copy of the key encrypted under the specified CMK.
+    2. AWS KMS generates a data key, encrypts it under the CMK, and sends both the plaintext data key and the encrypted data key to Amazon S3.
+    3. Amazon S3 encrypts the data using the data key and removes the plaintext key from memory as soon as possible after use.
+    4. Amazon S3 stores the encrypted data key as metadata with the encrypted data.
+
+    The error message indicates that your IAM user or role needs permission for the `kms:GenerateDataKey` action. This permission is required for buckets that use default encryption with a custom AWS KMS key.
+
+    In the JSON policy documents, look for policies related to AWS KMS access. Review statements with `"Effect": "Allow"` to check if the user or role has permissions for the `kms:GenerateDataKey` action on the bucket's AWS KMS key. If this permission is missing, then add the permission to the appropriate policy.
+
+    In the JSON policy documents, look for statements with `"Effect": "Deny"`. Then, confirm that those statements don't deny the `s3:PutObject` action on the bucket. The statements must also not deny the IAM user or role access to the `kms:GenerateDataKey` action on the key used to encrypt the bucket. Additionally, make sure the necessary KMS and S3 permissions are not restricted using a VPC endpoint policy, service control policy, permissions boundary, or session policy.
+
+</details>
