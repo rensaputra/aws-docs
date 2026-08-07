@@ -38,9 +38,9 @@ When managing standard EC2 compute resources, the temporal reporting window is a
 - **Spotting the Missing Metric Trap**: If a scenario states that a sysadmin needs to set up a **CloudWatch alarm** to track when an EC2 instance runs out of **System RAM / Memory** or **Free Local OS Disk Space**, and the standard EC2 dashboard isn't showing the metric fields, the definitive answer is to **Install the unified CloudWatch Agent on the instance to push these parameters as custom metrics**.
 - **Dimension Matching Constraints**: Remember that when you query metrics programmatically via the SDK or CLI, your request arguments must match the exact dimension signature used when the data points were created. If you pass a query matching just the instance ID but omit the environment tag dimension, CloudWatch returns empty arrays.
 
-### Practice Scenario
+### Practice Test
 
-**Scenario**: A software engineering team has deployed an e-commerce backend onto an Auto Scaling Group of Amazon EC2 instances. During flash sales events, flash traffic rushes the cluster, causing massive user-facing latency before the ASG can spin up backup instances. The CloudWatch Alarms are currently running on the default baseline monitoring settings. How can the developer optimize the scaling performance to handle these rapid traffic surges faster?
+**Question**: A software engineering team has deployed an e-commerce backend onto an Auto Scaling Group of Amazon EC2 instances. During flash sales events, flash traffic rushes the cluster, causing massive user-facing latency before the ASG can spin up backup instances. The CloudWatch Alarms are currently running on the default baseline monitoring settings. How can the developer optimize the scaling performance to handle these rapid traffic surges faster?
 
 - **A**. Update the application code logic to fire an inline `PurgeQueue` API call execution sequence.
 - **B**. Re-route all web traffic through an alternate SQS FIFO queue directory running on a message group ID.

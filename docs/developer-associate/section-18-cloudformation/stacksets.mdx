@@ -48,9 +48,9 @@ sidebar_position: 18
 - **The Multi-Account / Multi-Region Keyword**: This is a pure pattern-matching point on the exam, bro. The second you see a scenario stating: _"An administrator needs a native mechanism to scale out infrastructure by deploying an identical cloud architecture template across multiple AWS accounts and multiple distinct geographic regions simultaneously"_ look straight for the option containing **AWS CloudFormation StackSets**.
 - **Global Security Rule Deployment**: Look for use cases centered around compliance. If a company needs to ensure that a specific IAM read-only role or centralized AWS Config rule exists inside every single current and future sub-account under their corporate AWS Organization banner, StackSets linked with an active organization auto-deployment flag is the definitive answer.
 
-### Practice Scenario
+### Practice Test
 
-**Scenario**: A cloud engineering manager at an enterprise wants to ensure that a standardized corporate security group rule is uniformly deployed across all 50 active sub-accounts within the company's AWS Organization. The solution must also ensure that the rule is automatically active in both the `us-east-1` and `eu-west-1` regions for each account, and that any new sub-account added to the organization automatically receives this network configuration. Which native AWS service fulfills this requirement with the least administrative effort?
+**Question**: A cloud engineering manager at an enterprise wants to ensure that a standardized corporate security group rule is uniformly deployed across all 50 active sub-accounts within the company's AWS Organization. The solution must also ensure that the rule is automatically active in both the `us-east-1` and `eu-west-1` regions for each account, and that any new sub-account added to the organization automatically receives this network configuration. Which native AWS service fulfills this requirement with the least administrative effort?
 
 - **A**. Write a Python `Boto3` script that runs inside a centralized cron-job container to manually execute local CloudFormation stack creations account by account.
 - **B**. Utilize AWS Systems Manager (SSM) Session Manager to push custom YAML templates straight onto individual instance kernels.

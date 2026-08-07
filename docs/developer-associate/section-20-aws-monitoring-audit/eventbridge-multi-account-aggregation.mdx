@@ -48,9 +48,9 @@ Here is the exact JSON structure required on the central account's event bus to 
 - **Direct Cross-Account Target Optimization**: Keep your architectural knowledge sharp: historical setups forced you to target _only_ an external event bus when crossing account boundaries. Modern architectural upgrades allow EventBridge rules to deliver events **directly to supported cross-account resource targets** (like an SQS queue, SNS topic, or Lambda function inside another account), eliminating the need to maintain an intermediate landing bus in the target account if you want a lighter footprint!
 - **The Trust Rule Prerequisite**: For any cross-account event delivery option you select, **mutual trust must be established**. You always need an IAM execution role in the source account with permissions to publish out, and a matching resource policy on the destination target authorizing that incoming source traffic vector.
 
-### Practice Scenario
+### Practice Test
 
-**Scenario**: A cloud software engineer is designing a centralized compliance monitoring solution for a multi-account AWS environment. Whenever a security group rule is modified inside any of the 20 individual developer accounts, a Lambda function inside a centralized Security Operations account must parse the modification. The architecture must minimize latency and require minimal infrastructure components. What is the most efficient configuration pattern?
+**Question**: A cloud software engineer is designing a centralized compliance monitoring solution for a multi-account AWS environment. Whenever a security group rule is modified inside any of the 20 individual developer accounts, a Lambda function inside a centralized Security Operations account must parse the modification. The architecture must minimize latency and require minimal infrastructure components. What is the most efficient configuration pattern?
 
 - **A**. Install the CloudWatch Unified Agent inside the AWS Console configuration panel to execute a dynamic `PurgeQueue` sequence loop.
 - **B**. Configure an EventBridge rule in each developer account that captures the security group change event pattern. Set the target of the rule directly to the centralized Security Operations account's Event Bus, and ensure the central bus carries a resource-based policy explicitly allowing `events:PutEvents` from the developer accounts.

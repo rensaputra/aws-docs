@@ -73,9 +73,9 @@ aws cloudwatch put-metric-data \
 - **The High-Resolution Billing Factor**: High-resolution metrics require separate storage resources. If an exam prompt specifies an application needs to track data at sub-minute frequencies (like every 5 seconds) but the engineering team wants to minimize costs, remember that high-resolution custom metrics carry an extra fee.
 - **The Missing Percentiles Trap**: If a developer uses `PutMetricData` to push pre-aggregated statistical blocks using StatisticValues (`SampleCount`, `Sum`, `Minimum`, `Maximum`) instead of publishing individual raw data values, CloudWatch cannot calculate percentile statistics (`p90`, `p99`) on that dashboard graph unless specific mathematical matching criteria are met.
 
-### Practice Scenario
+### Practice Test
 
-**Scenario**: A cloud application developer has deployed a custom data parsing script on an on-premises Linux server that publishes a custom metric named `ProcessingLag` to Amazon CloudWatch every 30 seconds using the `PutMetricData` API. The integration works perfectly for days. However, following a local network disruption and server reboot, CloudWatch begins rejecting all new metric payloads from the server with validation errors, even though the IAM permissions and API strings remain completely unchanged. What is the most likely root cause?
+**Question**: A cloud application developer has deployed a custom data parsing script on an on-premises Linux server that publishes a custom metric named `ProcessingLag` to Amazon CloudWatch every 30 seconds using the `PutMetricData` API. The integration works perfectly for days. However, following a local network disruption and server reboot, CloudWatch begins rejecting all new metric payloads from the server with validation errors, even though the IAM permissions and API strings remain completely unchanged. What is the most likely root cause?
 
 - **A**. The server's underlying system clock drifted by more than 2 hours during the network outage, causing CloudWatch to reject the payloads.
 - **B**. The developer omitted the mandatory `.fifo` configuration wrapper parameter suffix string.

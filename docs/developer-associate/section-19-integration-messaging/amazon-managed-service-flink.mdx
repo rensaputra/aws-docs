@@ -43,9 +43,9 @@ Pay close attention here : Amazon Managed Service for Apache Flink CANNOT use Am
 - **The Real-Time Analytics Keyword Combo**: Look for scenarios that specifically require **"complex time-series analytics," "tumbling/sliding window calculations," or "real-time dashboards" combined with "managed serverless scaling."** The definitive answer is **Amazon Managed Service for Apache Flink**.
 - **The Input Source Disparity Trap**: If a question presents an architecture diagram showing an upstream S3 bucket firing events to Firehose, which then tries to stream into Flink, reject it instantly. **Always ensure the inbound asset feeding Flink is either a Kinesis Data Stream or an Amazon MSK cluster.**
 
-### Practice Scenario
+### Practice Test
 
-**Scenario**: A financial developer is building a **real-time fraud detection engine** for stock market trades. The platform must consume a live stream of millions of trade records per second, compute a rolling average of transaction volumes for each stock ticker over a moving **5-minute sliding window**, and flag anomalies instantly. The system must be **fully managed and scale compute resources automatically**. Which AWS architecture fulfills this with sub-second processing latency?
+**Question**: A financial developer is building a **real-time fraud detection engine** for stock market trades. The platform must consume a live stream of millions of trade records per second, compute a rolling average of transaction volumes for each stock ticker over a moving **5-minute sliding window**, and flag anomalies instantly. The system must be **fully managed and scale compute resources automatically**. Which AWS architecture fulfills this with sub-second processing latency?
 
 - **A**. Load data packets using Amazon Data Firehose, configure a staging buffer interval of 300 seconds, and run an `.ebextensions` parsing script.
 - **B**. Ingest the trade events into Amazon Kinesis Data Streams and configure an Amazon Managed Service for Apache Flink application using SQL window functions to analyze the stream.

@@ -43,7 +43,7 @@ When writing programmatic integrations for high-volume data streams, the standar
 - **The `ProvisionedThroughputExceededException` Fix**: If your producer fleet gets slammed with this specific exception code, it means your data volume is exceeding the 1 MB/s or 1,000 records/s ceiling of a specific shard. This is usually caused by a "hot shard" where too many records share the same partition key. The fix is to **increase shard capacity by splitting shards, or use a more highly distributed partition key string (like appending a random suffix).**
 - **The Hidden DynamoDB Cost**: If a question notes that a developer is using the KCL to consume data and notices unexpected DynamoDB read/write provisioning costs on their AWS bill, remember that the **KCL natively requires DynamoDB to track shard consumer checkpoints**.
 
-### Practice Scenario
+### Practice Test
 
 Scenario: A cloud software engineer is building a real-time analytics engine to monitor thousands of global IoT weather stations. Each station publishes a small metrics packet every half-second. The engineer wants a fleet of EC2 instances running a custom consumer application to read the telemetry data sequentially. If a consumer instance crashes mid-process, it must be able to recover and resume processing exactly where it left off without skipping records. Which implementation matches this requirement with optimal efficiency?
 

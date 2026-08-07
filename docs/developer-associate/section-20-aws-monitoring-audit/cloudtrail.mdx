@@ -57,7 +57,7 @@ $$\text{Insights Event Detected} = \text{Current Management Actions} \gg \text{B
 - **The S3 Objects Forensic Trap:** If an exam scenario says: _"A company needs to audit exactly which specific IAM user downloaded a highly confidential file named `salary.pdf` from an S3 bucket three days ago,"_ the distractor choices will suggest checking standard CloudTrail history. **Reject them.** Standard history only captures bucket-level management modifications. To track down object downloads, you must explicitly **enable CloudTrail Data Events for that S3 bucket**.
 - **Querying Historical Log Dumps:** Whenever the prompt describes a scenario where an auditor needs to search through two years of archived CloudTrail logs sitting inside an S3 bucket using standard SQL expressions without provisioning database compute clusters, the textbook answer is to **Use Amazon Athena to query the S3 bucket directly**.
 
-### Practice Scenario
+### Practice Test
 
 **Scenario:** A development lead discovers that a mission-critical Amazon DynamoDB production table was accidentally deleted over the weekend. The team needs to immediately identify the specific IAM user or execution role that initiated the `DeleteTable` API interaction. The event occurred less than 48 hours ago. What is the fastest and most efficient way to retrieve this information?
 

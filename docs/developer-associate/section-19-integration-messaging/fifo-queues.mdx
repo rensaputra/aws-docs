@@ -56,9 +56,9 @@ Here is the exact sequence to stand up and validate a sequential, deduplicated q
 - **The Banking Ledger Requirement**: Look for keywords specifying strict sequencing and transaction correctness (e.g., _"A financial microservice must process account deposit events before withdrawal events for every unique user id, and no transaction can ever be duplicated."_). The definitive answer is **SQS FIFO Queues using the User ID as the Message Group ID**.
 - **The Scaling Bottleneck Resolution**: If a scenario notes that a FIFO queue is experiencing processing lag because a single backend worker can't keep up with the volume, look for the answer stating that you should **increase the variety of Message Group IDs** inside your producer payloads to allow multiple **parallel** consumers to pull separate group streams concurrently.
 
-### 🚀 Practice Scenario
+### 🚀 Practice Test
 
-**Scenario**: A development team is building an e-commerce order fulfillment service. The system must ensure that when a customer modifies an active order, the backend warehouse application receives the `OrderCreated` message before the `OrderModified` message. Additionally, under no circumstances should network retries cause duplicate order events to land inside the database. Which AWS configuration guarantees this operational pattern?
+**Question**: A development team is building an e-commerce order fulfillment service. The system must ensure that when a customer modifies an active order, the backend warehouse application receives the `OrderCreated` message before the `OrderModified` message. Additionally, under no circumstances should network retries cause duplicate order events to land inside the database. Which AWS configuration guarantees this operational pattern?
 
 - **A**. Create an Amazon SQS FIFO queue named `order-pipeline.fifo`, ensure all messages related to a single order share the same Message Group ID, and enable Content-Based Deduplication.
 - **B**. Configure an Amazon SQS standard queue and set the VisibilityTimeout global attribute to 12 hours.

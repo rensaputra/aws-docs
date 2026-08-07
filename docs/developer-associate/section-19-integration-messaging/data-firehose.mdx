@@ -58,9 +58,9 @@ Firehose natively handles connection formatting and retries for:
 - **The "Near Real-Time" Keyword Drop**: If you see any question that mentions loading data into Amazon S3 or Redshift and highlights **"near real-time"** or emphasizes **"minimal operational overhead / zero administration"**, do not look at Kinesis Data Streams or EC2 clusters. Select Amazon Data Firehose.
 - **The Redshift Intermediate S3 Requirement**: The exam loves to ask about loading data into Amazon Redshift using Firehose. You must know that **Firehose cannot write directly into Redshift's columnar block storage**. It first dumps the data batch into an intermediate **Amazon S3 bucket backup path**, then automatically fires a Redshift `COPY` command execution string to ingest that S3 data into your cluster table workspace.
 
-### Practice Scenario
+### Practice Test
 
-**Scenario**: A senior cloud developer is designing a log aggregation framework for a fleet of microservices. The requirements specify that application log events must be converted from raw text lines into structured JSON format and then stored in an Amazon OpenSearch Service domain cluster for index analytics. The system should scale seamlessly without requiring the team to manage underlying scaling instances or servers. Which architecture satisfies this with the lowest operational complexity?
+**Question**: A senior cloud developer is designing a log aggregation framework for a fleet of microservices. The requirements specify that application log events must be converted from raw text lines into structured JSON format and then stored in an Amazon OpenSearch Service domain cluster for index analytics. The system should scale seamlessly without requiring the team to manage underlying scaling instances or servers. Which architecture satisfies this with the lowest operational complexity?
 
 - **A**. Route the logs to an SQS standard queue, build an EC2 consumer fleet running an `.ebextensions` shell engine, and write to OpenSearch.
 - **B**. Publish log payloads to an Amazon Data Firehose delivery stream, configure an inline AWS Lambda function to transform the text to JSON, and set the final target destination to Amazon OpenSearch Service.

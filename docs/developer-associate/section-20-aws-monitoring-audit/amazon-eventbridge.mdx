@@ -48,9 +48,9 @@ Here is the exact security routing mechanism used to safely pass events past cro
   ![](./img/eventbridge-scheduler.png)
 - **The Schema Registry Code Bindings**: If the prompt explicitly mentions a developer team wasting time manually mapping custom event properties into Java or Python data models and asks how to streamline developer efficiency, select **EventBridge Schema Registry to auto-generate code bindings**.
 
-### Practice Scenario
+### Practice Test
 
-**Scenario**: A financial services firm wants to enforce real-time auditing across its AWS landing zone. Whenever an administrator logs into an AWS account using the root credentials, a security alert message must be sent to an Amazon SNS topic instantly. Additionally, the configuration must support cross-account routing so that root login alerts across all secondary development accounts automatically land inside a centralized security monitoring account's event stream. What architecture implements this?
+**Question**: A financial services firm wants to enforce real-time auditing across its AWS landing zone. Whenever an administrator logs into an AWS account using the root credentials, a security alert message must be sent to an Amazon SNS topic instantly. Additionally, the configuration must support cross-account routing so that root login alerts across all secondary development accounts automatically land inside a centralized security monitoring account's event stream. What architecture implements this?
 
 - **A**. Install the CloudWatch Unified Agent inside the AWS Console to run an `.ebextensions` parsing routine.
 - **B**. Configure an EventBridge Rule in each source account that triggers on the AWS Console Sign-In via CloudTrail event pattern for the root user. Target the central security account's Event Bus, ensuring the central bus carries a resource-based policy explicitly allowing `events:PutEvents` from the source accounts.

@@ -25,9 +25,9 @@ sidebar_position: 11
 - **The Staging Blueprint Keyword**: If a question scenario says: _"A developer needs to create an isolated staging environment that precisely mirrors the network topology, instance settings, and configuration properties of the current production environment with minimal administrative effort"_, the answer is to **Clone the Environment** via the Beanstalk console or CLI.
 - **The RDS Data Disconnect**: Watch out for sneaky exam distractors claiming that cloning a Beanstalk environment is an effective way to backup or migrate database data. **It is not**. Always remember that _cloning reproduces the infrastructure pattern, not the stateful database content_.
 
-### Practice Scenario
+### Practice Test
 
-**Scenario**: A company hosts a high-traffic web application on AWS Elastic Beanstalk with an integrated **Amazon RDS database created inside the Beanstalk environment wizard**. The development team needs to deploy a temporary QA test environment that uses the exact same instance configurations, environment variables, and load balancing setup as production. They select the "Clone Environment" feature in the Elastic Beanstalk console. What will be the outcome of this action?
+**Question**: A company hosts a high-traffic web application on AWS Elastic Beanstalk with an integrated **Amazon RDS database created inside the Beanstalk environment wizard**. The development team needs to deploy a temporary QA test environment that uses the exact same instance configurations, environment variables, and load balancing setup as production. They select the "Clone Environment" feature in the Elastic Beanstalk console. What will be the outcome of this action?
     - **A**. A new environment will be created with identical infrastructure settings, and all data from the production RDS database will be automatically replicated to the new database.
     - **B**. The operation will fail because Elastic Beanstalk does not support cloning environments that contain load balancers.
     - **C**. A new environment will be created with identical infrastructure settings and environment variables, but the newly provisioned RDS database will be completely empty.

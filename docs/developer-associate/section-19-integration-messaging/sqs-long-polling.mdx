@@ -79,7 +79,7 @@ To group transactions together and drop your AWS bill down significantly, you ca
 - **High Cost / Empty Queue Alert**: If an exam question states that your application is querying an empty SQS queue and causing a massive spike in financial costs or empty HTTP 200 responses, the answer is always to **Enable Long Polling by setting `ReceiveMessageWaitTimeSeconds` to 20**.
 - **Language-Specific Extended Client Hook**: The SQS Extended Client is historically built as a native **Java library**. If the prompt mentions a Java-based microservice that needs to process payloads larger than 1024 KB, look directly for the answer that leverages the **Amazon SQS Extended Client Library for Java**.
 
-### Practice Scenario
+### Practice Test
 
 Scenario: A cloud developer is managing a backend fleet of EC2 instances that processes image metadata via an Amazon SQS standard queue. The queue is frequently empty during off-peak hours. Monitoring tools show that the instances are making millions of empty `ReceiveMessage` API calls, resulting in high transaction fees on the monthly AWS bill. What adjustment should the developer apply to mitigate these costs?
 

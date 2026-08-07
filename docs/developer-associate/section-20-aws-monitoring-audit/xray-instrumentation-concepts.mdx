@@ -67,7 +67,7 @@ When building enterprise applications, you can configure the X-Ray Daemon to ass
 - **Searchable Filter Criteria:** Look for keywords where a development team needs the ability to index and search through traces for specific execution characteristics (like tracking down a specific payment ID or customer type). If the option says _"add the parameters to the X-Ray trace metadata,"_ reject it. **You must add the indicators to Annotations to support indexed string filtering.**
 - **Dynamic Debugging Configurations:** If a scenario says an active production application is throwing errors and developers temporarily need to capture **100% of all traces** across the checkout route without forcing a code build or causing service downtime, select **"Update the custom X-Ray sampling rule in the console to set the Reservoir to 1 and Rate to 100%."**
 
-### 🚀 Practice Scenario
+### 🚀 Practice Test
 
 **Scenario:** A senior full-stack developer is troubleshooting an asynchronous data processing pipeline that relies on several AWS Lambda functions and Amazon DynamoDB tables. The developer wants to inject custom business metadata—specifically, a unique internal string tracking tag named `BillingTier`—into the telemetry pipeline so that engineers can run targeted searches in the CloudWatch Service Map to evaluate latency specifically for enterprise-tier users. Which configuration option achieves this?
 

@@ -81,9 +81,9 @@ Injects Keys into EC2 OS Environment        Provisions Managed Cluster Stack
 - **The Exact Folder and File Naming Scheme**: The exam loves to test your attention to detail regarding syntax layout. They will give you options like `ebextensions/`, `.ebextension/`, or files named `config.yaml`. These are all wrong. The folder must have a leading dot (`.ebextensions/`) and the files must end in .config.
 - **Production Database Best Practice**: If a scenario asks where to place a production database when utilizing Beanstalk, **never** write it inside an `.ebextensions` configuration block. Because its lifecycle is chained to the environment, an accidental deletion of the Beanstalk stack will destroy production data. Instead, provision the RDS database independently outside of Beanstalk, and use `.ebextensions` strictly to declare the connection string environment properties.
 
-### Practice Scenario
+### Practice Test
 
-**Scenario**: A developer needs to deploy a Python application to AWS Elastic Beanstalk. The application requires three custom OS environment variables to establish a connection to an external database cluster. Additionally, these variables must be version-controlled alongside the application source code. How should the developer configure this?
+**Question**: A developer needs to deploy a Python application to AWS Elastic Beanstalk. The application requires three custom OS environment variables to establish a connection to an external database cluster. Additionally, these variables must be version-controlled alongside the application source code. How should the developer configure this?
     - **A**. Create a file named `env.yaml` inside a directory named `.ebextensions/` at the project root, and declare the keys under the options namespace.
     - **B**. Create a file ending with .config inside a directory named `.ebextensions/` at the root of the source bundle, and define the variables under the `aws:elasticbeanstalk:application:environment` namespace.
     - **C**. Define the environment variables directly inside the application's `requirements.txt` file.

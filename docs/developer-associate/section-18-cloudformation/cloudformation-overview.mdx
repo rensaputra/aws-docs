@@ -63,9 +63,9 @@ A CloudFormation text document contains up to seven structural configuration zon
 - **The Mandatory Section Trap**: This is a free point if you spot it on the exam. AWS loves to ask: _"Which of the following blocks is the only absolutely required section inside an AWS CloudFormation template?"_ The answer is Resources. Everything else—including parameters, mappings, outputs, and descriptions—is completely optional.
 - **Separation of Concerns Strategy**: When designing microservices or scaling cloud operations, do not place every single corporate resource inside a massive single file. The recommended AWS best practice is to separate stacks by concern (e.g., map a _Networking Stack_ for VPCs/subnets, an _Application Stack_ for compute nodes, and a _Storage Stack_ for DynamoDB databases).
 
-### Practice Scenario
+### Practice Test
 
-**Scenario**: A cloud software associate wants to build a repeatable deployment solution to spin up testing environments on demand. The architecture pattern requires creating a Amazon DynamoDB table, an Amazon S3 bucket, and an EC2 instance. The developer wants to ensure the setup can be fully version-controlled using Git and completely torn down without leaving behind rogue, unmanaged resource charges. What should the developer use?
+**Question**: A cloud software associate wants to build a repeatable deployment solution to spin up testing environments on demand. The architecture pattern requires creating a Amazon DynamoDB table, an Amazon S3 bucket, and an EC2 instance. The developer wants to ensure the setup can be fully version-controlled using Git and completely torn down without leaving behind rogue, unmanaged resource charges. What should the developer use?
     A. Write a Python bash script that issues manual, sequence-dependent `aws ec2` and `aws s3api` CLI creation parameters.
     B. Construct a single declarative AWS CloudFormation template defining all three target structures inside the `Resources` section, then manage the fleet via CloudFormation Stacks.
     C. Deploy an AWS Systems Manager (SSM) agent inside a pre-existing golden image baseline snapshot.

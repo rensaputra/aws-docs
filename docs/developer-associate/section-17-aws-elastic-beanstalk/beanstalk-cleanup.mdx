@@ -35,9 +35,9 @@ When you're finished testing or iterating, leaving active high-availability envi
 - **Orphaned Resource Management**: The exam sometimes introduces optimization scenarios where a company wants to ensure that deleting a development platform does not leave behind costly orphaned network components like Elastic IPs or Load Balancers. Knowing that Elastic Beanstalk structures its workloads on top of **CloudFormation** ensures you understand why a clean, complete, cascading teardown is guaranteed.
 - **The Residual S3 Storage Artifact**: Keep a sharp lookout for trick questions asking if deleting a Beanstalk application purges everything inside your AWS account. Remember the exception: **The underlying Amazon S3 bucket housing your uploaded application version source code bundles is retained** to safeguard your artifacts.
 
-### Practice Scenario
+### Practice Test
 
-**Scenario**: A software engineering associate has completed testing a secondary multi-tier web application stack inside an AWS Elastic Beanstalk environment. To prevent incurring further infrastructure charges for the active Application Load Balancer and Auto Scaling Group fleet, the developer executes a "Delete Application" action from the Elastic Beanstalk console. What occurs on the backend during this process?
+**Question**: A software engineering associate has completed testing a secondary multi-tier web application stack inside an AWS Elastic Beanstalk environment. To prevent incurring further infrastructure charges for the active Application Load Balancer and Auto Scaling Group fleet, the developer executes a "Delete Application" action from the Elastic Beanstalk console. What occurs on the backend during this process?
     - **A**. The running EC2 instances are stopped, but the Application Load Balancer remains active until manually deleted via the EC2 dashboard.
     - **B**. Beanstalk triggers a cascading deletion of the underlying AWS CloudFormation stack, which automatically tears down the load balancer, auto scaling group, instances, and security groups.
     - **C**. The application code is wiped from the servers, but the network infrastructure is converted into an independent CloudFormation template for reuse.

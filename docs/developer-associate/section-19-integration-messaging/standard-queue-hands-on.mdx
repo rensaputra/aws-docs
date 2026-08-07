@@ -64,9 +64,9 @@ The SQS Console provides a direct interface to execute core queue operations, mi
 - **Scaling by Age vs. Scaling by Depth**: While we know you can scale an Auto Scaling Group using queue depth (`ApproximateNumberOfMessagesVisible`), SQS also publishes a CloudWatch metric called `ApproximateAgeOfOldestMessage`. If the exam describes a scenario where backend processing times are highly variable and you need to scale up the moment any single job sits in the queue for too long, select the **Age of Oldest Message** metric.
 - **KMS Budget Optimization**: If a scenario notes that an application tier using an SQS queue backed by SSE-KMS encryption is blowing through its budget due to high KMS API call volumes, the solution is to increase the **Data Key Reuse Period** in the queue's settings to cache data keys longer.
 
-### Practice Scenario
+### Practice Test
 
-**Scenario**: A cloud developer is building a high-volume transactional application that places sensitive message payloads into an Amazon SQS queue. The security team mandates that the data must be encrypted at rest using an AWS KMS customer managed key. During initial performance testing with millions of messages, the development team notices a massive surge in AWS KMS billing costs due to frequent key decryption calls. How can the developer mitigate these costs without weakening encryption compliance?
+**Question**: A cloud developer is building a high-volume transactional application that places sensitive message payloads into an Amazon SQS queue. The security team mandates that the data must be encrypted at rest using an AWS KMS customer managed key. During initial performance testing with millions of messages, the development team notices a massive surge in AWS KMS billing costs due to frequent key decryption calls. How can the developer mitigate these costs without weakening encryption compliance?
 
 - **A**. Transition the queue setup to a standard non-encrypted Amazon S3 bucket path directory.
 - **B**. Configure the SQS queue settings to use an alternative resource access policy schema.

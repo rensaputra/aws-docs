@@ -44,9 +44,9 @@ Make sure you memorize these architectural vocabulary words before you sit for t
   2. The X-Ray Daemon process is not actively running or installed inside the EC2 operating system.
 - **Optimizing Search Performance**: Look out for questions asking how to inject search capabilities into your distributed application traces so engineers can filter transactions by specific product IDs or transaction codes. The distractor choice will say "use Metadata". Reject it. You must use **Annotations for searchable, indexed data filtering**.
 
-### Practice Scenario
+### Practice Test
 
-**Scenario**: A software engineering team has deployed a distributed microservices platform spanning multiple Amazon ECS containers and Amazon DynamoDB tables. Users are reporting intermittent slow-downs across the checkout route. The developer wants to pinpoint exactly which container instance or database operation is causing the transaction delay. What architectural configuration enables this visibility?
+**Question**: A software engineering team has deployed a distributed microservices platform spanning multiple Amazon ECS containers and Amazon DynamoDB tables. Users are reporting intermittent slow-downs across the checkout route. The developer wants to pinpoint exactly which container instance or database operation is causing the transaction delay. What architectural configuration enables this visibility?
 
 - **A**. Install the standard CloudWatch Logs agent on the containers and execute a CreateExportTask batch script routine every 5 minutes.
 - **B**. Instrument the application code with the AWS X-Ray SDK, deploy the X-Ray Daemon container alongside the application tasks, and attach an IAM execution role containing the `AWSXrayWriteOnlyAccess` policy.
