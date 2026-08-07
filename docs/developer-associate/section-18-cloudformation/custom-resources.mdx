@@ -73,9 +73,9 @@ Resources:
 - **The Empty S3 Bucket Resolution**: This is an absolute mandatory pattern to memorize. If the exam question states: _"A developer needs to ensure that deleting a CloudFormation stack automatically destroys an Amazon S3 bucket, but the deletion currently fails because the bucket contains application logging objects"_ the correct answer is to **Create a CloudFormation Custom Resource backed by an AWS Lambda function that programmatically purges all objects inside the bucket upon receiving a `Delete` request type**.
 - **The Stack Hanging Bug**: If you encounter a troubleshooting scenario where a custom resource stack gets stuck in `CREATE_IN_PROGRESS` or `DELETE_IN_PROGRESS` for hours before failing, the root cause is **the backing Lambda function code failed to send a response payload back to the pre-signed S3 URL callback address**, blocking the state engine wrapper.
 
-### Practice Scenario
+### Practice Test
 
-**Scenario**: A software engineer is using an AWS CloudFormation template to manage application infrastructure. The template includes an Amazon S3 bucket used for staging dynamic build artifacts. During testing, whenever the stack is deleted, the teardown fails at the S3 bucket resource stage because the bucket is not empty. The engineer wants the entire deletion process to be completely automated without requiring any manual manual console steps. How can this be achieved?
+**Question**: A software engineer is using an AWS CloudFormation template to manage application infrastructure. The template includes an Amazon S3 bucket used for staging dynamic build artifacts. During testing, whenever the stack is deleted, the teardown fails at the S3 bucket resource stage because the bucket is not empty. The engineer wants the entire deletion process to be completely automated without requiring any manual manual console steps. How can this be achieved?
 
 - **A**. Change the S3 bucket resource block configuration properties to set `DeletionPolicy: Delete` inline.
 - **B**. Modify the pipeline role to include the wildcard execution string parameter `s3:ForceBucketDeletion`.

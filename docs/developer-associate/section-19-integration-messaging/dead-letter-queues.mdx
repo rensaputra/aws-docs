@@ -59,7 +59,7 @@ An **SQS Dead-Letter Queue** (DLQ) is a secondary, standalone SQS queue designat
 - **Diagnosing Stuck or Failing Workers**: If a scenario describes an auto-scaling cluster of EC2 instances pulling work items from an SQS queue, and the instances are constantly hitting 100% CPU utilization and crashing without making any progress on the queue length, the answer is to Implement a **Dead-Letter Queue with a low `maxReceiveCount` threshold** to siphon off the poison pill messages causing the crashes.
 - **The Structural Matching Constraint Trap**: Watch out for multi-choice distractors that suggest routing failed messages from a FIFO queue into a standard queue to perform quick manual sequencing. This will cause an API error. **FIFO must match with FIFO; Standard must match with Standard.**
 
-### Practice Scenario
+### Practice Test
 
 Scenario: A cloud developer is maintaining an application that processes financial ledger updates asynchronously via an Amazon SQS FIFO queue. During an update cycle, a malformed transaction message causes the backend processing Lambda function to time out and crash. Due to the ordering constraints of the queue, this single bad message blocks all subsequent ledger updates from being processed. How can the developer resolve this blockade automatically while preserving transaction data for audit inspection?
 

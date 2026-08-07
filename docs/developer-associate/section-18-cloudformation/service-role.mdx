@@ -61,9 +61,9 @@ By default, when you submit a template, CloudFormation executes the deployment u
 - **The Least Privilege Keyword Combination**: This is a hallmark scenario question on the developer exam. If a question states: _"A company wants to allow junior software developers to spin up cloud infrastructure stacks on demand, but wants to restrict them from being able to manually alter, delete, or create those underlying services outside of version-controlled templates."_ Look for the answer that specifies: **Create a dedicated CloudFormation Service Role with the necessary resource creation permissions, and grant the developers an IAM User policy restricted to CloudFormation operations and the `iam:PassRole` permission**.
 - **The Combo Pattern**: Look for questions combining a service configuration with IAM. To successfully configure an AWS resource to run with a service role, the deployer needs two things: the permission to create the resource itself (e.g., `lambda:CreateFunction`), plus `iam:PassRole` targeted at the execution role's ARN.
 
-### Practice Scenario
+### Practice Test
 
-**Scenario**: A developer is setting up an AWS Lambda function that needs to process data from an Amazon DynamoDB table. The developer has already created an IAM execution role with the required DynamoDB permissions. However, when attempting to deploy the Lambda function using the AWS CLI, the developer receives an error stating they are not authorized to associate the role with the function. Which permission is missing from the developer’s personal IAM user policy?
+**Question**: A developer is setting up an AWS Lambda function that needs to process data from an Amazon DynamoDB table. The developer has already created an IAM execution role with the required DynamoDB permissions. However, when attempting to deploy the Lambda function using the AWS CLI, the developer receives an error stating they are not authorized to associate the role with the function. Which permission is missing from the developer’s personal IAM user policy?
 
 - **A**. sts:AssumeRole
 - **B**. iam:PassRole

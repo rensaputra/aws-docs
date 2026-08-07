@@ -84,9 +84,9 @@ If you modify a single string inside `app.js`, Docker completely bypasses the sl
 - **The Unified Workflow Blueprint:** If an exam prompt states that a DevOps engineering department wants to establish a single, unified deployment orchestration engine for _all_ company compute apps—regardless of whether they deploy down to Amazon ECS cluster groups or scale out as serverless microVMs—look straight for **Lambda Container Images stored in Amazon ECR**! This allows your team to use standard `docker build` and `docker push` pipelines across the entire organization.
 - **The Cold Start Cache Hack:** If a scenario notes that a containerized function is experiencing massive cold start initialization latencies, verify the base image source tag. **Always prioritize official AWS-provided base images over custom distributions.** The underlying Lambda control plane actively pre-caches official AWS base layers across its physical hardware nodes ahead of time, ensuring that pulling your custom 4 GB image layer takes a fraction of the time.
 
-### Practice Scenario
+### Practice Test
 
-**Scenario**: A developer wants to package the code and dependencies for the application-specific Lambda functions as container images to be hosted on Amazon Elastic Container Registry (ECR).  
+**Question**: A developer wants to package the code and dependencies for the application-specific Lambda functions as container images to be hosted on Amazon Elastic Container Registry (ECR).
 **Which of the following options are correct for the given requirement? (Select two)**
 
 - [ ] You can deploy Lambda function as a container image, with a maximum size of 15 GB

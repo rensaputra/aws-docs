@@ -67,9 +67,9 @@ Resources:
 - `!Ref` vs. `!GetAtt` **Selection Criteria**: This is a classic exam favorite. If a question scenario asks you to pass the Instance ID of an EC2 instance to another resource, use `!Ref`. If it asks you to pass the Public IP Address or Availability Zone of that instance, you must select `!GetAtt`.
 - **The UserData Requirement Pattern**: If you see an exam question detailing an issue where a shell bootstrap configuration script inside an EC2 instance's `UserData` property is failing to execute because the text format is improper, look for an answer that wraps the script block with the `!Base64` intrinsic function wrapper.
 
-### Practice Scenario
+### Practice Test
 
-**Scenario**: A developer is constructing an AWS CloudFormation template to deploy an application cluster. The template contains an `AWS::EC2::Instance` resource with the logical ID `ApplicationServer`. The developer also needs to configure an Amazon Route 53 Record Set resource within the same template, which requires the public IP address of the newly spun-up instance to resolve the routing destination. Which syntax string should the developer use to dynamically fetch this value?
+**Question**: A developer is constructing an AWS CloudFormation template to deploy an application cluster. The template contains an `AWS::EC2::Instance` resource with the logical ID `ApplicationServer`. The developer also needs to configure an Amazon Route 53 Record Set resource within the same template, which requires the public IP address of the newly spun-up instance to resolve the routing destination. Which syntax string should the developer use to dynamically fetch this value?
 
 - **A**. `!Ref ApplicationServer`
 - **B**. `!GetAtt ApplicationServer.PublicIp`

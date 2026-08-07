@@ -44,7 +44,7 @@ The Unified Agent isn't just locked down to AWS infrastructure. You can download
 - **The Mandatory IAM Prerequisite**: Installing the agent code on an EC2 instance will achieve absolutely nothing if the server lacks authorization to write to the CloudWatch API. You **must** attach an IAM Instance Profile role to the EC2 instance carrying the AWS-managed policy string `CloudWatchAgentServerPolicy`. If this is missing, your log dumps will hit an immediate Access Denied block.
 - **The Configuration Strategy**: If an exam scenario asks how to deploy identical logging paths and RAM-tracking configurations across a fleet of 500 auto-scaled EC2 instances with minimal administrative friction, the right answer is to Store the **CloudWatch Unified Agent configuration file in SSM Parameter Store**, and reference that parameter path inside your launch template's **User Data** bootstrap script.
 
-### Practice Scenario
+### Practice Test
 
 Scenario: A cloud software developer is monitoring a web application hosted on an Auto Scaling Group of Amazon EC2 instances. The developer needs to configure an automated alarm system that fires an SNS alert if an instance's internal OS memory (RAM) usage crosses 85%, or if the application's local error log file (`/var/log/app/error.log`) captures an unhandled exception. What step should the developer take to implement this monitoring layer?
 

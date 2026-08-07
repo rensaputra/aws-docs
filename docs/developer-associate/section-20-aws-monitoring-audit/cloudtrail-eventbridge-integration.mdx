@@ -73,7 +73,7 @@ You can apply this exact structural formula to solve an infinite number of gover
 - **Real-Time Remediation Requirements:** If an exam scenario says: _"A company needs an **automated, real-time** notification system that fires within minutes of an administrator altering an IAM security control policy,"_ the distractor choices will tell you to schedule a periodic Lambda cron-job that scans CloudTrail S3 logs every hour. **Reject them.** For instantaneous, event-driven responses, you must link **CloudTrail events directly to an EventBridge Rule targeting SNS**.
 - **Constructing the Pattern Filter:** Look out for multi-choice selectors where you must select the correct JSON pattern mapping. Ensure that `detail-type` explicitly reads `"AWS API Call via CloudTrail"`, and that the `eventName` uses the exact PascalCase notation string used by the underlying AWS service API, bro!
 
-### 🚀 Practice Scenario
+### 🚀 Practice Test
 
 **Scenario:** A cloud security engineer wants to receive an instant email alert whenever an administrative user updates or changes an inbound firewall rule on an Amazon EC2 Security Group using the `AuthorizeSecurityGroupIngress` operation. Which architectural approach provides the lowest latency and requires minimal operational maintenance?
 

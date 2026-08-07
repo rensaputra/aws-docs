@@ -66,9 +66,9 @@ Here is how the blast radius changes when you swap out tight integration for a m
   - **Amazon SNS**: 1-to-many fan-out. One event is pushed out to broadcast to multiple subscriber queues or lambdas at once.
   - **AWS Kinesis**: Real-time high-throughput streaming. Designed for massive big data collection (like continuous server logs or IoT metrics).
 
-### Practice Scenario
+### Practice Test
 
-**Scenario**: A company operates a photo-sharing application where users upload high-resolution images. The frontend web server sends a synchronous HTTP request to a backend processing fleet to generate image thumbnails. During high-traffic marketing events, the backend fleet experiences severe lag, causing the web servers to time out and drop user requests. How should a developer re-architect this workflow to guarantee message retention and system stability?
+**Question**: A company operates a photo-sharing application where users upload high-resolution images. The frontend web server sends a synchronous HTTP request to a backend processing fleet to generate image thumbnails. During high-traffic marketing events, the backend fleet experiences severe lag, causing the web servers to time out and drop user requests. How should a developer re-architect this workflow to guarantee message retention and system stability?
 
 - **A**. Configure an Elastic Load Balancer with an aggressive All at Once traffic routing strategy.
 - **B**. Modify the backend server kernels using an `.ebextensions` configuration script.

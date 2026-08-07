@@ -100,9 +100,9 @@ This visual model outlines how the DNS abstraction switches underneath your user
 - **Zip Packaging Failures**: The exam loves to test deployment issues. If a developer deploys a `.zip` archive to Beanstalk and the application throws a missing script error, it is almost always because they zipped the _outer folder_ instead of selecting the files directly and zipping them from the root. Beanstalk needs to see files like `app.js` and `.ebextensions` at the absolute root of the file system.
 - **The CNAME Swap Advantage**: If an exam question mentions a scenario where an update requires structural database schema changes or a massive underlying OS platform change (e.g., upgrading from an older Node.js version to a brand new one), internal deployments (like Rolling or Immutable) might fail or cause incompatibilities. The correct answer is to **Clone the environment, perform the updates on the new environment, and execute a Swap Environment Domains (CNAME Swap) operation**.
 
-### Practice Scenario
+### Practice Test
 
-**Scenario**: A developer wants to deploy a major software patch to a production application running on AWS Elastic Beanstalk. The patch includes changing the underlying EC2 operating system version. The developer must ensure there is zero downtime, and if unexpected system issues arise, the traffic must be immediately redirected back to the original operational setup. Which approach should the developer take?
+**Question**: A developer wants to deploy a major software patch to a production application running on AWS Elastic Beanstalk. The patch includes changing the underlying EC2 operating system version. The developer must ensure there is zero downtime, and if unexpected system issues arise, the traffic must be immediately redirected back to the original operational setup. Which approach should the developer take?
 
 - **A**. Update the application deployment configuration settings to use an All at Once policy.
 - **B**. Configure the application deployment preferences to run an Immutable deployment directly on the live fleet.

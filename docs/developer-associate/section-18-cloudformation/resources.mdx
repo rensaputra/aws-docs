@@ -53,9 +53,9 @@ Resources:
 - **The Core Component Trivia**: If you see a question about the absolute structural layout of an Infrastructure as Code template, remember: **Resources is the only mandatory section**. A template with parameters, outputs, and descriptions but no resources is an invalid file.
 - **The Missing Service Workaround**: Keep a sharp eye out for scenario questions where a development team needs to automate a stack build that includes a cutting-edge or third-party service that does not possess a native `AWS::*` resource type definition. The correct architectural answer is to configure a **CloudFormation Custom Resource** that points to an AWS Lambda backing token.
 
-### Practice Scenario
+### Practice Test
 
-**Scenario**: A software developer needs to automate the provisioning of an AWS service that was released last week. The developer discovers that the service does not currently have a native resource type identifier listed in the AWS CloudFormation Resource Types Reference documentation. How can the developer integrate the provisioning of this new service directly into the existing automated CloudFormation stack lifecycle?
+**Question**: A software developer needs to automate the provisioning of an AWS service that was released last week. The developer discovers that the service does not currently have a native resource type identifier listed in the AWS CloudFormation Resource Types Reference documentation. How can the developer integrate the provisioning of this new service directly into the existing automated CloudFormation stack lifecycle?
 
 - **A**. Write a procedural python macro block directly inside the template's `Mappings` section.
 - **B**. Configure a CloudFormation Custom Resource (`AWS::CloudFormation::CustomResource`) and create an AWS Lambda function to handle the custom service API creation calls.
