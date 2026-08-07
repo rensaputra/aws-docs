@@ -48,13 +48,38 @@ sidebar_position: 18
 - **The Multi-Account / Multi-Region Keyword**: This is a pure pattern-matching point on the exam, bro. The second you see a scenario stating: _"An administrator needs a native mechanism to scale out infrastructure by deploying an identical cloud architecture template across multiple AWS accounts and multiple distinct geographic regions simultaneously"_ look straight for the option containing **AWS CloudFormation StackSets**.
 - **Global Security Rule Deployment**: Look for use cases centered around compliance. If a company needs to ensure that a specific IAM read-only role or centralized AWS Config rule exists inside every single current and future sub-account under their corporate AWS Organization banner, StackSets linked with an active organization auto-deployment flag is the definitive answer.
 
-### Practice Scenario
+### Practice Test
 
-**Scenario**: A cloud engineering manager at an enterprise wants to ensure that a standardized corporate security group rule is uniformly deployed across all 50 active sub-accounts within the company's AWS Organization. The solution must also ensure that the rule is automatically active in both the `us-east-1` and `eu-west-1` regions for each account, and that any new sub-account added to the organization automatically receives this network configuration. Which native AWS service fulfills this requirement with the least administrative effort?
+**Question 1**: A cloud engineering manager at an enterprise wants to ensure that a standardized corporate security group rule is uniformly deployed across all 50 active sub-accounts within the company's AWS Organization. The solution must also ensure that the rule is automatically active in both the `us-east-1` and `eu-west-1` regions for each account, and that any new sub-account added to the organization automatically receives this network configuration. Which native AWS service fulfills this requirement with the least administrative effort?
 
 - **A**. Write a Python `Boto3` script that runs inside a centralized cron-job container to manually execute local CloudFormation stack creations account by account.
 - **B**. Utilize AWS Systems Manager (SSM) Session Manager to push custom YAML templates straight onto individual instance kernels.
 - **C**. Create an AWS CloudFormation StackSet within the master administrator account, configure it to target the root `Organizational Unit (OU)`, select the target regions, and enable automatic deployment for new accounts.
 - **D**. Build an AWS Elastic Beanstalk high-availability staging cluster and execute an `All at Once` traffic pivot override.
 
-**Correct Answer: C**. AWS CloudFormation StackSets is uniquely engineered to automate the scaling of infrastructure templates across multi-account and multi-region boundaries. Integrating it natively with AWS Organizations provides automated, cascading security compliance baselines across the entire account fleet.
+<details>
+  <summary>Correct Answer</summary>
+
+**C**. AWS CloudFormation StackSets is uniquely engineered to automate the scaling of infrastructure templates across multi-account and multi-region boundaries. Integrating it natively with AWS Organizations provides automated, cascading security compliance baselines across the entire account fleet.
+
+</details>
+
+**Question 2**: A global e-commerce company wants to perform geographic load testing of its order processing API. The company must deploy resources to multiple AWS Regions to support the load testing of the API.  
+How can the company address these requirements without additional application code?
+
+- [ ] Set up an AWS Cloud Development Kit (CDK) ToolKit that defines the load test resources. Leverage the CDK CLI to create a stack from the template in each Region
+- [ ] Set up an AWS Organizations template that defines the load test resources across the organization. Leverage the AWS CLI create-stack-set command to create a stack set in the desired Regions
+- [ ] Set up an AWS CloudFormation template that defines the load test resources. Leverage the AWS CLI create-stack-set command to create a stack set in the desired Regions
+- [ ] Set up an AWS CloudFormation template that defines the load test resources. Develop region-specific Lambda functions to create a stack from the AWS CloudFormation template in each Region when the respective function is invoked
+
+<details>
+  <summary>Correct Answer</summary>
+
+- [x] Set up an AWS CloudFormation template that defines the load test resources. Leverage the AWS CLI create-stack-set command to create a stack set in the desired Regions
+  - **Explanation**: AWS CloudFormation StackSets extends the capability of stacks by enabling you to create, update, or delete stacks across multiple accounts and AWS Regions with a single operation. Using an administrator account, you define and manage an AWS CloudFormation template, and use the template as the basis for provisioning stacks into selected target accounts across specified AWS Regions.  
+    ![](./img/cloudformation-stacksets-diagram.png)  
+     A stack set lets you create stacks in AWS accounts across regions by using a single CloudFormation template. A stack set's CloudFormation template defines all the resources in each stack. As you create the stack set, specify the template to use, in addition to any parameters and capabilities that the template requires.  
+     After you've defined a stack set, you can create, update, or delete stacks in the target accounts and AWS Regions you specify.  
+     ![](./img/cloudformation-stacksets-diagram-2.jpg)
+
+</details>
