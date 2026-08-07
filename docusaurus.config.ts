@@ -168,7 +168,7 @@ const config: Config = {
           ],
         },
       ],
-      copyright: `AWS_REGION=ap-southeast-2 deployed by Rendy Saputra`,
+      copyright: `AWS_REGION=ap-southeast-2 deployed by Rendy E. Saputra`,
     },
     prism: {
       theme: prismThemes.github,
