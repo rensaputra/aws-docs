@@ -54,3 +54,27 @@ This is an entirely online operation. Your application keeps processing traffic 
   ![RDS Read Replica for Analytics](./img/rds-read-replica-analytics.png)
 
 - **The Combination Play**: Can you combine these two features? Absolutely. The exam loves to throw out a high-stakes prod requirement demanding _both_ absolute high availability and massive read performance. **The architecture play is to configure your primary database as a Multi-AZ deployment for zero-downtime failover, and then attach multiple Read Replicas to that cluster to offload application read strain**.
+
+### Practice Test
+
+**Question**: A retail company is migrating its on-premises database to Amazon RDS for PostgreSQL. The company has read-heavy workloads. The development team at the company is looking at refactoring the code to achieve optimum read performance for SQL queries.  
+Which solution will address this requirement with the least current as well as future development effort?
+
+- [ ] Configure Elasticache for Memcached to act as a caching layer for Amazon RDS. Refactor the application code so that the queries use the Elasticache for Memcached endpoint
+- [ ] Set up Amazon RDS in the multi-AZ configuration with a single standby instance. Refactor the application code so that the queries use the standby instance endpoint
+- [ ] Configure Elasticache for Redis to act as a caching layer for Amazon RDS. Refactor the application code so that the queries use the Elasticache for Redis endpoint
+- [ ] Set up Amazon RDS with one or more read replicas. Refactor the application code so that the queries use the endpoint for the read replicas
+
+<details>
+<summary>Correct Answer</summary>
+
+- [ ] Configure Elasticache for Memcached to act as a caching layer for Amazon RDS. Refactor the application code so that the queries use the Elasticache for Memcached endpoint
+- [ ] Configure Elasticache for Redis to act as a caching layer for Amazon RDS. Refactor the application code so that the queries use the Elasticache for Redis endpoint
+  - **Explanation**: Both Redis and Memcached are popular, open-source, in-memory data stores (also known as in-memory caches). These are not relational databases and cannot be used to run SQL queries. So, both these options are incorrect.
+- [ ] Set up Amazon RDS in the multi-AZ configuration with a single standby instance. Refactor the application code so that the queries use the standby instance endpoint
+  - **Explanation**: In an Amazon RDS Multi-AZ deployment with a single standby instance, Amazon RDS automatically creates a primary database (DB) instance and synchronously replicates the data to an instance in a different AZ. When it detects a failure, Amazon RDS automatically fails over to a standby instance without manual intervention. You cannot route the read queries from an application to the standby instance of a multi-AZ RDS database as it's not accessible for the read traffic in the single standby instance configuration.
+- [x] Set up Amazon RDS with one or more read replicas. Refactor the application code so that the queries use the endpoint for the read replicas
+  - **Explanation**: Amazon RDS uses the PostgreSQL DB engine's built-in replication functionality to create a special type of DB instance called a read replica from a source DB instance. The source DB instance becomes the primary DB instance. Updates made to the primary DB instance are asynchronously copied to the read replica. You can reduce the load on your primary DB instance by routing read queries from your applications to the read replica. Using read replicas, you can elastically scale out beyond the capacity constraints of a single DB instance for read-heavy database workloads. For the given use case, you can achieve optimum read performance for SQL queries by using the read-replica endpoint for the read-heavy workload.  
+    ![](./img/rds-read-replica.png)
+
+</details>
