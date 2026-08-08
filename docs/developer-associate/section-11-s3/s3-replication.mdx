@@ -135,3 +135,31 @@ This hands-on lab lab layout walks through creating an S3 lifecycle baseline for
   - Select a specific, explicit Version ID layer for `beach.jpg` and execute a permanent delete by typing `"permanent delete"`.
   - Review your replica bucket - notice that the version layer **remains completely intact and safe the destination pool**. S3 successfully barricaded the permanent destruction instruction at the origin boundary!
     ![Permanent Delete Replication](./img/permanent-delete-replication.png)
+
+## Practice Test
+
+**Question**: To meet compliance guidelines, a company needs to ensure replication of any data stored in its S3 buckets.
+
+Which of the following characteristics are correct while configuring an S3 bucket for replication? (Select two)
+
+- [ ] Replicated objects do not retain metadata
+- [ ] Object tags cannot be replicated across AWS Regions using Cross-Region Replication
+- [ ] Once replication is enabled on a bucket, all old and new objects will be replicated
+- [ ] S3 lifecycle actions are not replicated with S3 replication
+- [ ] Same-Region Replication (SRR) and Cross-Region Replication (CRR) can be configured at the S3 bucket level, a shared prefix level, or an object level using S3 object tags
+
+<details>
+<summary>Correct Answers</summary>
+
+- [ ] Replicated objects do not retain metadata
+  - **Explanation**: You can use replication to make copies of your objects that retain all metadata, such as the original object creation time and version IDs. This capability is important if you need to ensure that your replica is identical to the source object.
+- [ ] Object tags cannot be replicated across AWS Regions using Cross-Region Replication
+  - **Explanation**: Object tags can be replicated across AWS Regions using Cross-Region Replication. For customers with Cross-Region Replication already enabled, new permissions are required for tags to replicate.
+- [ ] Once replication is enabled on a bucket, all old and new objects will be replicated
+  - **Explanation**: Replication only replicates the objects added to the bucket after replication is enabled on the bucket. Any objects present in the bucket before enabling replication are not replicated.
+- [x] S3 lifecycle actions are not replicated with S3 replication
+  - **Explanation**: With S3 Replication (CRR and SRR), you can establish replication rules to make copies of your objects into another storage class, in the same or a different region. Lifecycle actions are not replicated, and if you want the same lifecycle configuration applied to both source and destination buckets, enable the same lifecycle configuration on both.
+- [x] Same-Region Replication (SRR) and Cross-Region Replication (CRR) can be configured at the S3 bucket level, a shared prefix level, or an object level using S3 object tags
+  - **Explanation**: Amazon S3 Replication (CRR and SRR) is configured at the S3 bucket level, a shared prefix level, or an object level using S3 object tags. You add a replication configuration on your source bucket by specifying a destination bucket in the same or different AWS region for replication.
+
+</details>

@@ -81,11 +81,64 @@ To group transactions together and drop your AWS bill down significantly, you ca
 
 ### Practice Test
 
-Scenario: A cloud developer is managing a backend fleet of EC2 instances that processes image metadata via an Amazon SQS standard queue. The queue is frequently empty during off-peak hours. Monitoring tools show that the instances are making millions of empty `ReceiveMessage` API calls, resulting in high transaction fees on the monthly AWS bill. What adjustment should the developer apply to mitigate these costs?
+**Question 1**: A cloud developer is managing a backend fleet of EC2 instances that processes image metadata via an Amazon SQS standard queue. The queue is frequently empty during off-peak hours. Monitoring tools show that the instances are making millions of empty `ReceiveMessage` API calls, resulting in high transaction fees on the monthly AWS bill. What adjustment should the developer apply to mitigate these costs?
 
-- **A**. Trigger a PurgeQueue API action string immediately when the queue depth hits zero.
-- **B**. Configure the consumer application to implement Long Polling by setting the `ReceiveMessageWaitTimeSeconds` parameter to 20.
-- **C**. Move the entire template metadata registry to an external JSON configuration file via CloudFormation StackSets.
-- **D**. Use the SQS Extended Client library to move all incoming metadata payloads straight into an Amazon S3 storage folder path bucket.
+- [ ] Trigger a PurgeQueue API action string immediately when the queue depth hits zero.
+- [ ] Configure the consumer application to implement Long Polling by setting the `ReceiveMessageWaitTimeSeconds` parameter to 20.
+- [ ] Move the entire template metadata registry to an external JSON configuration file via CloudFormation StackSets.
+- [ ] Use the SQS Extended Client library to move all incoming metadata payloads straight into an Amazon S3 storage folder path bucket.
 
-**Correct Answer: B**. Implementing Long Polling by setting `ReceiveMessageWaitTimeSeconds` to 20 forces the consumer threads to wait up to 20 seconds for an active message rather than executing continuous rapid-fire empty queries, instantly eliminating unnecessary API calls and slashing transaction costs down to size, chief!
+<details>
+<summary>Correct Answer</summary>
+
+- [ ] Configure the consumer application to implement Long Polling by setting the `ReceiveMessageWaitTimeSeconds` parameter to 20.
+  - **Explanation**: Implementing Long Polling by setting `ReceiveMessageWaitTimeSeconds` to 20 forces the consumer threads to wait up to 20 seconds for an active message rather than executing continuous rapid-fire empty queries, instantly eliminating unnecessary API calls and slashing transaction costs down to size, chief!
+
+</details>
+
+**Question 2**: A company’s e-commerce website is expecting hundreds of thousands of visitors on Black Friday. The marketing department is concerned that high volumes of orders might stress SQS leading to message failures. The company has approached you for the steps to be taken as a precautionary measure against the high volumes.
+
+What step will you suggest as a Developer Associate?
+
+- [ ] Convert the queue into FIFO ordered queue, since messages to the down system will be processed faster once they are ordered
+- [ ] Enable auto-scaling in the SQS queue
+- [ ] Amazon SQS is highly scalable and does not need any intervention to handle the expected high volumes
+- [ ] Pre-configure the SQS queue to increase the capacity when messages hit a certain threshold
+
+<details>
+<summary>Correct Answer</summary>
+
+- [ ] Convert the queue into FIFO ordered queue, since messages to the down system will be processed faster once they are ordered
+  - **Explanation**: This is a wrong statement. You cannot convert an existing standard queue to FIFO queue. To make the move, you must either create a new FIFO queue for your application or delete your existing standard queue and recreate it as a FIFO queue.
+- [ ] Enable auto-scaling in the SQS queue
+  - **Explanation**: SQS queues are, by definition, auto-scalable and do not need any configuration changes for auto-scaling.
+- [x] Amazon SQS is highly scalable and does not need any intervention to handle the expected high volumes
+  - **Explanation**: Amazon SQS leverages the AWS cloud to dynamically scale, based on demand. SQS scales elastically with your application so you don't have to worry about capacity planning and pre-provisioning. For most standard queues (depending on queue traffic and message backlog), there can be a maximum of approximately 120,000 inflight messages (received from a queue by a consumer, but not yet deleted from the queue).  
+    ![](./img/sqs-quotas.jpg)
+- [ ] Pre-configure the SQS queue to increase the capacity when messages hit a certain threshold
+  - **Explanation**: This is an incorrect statement. Amazon SQS scales dynamically, automatically provisioning the needed capacity.
+
+</details>
+
+**Question 3**: A media company uses Amazon Simple Queue Service (SQS) queue to manage their transactions. With changing business needs, the payload size of the messages is increasing. The Team Lead of the project is worried about the 256 KB message size limit that SQS has.
+
+What can be done to make the queue accept messages of a larger size?
+
+- [ ] Use the SQS Extended Client
+- [ ] Use the MultiPart API
+- [ ] Get a service limit increase from AWS
+- [ ] Use gzip compression
+
+<details>
+<summary>Correct Answer</summary>
+
+- [x] Use the SQS Extended Client
+  - **Explanation**: To manage large Amazon Simple Queue Service (Amazon SQS) messages, you can use Amazon Simple Storage Service (Amazon S3) and the Amazon SQS Extended Client Library for Java. This is especially useful for storing and consuming messages up to 2 GB. Unless your application requires repeatedly creating queues and leaving them inactive or storing large amounts of data in your queues, consider using Amazon S3 for storing your data.
+- [ ] Use the MultiPart API
+  - **Explanation**: This is an incorrect statement. There is no multi-part API for Amazon Simple Queue Service.
+- [ ] Get a service limit increase from AWS
+  - **Explanation**: While it is possible to get service limits extended for certain AWS services, AWS already offers Extended Client to deal with queues that have larger messages.
+- [ ] Use gzip compression
+  - **Explanation**: You can compress the messages before sending them to the queue. The messages also need to be encoded after this to cater to SQS message standards. This adds bulk to the messages and will not be an optimal solution for the current scenario.
+
+</details>
