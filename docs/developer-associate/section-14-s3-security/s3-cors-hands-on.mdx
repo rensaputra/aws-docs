@@ -89,3 +89,32 @@ This hands-on lab layout walks through diagnosing and breaking down a browser-en
 - **S3 CORS Configuration Documents dictate** whether a local desktop client browser engine is legally permitted to read cross-domain responses. They execute entirely inside the **Client Browser Layer**.
 
 If a test question mentions an application using JavaScript (`fetch`, `XMLHttpRequest`, `AJAX`, or `Axios`) failing to pull public files across different endpoint domains, **it is 100% of the time a CORS rule issue**. Changing bucket policies or modifying ACL rules won't help. The absolute only valid architectural answer choice is to attach a JSON CORS policy directly onto the target asset bucket!
+
+### Practice Test
+
+**Question**: A development team uses shared Amazon S3 buckets to upload files. Due to this shared access, objects in S3 buckets have different owners making it difficult to manage the objects.
+
+As a developer associate, which of the following would you suggest to automatically make the S3 bucket owner, also the owner of all objects in the bucket, irrespective of the AWS account used for uploading the objects?
+
+- [ ] Use S3 CORS to make the S3 bucket owner, the owner of all objects in the bucket
+- [ ] Use S3 Access Analyzer to identify the owners of all objects and change the ownership to the bucket owner
+- [ ] Use Bucket Access Control Lists (ACLs) to control access on S3 bucket and then define its owner
+- [ ] Use S3 Object Ownership to default bucket owner to be the owner of all objects in the bucket
+
+<details>
+<summary>Correct Answer</summary>
+
+- [ ] Use S3 CORS to make the S3 bucket owner, the owner of all objects in the bucket
+  - **Explanation**: Cross-origin resource sharing (CORS) defines a way for client web applications that are loaded in one domain to interact with resources in a different domain.
+- [ ] Use S3 Access Analyzer to identify the owners of all objects and change the ownership to the bucket owner
+  - **Explanation**: Access Analyzer for S3 helps review all buckets that have bucket access control lists (ACLs), bucket policies, or access point policies that grant public or shared access. Access Analyzer for S3 alerts you to buckets that are configured to allow access to anyone on the internet or other AWS accounts, including AWS accounts outside of your organization.
+- [ ] Use Bucket Access Control Lists (ACLs) to control access on S3 bucket and then define its owner
+  - **Explanation**: Amazon S3 access control lists (ACLs) enable you to manage access to buckets and objects. Each bucket and object has an ACL attached to it as a subresource. A bucket ACLs allow you to control access at bucket level.
+- [x] Use S3 Object Ownership to default bucket owner to be the owner of all objects in the bucket
+  - **Explanation**: S3 Object Ownership is an Amazon S3 bucket setting that you can use to control ownership of new objects that are uploaded to your buckets. By default, when other AWS accounts upload objects to your bucket, the objects remain owned by the uploading account. With S3 Object Ownership, any new objects that are written by other accounts with the bucket-owner-full-control canned access control list (ACL) automatically become owned by the bucket owner, who then has full control of the objects.
+    S3 Object Ownership has two settings:
+    1. Object writer – The uploading account will own the object.
+    2. Bucket owner preferred – The bucket owner will own the object if the object is uploaded with the bucket-owner-full-control canned ACL. Without this setting and canned ACL, the object is uploaded and remains owned by the uploading account.  
+       ![](./img/s3-object-ownership.png)
+
+</details>

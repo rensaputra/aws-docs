@@ -51,3 +51,29 @@ Instead, you create an IAM Role inside Account A that grants access permissions 
 
 - **The Strict AWS Perimeter Constraint:** If an exam scenario presents a strict compliance mandate stating that an application's source code contains highly sensitive proprietary IP, and legally forbids the data from ever traversing the public internet or living on an external third-party Git SaaS platform—**the undisputed correct answer is to host the repository inside AWS CodeCommit** You can couple it with **Amazon VPC Endpoints** to ensure your developer traffic never even touches the open web when pulling code down to your private corporate networks.
 - **The Unified Governance Principle:** Remember for multi-choice questions that CodeCommit lets you manage repository read/write access using the exact same **IAM Policies and Roles** you use to control access to S3 buckets or EC2 instances. You maintain a single, clean central source of truth for your entire cloud security posture.
+
+### Practice Test
+
+**Question 1**: An organization recently began using AWS CodeCommit for its source control service. A compliance security team visiting the organization was auditing the software development process and noticed developers making many git push commands within their development machines. The compliance team requires that encryption be used for this activity.
+
+How can the organization ensure source code is encrypted in transit and at rest?
+
+- [ ] Use AWS Lambda as a hook to encrypt the pushed code
+- [ ] Enable KMS encryption
+- [ ] Use a git command line hook to encrypt the code client side
+- [ ] Repositories are automatically encrypted at rest
+
+<details>
+<summary>Correct Answer</summary>
+
+- [ ] Use AWS Lambda as a hook to encrypt the pushed code
+  - **Explanation**: This is not needed as CodeCommit handles it for you.
+- [ ] Enable KMS encryption
+  - **Explanation**: You don't have to. The first time you create an AWS CodeCommit repository in a new region in your AWS account, CodeCommit creates an AWS-managed key in that same region in AWS Key Management Service (AWS KMS) that is used only by CodeCommit.
+- [ ] Use a git command line hook to encrypt the code client side
+  - **Explanation**: This is not needed as CodeCommit handles it for you.
+- [x] Repositories are automatically encrypted at rest
+  - **Explanation**: Data in AWS CodeCommit repositories is encrypted in transit and at rest. When data is pushed into an AWS CodeCommit repository (for example, by calling git push), AWS CodeCommit encrypts the received data as it is stored in the repository.  
+    ![](./img/codecommit-encryption.png)
+
+</details>

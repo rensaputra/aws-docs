@@ -95,3 +95,31 @@ As a Developer Associate, which of the following AWS services do you think provi
 </details>
 
 </details>
+
+**Question 3**: A company has several Linux-based EC2 instances that generate various log files which need to be analyzed for security and compliance purposes. The company wants to use Kinesis Data Streams (KDS) to analyze this log data.
+
+Which of the following is the most optimal way of sending log data from the EC2 instances to KDS?
+
+- [ ] Use Kinesis Producer Library (KPL) to collect and ingest data from each EC2 instance
+- [ ] Install and configure Kinesis Agent on each of the instances
+- [ ] Install AWS SDK on each of the instances and configure it to send the necessary files to Kinesis Data Streams
+- [ ] Run cron job on each of the instances to collect log data and send it to Kinesis Data Streams
+
+<details>
+  <summary>Correct Answer</summary>
+
+- [ ] Use Kinesis Producer Library (KPL) to collect and ingest data from each EC2 instance
+  - **Explanation**: The KPL is an easy-to-use, highly configurable library that helps you write to a Kinesis data stream. It acts as an intermediary between your producer application code and the Kinesis Data Streams API actions. This is not optimal compared to Kinesis Agent which is designed to continuously monitor a set of files and send new data to your stream.
+- [x] Install and configure Kinesis Agent on each of the instances
+  - **Explanation**: Kinesis Agent is a stand-alone Java software application that offers an easy way to collect and send data to Kinesis Data Streams. The agent continuously monitors a set of files and sends new data to your stream. The agent handles file rotation, checkpointing, and retry upon failures. It delivers all of your data in a reliable, timely, and simple manner. It also emits Amazon CloudWatch metrics to help you better monitor and troubleshoot the streaming process.
+
+    You can install the agent on Linux-based server environments such as web servers, log servers, and database servers. After installing the agent, configure it by specifying the files to monitor and the stream for the data. After the agent is configured, it durably collects data from the files and reliably sends it to the stream.
+
+    The agent can also pre-process the records parsed from monitored files before sending them to your stream. You can enable this feature by adding the dataProcessingOptions configuration setting to your file flow. One or more processing options can be added and they will be performed in the specified order.
+
+- [ ] Install AWS SDK on each of the instances and configure it to send the necessary files to Kinesis Data Streams
+  - **Explanation**: Kinesis Data Streams APIs that are available in the AWS SDKs, helps you manage many aspects of Kinesis Data Streams, including creating streams, resharding, and putting and getting records. You will need to write custom code to handle new data in the log files and send it over to your stream. Kinesis Agent does it easily, as it is designed to continuously monitor a set of files and send new data to your stream.
+- [ ] Run cron job on each of the instances to collect log data and send it to Kinesis Data Streams
+  - **Explanation**: This solution is possible, though not an optimal one. This solution requires writing custom code and tracking file/log changes, retry failures and so on. Kinesis Agent is built to handle all these requirements and integrates with Data Streams.
+
+</details>
