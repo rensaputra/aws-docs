@@ -142,3 +142,99 @@ What can be done to make the queue accept messages of a larger size?
   - **Explanation**: You can compress the messages before sending them to the queue. The messages also need to be encoded after this to cater to SQS message standards. This adds bulk to the messages and will not be an optimal solution for the current scenario.
 
 </details>
+
+**Question 4**: An Amazon Simple Queue Service (SQS) has to be configured between two AWS accounts for shared access to the queue. AWS account A has the SQS queue in its account and AWS account B has to be given access to this queue.
+
+Which of the following options need to be combined to allow this cross-account access? **(Select three)**
+
+- [ ] The account A administrator delegates the permission to assume the role to any users in account A
+- [ ] The account A administrator creates an IAM role and attaches a permissions policy
+- [ ] The account B administrator creates an IAM role and attaches a trust policy to the role with account B as the principal
+- [ ] The account B administrator delegates the permission to assume the role to any users in account B
+- [ ] The account A administrator attaches a trust policy to the role that identifies account B as the principal who can assume the role
+- [ ] The account A administrator attaches a trust policy to the role that identifies account B as the AWS service principal who can assume the role
+
+<details>
+<summary>Correct Answer</summary>
+
+- [ ] The account A administrator delegates the permission to assume the role to any users in account A
+  - **Explanation**: This is irrelevant, as users in account B need to be given access.
+- [x] The account A administrator creates an IAM role and attaches a permissions policy
+  - **Explanation**: To grant cross-account permissions, you need to attach an identity-based permissions policy to an IAM role. The account A administrator creates an IAM role and attaches a permissions policy that grants permissions on resources in account A to the role.
+- [ ] The account B administrator creates an IAM role and attaches a trust policy to the role with account B as the principal
+  - **Explanation**: As mentioned above, the account A administrator needs to create an IAM role and then attach a permissions policy. So, this option is incorrect.
+- [x] The account B administrator delegates the permission to assume the role to any users in account B
+  - **Explanation**: The account B administrator delegates the permission to assume the role to any users in account B. This allows users in account B to create or access queues in account A.
+- [x] The account A administrator attaches a trust policy to the role that identifies account B as the principal who can assume the role
+  - **Explanation**: The account A administrator attaches a trust policy to the role that identifies account B as the principal who can assume the role.
+- [ ] The account A administrator attaches a trust policy to the role that identifies account B as the AWS service principal who can assume the role
+  - **Explanation**: AWS service principal is given as principal in the trust policy when you need to grant the permission to assume the role to an AWS service. The given use case talks about giving permission to another account. So, service principal is not an option here.
+
+<details>
+<summary>Breakdown with Example</summary>
+
+_Assume **Account A ID** = `111111111111`, **Account B ID** = `222222222222`, and the SQS Queue is `MyQueue`._
+
+---
+
+**1. Account A IAM Role Permissions Policy**
+_(Attached to the role in Account A to grant actual access to the queue)_
+
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": [
+        "sqs:SendMessage",
+        "sqs:ReceiveMessage",
+        "sqs:DeleteMessage",
+        "sqs:GetQueueAttributes"
+      ],
+      "Resource": "arn:aws:sqs:us-east-1:111111111111:MyQueue"
+    }
+  ]
+}
+```
+
+---
+
+**2. Account B Delegation Policy**
+_(Attached to Account B’s users/groups so they have permission to assume Account A's role)_
+
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": "sts:AssumeRole",
+      "Resource": "arn:aws:iam::111111111111:role/CrossAccountSQSRole"
+    }
+  ]
+}
+```
+
+---
+
+**3. Account A Role Trust Policy**
+_(The trust relationship on Account A's role that lists Account B as a trusted principal)_
+
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::222222222222:root"
+      },
+      "Action": "sts:AssumeRole"
+    }
+  ]
+}
+```
+
+</details>
+</details>
