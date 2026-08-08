@@ -40,7 +40,7 @@
   --ifm-navbar-shadow: 0 1px 1px 0 rgba(0,28,36,.3), 1px 1px 1px 0 rgba(0,28,36,.15), -1px 1px 1px 0 rgba(0,28,36,.15);
 
   /* Footer styling (Squid Ink) */
-  --ifm-footer-background-color: #232F3E;
+  --ifm-footer-background-color: #161d26;
   --ifm-footer-title-color: #ffffff;
   --ifm-footer-link-color: #cccccc;
   --ifm-footer-link-hover-color: #ffffff;
@@ -70,7 +70,7 @@
 
   --ifm-navbar-background-color: #232F3E;
   --ifm-navbar-link-color: #ffffff;
-  --ifm-footer-background-color: #16191f;
+  --ifm-footer-background-color: #161d26;
 
   --ifm-menu-color: #eaeded;
   --ifm-menu-color-background-hover: rgba(255, 255, 255, 0.05);
@@ -110,4 +110,9 @@ a:hover {
 /* Menu items should not have a background when active, just bold font like AWS Docs */
 .menu__link--active {
   font-weight: 700;
+}
+
+/* AWS Style Footer Copyright */
+.footer__copyright {
+  @apply text-[12px] leading-[16px] tracking-[0.005em] text-[#c6c6cd];
 }
