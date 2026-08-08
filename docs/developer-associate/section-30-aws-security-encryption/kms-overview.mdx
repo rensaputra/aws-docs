@@ -141,3 +141,30 @@ As a Developer Associate, how would you resolve this issue?
     In the JSON policy documents, look for statements with `"Effect": "Deny"`. Then, confirm that those statements don't deny the `s3:PutObject` action on the bucket. The statements must also not deny the IAM user or role access to the `kms:GenerateDataKey` action on the key used to encrypt the bucket. Additionally, make sure the necessary KMS and S3 permissions are not restricted using a VPC endpoint policy, service control policy, permissions boundary, or session policy.
 
 </details>
+
+**Question 2**: A financial services company wants to ensure that the customer data is always kept encrypted on Amazon S3 but wants an AWS managed solution that allows full control to create, rotate and remove the encryption keys.
+
+As a Developer Associate, which of the following would you recommend to address the given use-case?
+
+- [ ] Server-Side Encryption with Customer-Provided Keys (SSE-C)
+- [ ] Server-Side Encryption with Secrets Manager
+- [ ] Server-Side Encryption with Customer Master Keys (CMKs) Stored in AWS Key Management Service (SSE-KMS)
+- [ ] Server-Side Encryption with Amazon S3-Managed Keys (SSE-S3)
+
+<details>
+  <summary>Correct Answer</summary>
+- [ ] Server-Side Encryption with Customer-Provided Keys (SSE-C)
+  - **Explanation**: With Server-Side Encryption with Customer-Provided Keys (SSE-C), you will need to create the encryption keys as well as manage the corresponding process to rotate and remove the encryption keys. Amazon S3 manages the data encryption, as it writes to disks, as well as the data decryption when you access your objects. So this option is incorrect for the given use-case.-
+- [ ] Server-Side Encryption with Secrets Manager
+  - **Explanation**: AWS Secrets Manager helps you protect secrets needed to access your applications, services, and IT resources. The service enables you to easily rotate, manage, and retrieve database credentials, API keys, and other secrets throughout their lifecycle. You cannot combine Server-Side Encryption with Secrets Manager to create, rotate, or disable the encryption keys.-
+- [x] Server-Side Encryption with Customer Master Keys (CMKs) Stored in AWS Key Management Service (SSE-KMS)
+  - **Explanation**: You have the following options for protecting data at rest in Amazon S3:
+    - Server-Side Encryption – Request Amazon S3 to encrypt your object before saving it on disks in its data centers and then decrypt it when you download the objects.
+    - Client-Side Encryption – Encrypt data client-side and upload the encrypted data to Amazon S3. In this case, you manage the encryption process, the encryption keys, and related tools.
+    - When you use server-side encryption with AWS KMS (SSE-KMS), you can use the default AWS managed CMK, or you can specify a customer-managed CMK that you have already created.
+    - Creating your own customer-managed CMK gives you more flexibility and control over the CMK. For example, you can create, rotate, and disable customer-managed CMKs. You can also define access controls and audit the customer-managed CMKs that you use to protect your data.  
+      ![](./img/sse-kms-note.jpg)
+- [ ] Server-Side Encryption with Amazon S3-Managed Keys (SSE-S3)
+  - **Explanation**: When you use Server-Side Encryption with Amazon S3-Managed Keys (SSE-S3), each object is encrypted with a unique key. As an additional safeguard, AWS encrypts the key itself with a master key that it regularly rotates. So this option is incorrect for the given use-case.
+
+</details>

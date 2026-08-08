@@ -66,3 +66,29 @@ To lock this door down, you execute two core security configurations:
 
 - **The Runaway Lambda Execution Invoice:** If an exam scenario presents a high-traffic system where Lambda functions are processing massive numbers of redundant requests for static, identical database reads, resulting in crazy high bills—look straight for **Enabling API Gateway Caching on the Production Stage and tuning the TTL to match the data's update cycle**
 - **The Unauthorized Cache-Busting Attack:** If a question describes a production API Gateway cache cluster that keeps getting bypassed by untrusted clients spamming `Cache-Control: max-age=0` headers, leading to backend performance drops—the correct answer is to **Require Authorization in the API Gateway Stage details panel and restrict cache invalidation permissions using an IAM policy containing the `execute-api:InvalidateCache` action.**
+
+### Practice Test
+
+**Question 1**: A financial services company with over 10,000 employees has hired you as the new Senior Developer. Initially caching was enabled to reduce the number of calls made to all API endpoints and improve the latency of requests to the company’s API Gateway.
+
+For testing purposes, you would like to invalidate caching for the API clients to get the most recent responses. Which of the following should you do?
+
+- [ ] Use the Request parameter: `?bypass_cache=1`
+- [ ] Using the Header `Bypass-Cache=1`
+- [ ] Using the request parameter `?cache-control-max-age=0`
+- [ ] Using the Header `Cache-Control: max-age=0`
+
+<details>
+<summary>Correct Answer</summary>
+
+- [ ] Use the Request parameter: `?bypass_cache=1`
+  - **Explanation**: Method parameters take query string but this is not one of them.
+- [ ] Using the Header `Bypass-Cache=1`
+  - **Explanation**: This is a made-up option.
+- [ ] Using the request parameter `?cache-control-max-age=0`
+  - **Explanation**: To invalidate cache it requires a header and not a request parameter.
+- [x] Using the Header `Cache-Control: max-age=0`
+  - **Explanation**: A client of your API can invalidate an existing cache entry and reload it from the integration endpoint for individual requests. The client must send a request that contains the Cache-Control: max-age=0 header. The client receives the response directly from the integration endpoint instead of the cache, provided that the client is authorized to do so. This replaces the existing cache entry with the new response, which is fetched from the integration endpoint.  
+    ![](./img/api-gateway-caching-invalidation.jpg)
+
+</details>

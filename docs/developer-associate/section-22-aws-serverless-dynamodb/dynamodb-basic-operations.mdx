@@ -73,3 +73,28 @@ If your engineering team has standard relational habits and prefers standard dec
 
 - **The Database Wipe Best Practice:** If an exam prompt presents a scenario where a test engineer needs to completely clear out a 20 GB staging table before a fresh deployment run, **never choose an option that suggests running a Scan loop followed by individual DeleteItem commands** That burns millions of RCUs and takes forever. The correct, most cost-effective architectural answer is to execute a single **`DeleteTable`** API call to drop the entire resource instantly, and then fire a clean `CreateTable` call to recreate the shell!
 - **Handling Unprocessed Batch Failures:** If a question asks how your application code should handle partial batch delivery failures when `BatchWriteItem` returns a list of `UnprocessedItems`, look for the software mitigation pattern: **Do not retry the entire original batch array! Extract strictly the specific item nodes inside the `UnprocessedItems` object block and resend them down the wire using an Exponential Backoff and Jitter loop**
+
+### Practice Test
+
+**Question 1**: A firm uses AWS DynamoDB to store information about people’s favorite sports teams and allow the information to be searchable from their home page. There is a daily requirement that all 10 million records in the table should be deleted then re-loaded at 2:00 AM each night.
+
+Which option is an efficient way to delete with minimal costs?
+
+- [ ] Delete then re-create the table
+- [ ] Call PurgeTable
+- [ ] Scan and call BatchDeleteItem
+- [ ] Scan and call DeleteItem
+
+<details>
+<summary>Correct Answer</summary>
+
+- [x] Delete then re-create the table
+  - **Explanation**: The DeleteTable operation deletes a table and all of its items. After a DeleteTable request, the specified table is in the DELETING state until DynamoDB completes the deletion.
+- [ ] Call PurgeTable
+  - **Explanation**: This is a made-up option and has been added as a distractor.
+- [ ] Scan and call BatchDeleteItem
+  - **Explanation**: Scan is a very slow operation for 10 million items and this is not the best-fit option for the given use-case.
+- [ ] Scan and call DeleteItem
+  - **Explanation**: Scan is a very slow operation for 10 million items and this is not the best-fit option for the given use-case.
+
+</details>

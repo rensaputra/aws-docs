@@ -91,3 +91,35 @@ You can lock down exact data row interactions inside a shared Amazon DynamoDB ta
 
 - **The STS API Identification Blueprint:** If a multi-choice exam prompt asks you to identify the exact low-level cryptographic token exchange API call invoked behind the scenes when a public social login token is traded for temporary AWS credentials—**look straight for `AssumeRoleWithWebIdentity`.** Do _not_ choose `AssumeRole` or `GetSessionToken`.
 - **The Mobile User Storage Direct Bypass:** If a scenario presents an architecture group launching a mobile photo journal app, and they want to reduce compute loads by letting users upload image files directly to an Amazon S3 bucket without routing data through an intermediate ECS container tier—**choose the option that deploys a Cognito Identity Pool hooked to a Cognito User Pool, leveraging the `${cognito-identity.amazonaws.com:sub}` variable inside the authenticated IAM policy to securely isolate user storage folders.**
+
+### Practice Scenario
+
+**Question 1**: A developer wants to integrate user-specific file upload and download features in an application that uses both Amazon Cognito user pools and Cognito identity pools for secure access with Amazon S3. The developer also wants to ensure that only authorized users can access their own files and that the files are securely saved and retrieved. The files are 5 KB to 500 MB in size.
+
+What do you recommend as the most efficient solution?
+
+- [ ] Use CloudFront Lambda@Edge to validate that the given file is uploaded to S3 and downloaded from S3 only by the authorized user
+- [ ] Use S3 Event Notifications to trigger a Lambda function that validates that the given file is uploaded and downloaded only by the authorized user
+- [ ] Integrate Amazon API Gateway with a Lambda function that validates that the given file is uploaded to S3 and downloaded from S3 only by the authorized user
+- [ ] Leverage an IAM policy with the Amazon Cognito identity prefix to allow users access to just their own objects in Amazon S3
+
+<details>
+<summary>Correct Answer</summary>
+
+- [ ] Use CloudFront Lambda@Edge to validate that the given file is uploaded to S3 and downloaded from S3 only by the authorized user
+  - **Explanation**: This option assumes that the solution comprises a CloudFront distribution. This introduces inefficiency in the solution, as one needs to pay for CloudFront/Lambda@Edge and adds unnecessary hops in the data flow for both uploads and downloads.
+- [ ] Use S3 Event Notifications to trigger a Lambda function that validates that the given file is uploaded and downloaded only by the authorized user
+  - **Explanation**: While it is certainly possible to build this solution, however, it is not the most optimal solution as it does not prevent an invalid upload of a file into another user's designated folder. So this option is incorrect.
+- [ ] Integrate Amazon API Gateway with a Lambda function that validates that the given file is uploaded to S3 and downloaded from S3 only by the authorized user
+  - **Explanation**: Again, it is certainly possible to build this solution, however, it is not the most optimal solution as it does not prevent an invalid upload of a file into another user's designated folder. So this option is incorrect.
+- [x] Leverage an IAM policy with the Amazon Cognito identity prefix to allow users access to just their own objects in Amazon S3
+  - **Explanation**: Amazon Cognito identity pools (federated identities) enable you to create unique identities for your users and federate them with identity providers. With an identity pool, you can obtain temporary, limited-privilege AWS credentials to access other AWS services. Amazon Cognito identity pools support the following identity providers:
+    Public providers: Login with Amazon (identity pools), Facebook (identity pools), Google (identity pools), Sign in with Apple (identity pools).
+    Amazon Cognito user pools
+    OpenID Connect providers (identity pools)
+    SAML identity providers (identity pools)
+    Developer authenticated identities (identity pools)
+    You can create an identity-based policy that allows Amazon Cognito users to access objects in a specific S3 bucket. This policy allows access only to objects with a name that includes Cognito, the name of the application, and the federated user's ID, represented by the `${cognito-identity.amazonaws.com:sub}` variable.  
+     ![](./img/cognito-identity-pools-s3-policy.png)
+
+</details>

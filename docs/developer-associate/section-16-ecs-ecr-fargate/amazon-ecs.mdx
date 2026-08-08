@@ -66,3 +66,28 @@ Tasks running concurrently anywhere inside your network VPC can read and write t
 
 - The Trap: Junior developers will jump into the settings and add ECR permissions to the standard Task Role. The task will continue to crash.
 - The Fix: Because pulling the container block image from the ECR registry happens before your container app logic is running, the entity executing the request is the ECS host manager itself. You must navigate into your task definition configuration and ensure your Task Execution Role has explicit `ecr:GetDownloadUrlForLayer` and `ecr:BatchGetImage` policy permissions checked on!
+
+### Practice Scenario
+
+**Question**: You are working for a shipping company that is automating the creation of ECS clusters with an Auto Scaling Group using an AWS CloudFormation template that accepts cluster name as its parameters. Initially, you launch the template with input value 'MainCluster', which deployed five instances across two availability zones. The second time, you launch the template with an input value 'SecondCluster'. However, the instances created in the second run were also launched in 'MainCluster' even after specifying a different cluster name.
+
+What is the root cause of this issue?
+
+- [ ] The ECS agent Docker image must be re-built to connect to the other clusters
+- [ ] The cluster name Parameter has not been updated in the file /etc/ecs/ecs.config during bootstrap
+- [ ] The security groups on the EC2 instance are pointing to the wrong ECS cluster
+- [ ] The EC2 instance is missing IAM permissions to join the other clusters
+
+<details>
+<summary>Correct Answer</summary>
+- [ ] The ECS agent Docker image must be re-built to connect to the other clusters
+  - **Explanation**: Since the first set of instances got created from the template without any issues, there is no issue with the ECS agent here.
+- [x] The cluster name Parameter has not been updated in the file /etc/ecs/ecs.config during bootstrap
+  - **Explanation**: In the ecs.config file you have to configure the parameter ECS_CLUSTER='your_cluster_name' to register the container instance with a cluster named 'your_cluster_name'.  
+    ![](./img/ecs-config-sample.jpg)
+- [ ] The security groups on the EC2 instance are pointing to the wrong ECS cluster
+  - **Explanation**: Security groups govern the rules about the incoming network traffic to your ECS containers. The issue here is not about user access and hence is a wrong choice for the current use case.
+- [ ] The EC2 instance is missing IAM permissions to join the other clusters
+  - **Explanation**: EC2 instances are getting registered to the first cluster, so permissions are not an issue here and hence this statement is an incorrect choice for the current use case.
+
+</details>

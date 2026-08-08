@@ -67,3 +67,32 @@ As part of new compliance rules, you need to capture the client's IP address. Ho
   - **Explanation:** The `X-Forwarded-For` request header helps you identify the IP address of a client when you use an HTTP or HTTPS load balancer. Because load balancers intercept traffic between clients and servers, your server access logs contain only the IP address of the load balancer. To see the IP address of the client, use the `X-Forwarded-For` request header. Elastic Load Balancing stores the IP address of the client in the `X-Forwarded-For` request header and passes the header to your server.
 
 </details>
+
+**Question 2**: A developer is configuring an Application Load Balancer (ALB) to direct traffic to the application's EC2 instances and Lambda functions.
+
+Which of the following characteristics of the ALB can be identified as correct? **(Select two)**
+
+- [ ] If you specify targets using an instance ID, traffic is routed to instances using any private IP address from one or more network interfaces
+- [ ] If you specify targets using IP addresses, traffic is routed to instances using the primary private IP address
+- [ ] An ALB has three possible target types: Hostname, IP and Lambda
+- [ ] You can not specify publicly routable IP addresses to an ALB
+- [ ] An ALB has three possible target types: Instance, IP and Lambda
+
+<details>
+  <summary>Correct Answer</summary>
+
+- [ ] If you specify targets using an instance ID, traffic is routed to instances using any private IP address from one or more network interfaces
+  - **Explanation**: If you specify targets using an instance ID, traffic is routed to instances using the primary private IP address specified in the primary network interface for the instance.
+- [ ] If you specify targets using IP addresses, traffic is routed to instances using the primary private IP address
+  - **Explanation**: If you specify targets using IP addresses, you can route traffic to an instance using any private IP address from one or more network interfaces. This enables multiple applications on an instance to use the same port.
+- [ ] An ALB has three possible target types: Hostname, IP and Lambda
+  - **Explanation**: This is incorrect, as described in the correct explanation below.
+- [x] You can not specify publicly routable IP addresses to an ALB
+  - **Explanation**: When the target type is IP, you can specify IP addresses from specific CIDR blocks only. You can't specify publicly routable IP addresses.
+- [x] An ALB has three possible target types: Instance, IP and Lambda
+  - **Explanation**: When you create a target group, you specify its target type, which determines the type of target you specify when registering targets with this target group. After you create a target group, you cannot change its target type. The following are the possible target types:
+    - **Instance**: The targets are specified by instance ID.
+    - **IP**: The targets are IP addresses.
+    - **Lambda**: The target is a Lambda function.
+
+</details>
