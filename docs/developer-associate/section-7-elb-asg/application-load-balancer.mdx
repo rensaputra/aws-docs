@@ -10,7 +10,7 @@ This lecture marks the jump from generic traffic routing to intelligent, applica
 
 ### Layer 7 (Application)
 
-Unlike lower-level network balancers, the ALB inspects the actual HTTP/HTTPS data inside the network packets. Because it can read your application headers and URLs, it can intelligently split traffic behind a **single fixed DNS host name** using **Listener Rles**:
+Unlike lower-level network balancers, the ALB inspects the actual HTTP/HTTPS data inside the network packets. Because it can read your application headers and URLs, it can intelligently split traffic behind a **single fixed DNS host name** using **Listener Rules**:
 
 - **Path-Based Routing**: Sending traffic to different target groups based on URL path (e.g., `res.id.au/api/users` routes to the user microservice, while `res.id.au/api/products` routes to the product microservice).
   ![Path-Based Routing](./img/alb-path-based-routing.png)
@@ -48,3 +48,22 @@ Because the ALB intercepts and terminates the incoming client connection, a majo
 - **The Client IP Tracking Clue**: If an exam question describes a scenario where an application behind an ALB needs to block or log bad users based on their geolocation or actual public IP, but the application logs are only showing internal AWS private IPs, the correct developer fix is to **modify the application code to read the `X-Forwarded-For` HTTP header** instead of socket's default remote IP.
 
 - **Health Check Levels**: Remember that health checks are always configured and evaluated at the **Target Group level**, not the overall ALB level. This allows your User target group to have completely different health checking routes (e.g., `HTTP:80/health`) than your Admin target group (e.g., `HTTP:8080/admin-health`).
+
+### Practice Test
+
+**Question 1:** Your company uses an Application Load Balancer to route incoming end-user traffic to applications hosted on Amazon EC2 instances. The applications capture incoming request information and store it in the Amazon Relational Database Service (RDS) running on Microsoft SQL Server DB engines.
+
+As part of new compliance rules, you need to capture the client's IP address. How will you achieve this?
+
+- [ ] Use the header `X-Forwarded-For`
+- [ ] You can get the Client IP addresses from server access logs
+- [ ] Use the header `X-Forwarded-From`
+- [ ] You can get the Client IP addresses from Elastic Load Balancing logs
+
+<details>
+  <summary>Correct Answer</summary>
+
+- [x] Use the header `X-Forwarded-For`
+  - **Explanation:** The `X-Forwarded-For` request header helps you identify the IP address of a client when you use an HTTP or HTTPS load balancer. Because load balancers intercept traffic between clients and servers, your server access logs contain only the IP address of the load balancer. To see the IP address of the client, use the `X-Forwarded-For` request header. Elastic Load Balancing stores the IP address of the client in the `X-Forwarded-For` request header and passes the header to your server.
+
+</details>

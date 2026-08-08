@@ -70,3 +70,36 @@ Completely independent of your item concurrency strategies, **Batch writes** are
 
 - **The Web Traffic Page Counter Scenario:** If an exam prompt presents a scenario where a high-velocity serverless app needs to track global analytics hit logs, and mandates ultra-low latency write speeds where a minor statistical duplicate during a network retry is acceptable—**look straight for Atomic Counters via `UpdateItem` math expressions, chief!**
 - **The Inventory Stock Outcheck Scenario:** If the prompt shifts context to a strict financial booking or e-commerce cart seat reservation system where multiple users are clicking checkout at the exact same second, and you must absolutely guarantee that a seat is never double-booked—**never choose an atomic or concurrent write. You explicitly implement Conditional Writes backed by Optimistic Locking version checks**
+
+### Practice Test
+
+**Question:** A company is creating a gaming application that will be deployed on mobile devices. The application will send data to a Lambda function-based RESTful API. The application will assign each API request a unique identifier. The volume of API requests from the application can randomly vary at any given time of day. During request throttling, the application might need to retry requests. The API must be able to address duplicate requests without inconsistencies or data loss.  
+Which of the following would you recommend to handle these requirements?
+
+- [ ] Persist the unique identifier for each request in a DynamoDB table. Change the Lambda function to send a client error response when the function receives a duplicate request
+- [ ] Persist the unique identifier for each request in an RDS MySQL table. Change the Lambda function to check the table for the identifier before processing the request
+- [ ] Persist the unique identifier for each request in an ElastiCache for Memcached cache. Change the Lambda function to check the cache for the identifier before processing the request
+- [ ] Persist the unique identifier for each request in a DynamoDB table. Change the Lambda function to check the table for the identifier before processing the request
+
+<details>
+<summary>Correct Answer</summary>
+
+- [x] Persist the unique identifier for each request in a DynamoDB table. Change the Lambda function to check the table for the identifier before processing the request
+  - **Explanation**: DynamoDB is a fully managed, serverless, key-value NoSQL database designed to run high-performance applications at any scale. DynamoDB offers built-in security, continuous backups, automated multi-Region replication, in-memory caching, and data import and export tools. On-demand backup and restore allows you to create full backups of your DynamoDB. Point-in-time recovery (PITR) helps protect your DynamoDB tables from accidental write or delete operations. PITR provides continuous backups of your DynamoDB table data, and you can restore that table to any point in time up to the second during the preceding 35 days.  
+    These features ensure that there is no data loss for the application, thereby meeting a key requirement for the given use case. The solution should also be able to address any duplicate requests without inconsistencies, so the Lambda function should be changed to inspect the table for the given identifier and process the request only if the identifier is unique.  
+     ![](./img/dynamodb-unique-id.png)
+
+<details>
+<summary>Incorrect Answers</summary>
+
+- [ ] Persist the unique identifier for each request in an ElastiCache for Memcached cache. Change the Lambda function to check the cache for the identifier before processing the request
+  - **Explanation**: Memcached is designed for simplicity and it does not offer any snapshot or replication features. This can lead to data loss for applications. Therefore, this option is not the right fit for the given use case.  
+    ![](./img/memcached-redis-comparison.png)
+- [ ] Persist the unique identifier for each request in an RDS MySQL table. Change the Lambda function to check the table for the identifier before processing the request
+  - **Explanation**: DynamoDB is a better fit than RDS MySQL to handle massive traffic spikes for write requests. DynamoDB is a key-value and document database that supports tables of virtually any size with horizontal scaling. DynamoDB scales to more than 10 trillion requests per day and with tables that have more than ten million read and write requests per second and petabytes of data storage. DynamoDB can be used to build applications that need consistent single-digit millisecond performance. MySQL RDS can be scaled vertically, however, it cannot match the performance benefits offered by DynamoDB for the given use case.
+- [ ] Persist the unique identifier for each request in a DynamoDB table. Change the Lambda function to send a client error response when the function receives a duplicate request
+  - **Explanation**: The solution should be able to address any duplicates without any inconsistencies. If Lambda sends a client error response upon receiving a duplicate request, it represents an inconsistent response. So this option is incorrect.
+
+</details>
+
+</details>

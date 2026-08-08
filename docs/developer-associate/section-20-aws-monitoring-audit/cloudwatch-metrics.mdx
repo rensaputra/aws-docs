@@ -40,11 +40,71 @@ When managing standard EC2 compute resources, the temporal reporting window is a
 
 ### Practice Test
 
-**Question**: A software engineering team has deployed an e-commerce backend onto an Auto Scaling Group of Amazon EC2 instances. During flash sales events, flash traffic rushes the cluster, causing massive user-facing latency before the ASG can spin up backup instances. The CloudWatch Alarms are currently running on the default baseline monitoring settings. How can the developer optimize the scaling performance to handle these rapid traffic surges faster?
+**Question 1:** A software engineering team has deployed an e-commerce backend onto an Auto Scaling Group of Amazon EC2 instances. During flash sales events, flash traffic rushes the cluster, causing massive user-facing latency before the ASG can spin up backup instances. The CloudWatch Alarms are currently running on the default baseline monitoring settings. How can the developer optimize the scaling performance to handle these rapid traffic surges faster?
 
-- **A**. Update the application code logic to fire an inline `PurgeQueue` API call execution sequence.
-- **B**. Re-route all web traffic through an alternate SQS FIFO queue directory running on a message group ID.
-- **C**. Re-upload the microservice definitions inside an external JSON policy wrapper via CloudFormation StackSets.
-- **D**. Enable Detailed Monitoring on the EC2 launch template to increase metric resolution to 1-minute intervals, allowing the ASG scaling policies to evaluate metrics faster.
+- [ ] Update the application code logic to fire an inline `PurgeQueue` API call execution sequence.
+- [ ] Re-route all web traffic through an alternate SQS FIFO queue directory running on a message group ID.
+- [ ] Re-upload the microservice definitions inside an external JSON policy wrapper via CloudFormation StackSets.
+- [ ] Enable Detailed Monitoring on the EC2 launch template to increase metric resolution to 1-minute intervals, allowing the ASG scaling policies to evaluate metrics faster.
 
-**Correct Answer: D**. Upgrading the platform framework to Detailed Monitoring increases the metric resolution path to 1-minute intervals. This buys your CloudWatch alarm systems precious minutes to spot spikes and scale out new worker instances aggressively before user latency drops.
+<details>
+  <summary>Correct Answer</summary>
+
+- [x] Enable Detailed Monitoring on the EC2 launch template to increase metric resolution to 1-minute intervals, allowing the ASG scaling policies to evaluate metrics faster.
+  - **Explanation:** Upgrading the platform framework to Detailed Monitoring increases the metric resolution path to 1-minute intervals. This buys your CloudWatch alarm systems precious minutes to spot spikes and scale out new worker instances aggressively before user latency drops.
+
+</details>
+
+**Question 2:** You have been asked by your Team Lead to enable detailed monitoring of the Amazon EC2 instances your team uses. As a Developer working on AWS CLI, which of the below command will you run?
+
+- [ ] aws ec2 run-instances --image-id ami-09092360 --monitoring State=enabled
+- [ ] aws ec2 run-instances --image-id ami-09092360 --monitoring Enabled=true
+- [ ] aws ec2 monitor-instances --instance-ids i-1234567890abcdef0
+- [ ] aws ec2 monitor-instances --instance-id i-1234567890abcdef0
+
+<details>
+  <summary>Correct Answer</summary>
+
+- [x] aws ec2 monitor-instances --instance-ids i-1234567890abcdef0
+  - **Explanation:** The `monitor-instances` command is used to enable detailed monitoring for a running instance.
+
+<details>
+<summary>Incorrect Answer</summary>
+
+- [ ] `aws ec2 run-instances --image-id ami-09092360 --monitoring Enabled=true`
+  - This syntax is used to enable detailed monitoring when launching an instance from AWS CLI.
+- Other options are invalid syntax
+
+</details>
+
+</details>
+
+**Question 3:** A telecommunications company that provides internet service for mobile device users maintains over 100 c4.large instances in the us-east-1 region. The EC2 instances run complex algorithms. The manager would like to track CPU utilization of the EC2 instances as frequently as every 10 seconds.
+
+Which of the following represents the BEST solution for the given use-case?
+
+- [ ] Create a high-resolution custom metric and push the data using a script triggered every 10 seconds
+- [ ] Open a support ticket with AWS
+- [ ] Enable EC2 detailed monitoring
+- [ ] Simply get it from the CloudWatch Metrics
+
+<details>
+  <summary>Correct Answer</summary>
+
+- [x] Create a high-resolution custom metric and push the data using a script triggered every 10 seconds
+  - **Explanation:** Using high-resolution custom metric, your applications can publish metrics to CloudWatch with 1-second resolution. You can watch the metrics scroll across your screen seconds after they are published and you can set up high-resolution CloudWatch Alarms that evaluate as frequently as every 10 seconds. You can alert with High-Resolution Alarms, as frequently as 10-second periods. High-Resolution Alarms allow you to react and take actions faster and support the same actions available today with standard 1-minute alarms.  
+    ![](./img/high-resolution-metrics.jpg)
+
+<details>
+<summary>Incorrect Answer</summary>
+
+- [ ] Open a support ticket with AWS
+  - This option has been added as a distractor.
+- [ ] Enable EC2 detailed monitoring
+  - As part of basic monitoring, Amazon EC2 sends metric data to CloudWatch in 5-minute periods. To send metric data for your instance to CloudWatch in 1-minute periods, you can enable detailed monitoring on the instance, however, this comes at an additional cost.
+- [ ] Simply get it from the CloudWatch Metrics
+  - You can get data from metrics. The basic monitoring data is available automatically in a 5-minute interval and detailed monitoring data is available in a 1-minute interval.
+
+</details>
+
+</details>
