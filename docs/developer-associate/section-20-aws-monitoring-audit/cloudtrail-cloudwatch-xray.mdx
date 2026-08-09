@@ -63,4 +63,42 @@ In a true production environment, these three systems work side-by-side to creat
 - **C.** Deploy an inline CloudWatch Metric Filter pass straight into an SQS FIFO queue directory using an external CloudFormation script layout.
 - **D.** Modify custom X-Ray Sampling Rules to parse administrative resource deletions across multi-region StackSets.
 
-**Correct Answer: B.** For auditing _who_ modified table settings or configurations from a compliance standpoint, **CloudTrail** is the required choice. For diagnosing _why_ requests are running slow across a distributed microservice layer, **X-Ray** is the industry standard tool.
+<details>
+<summary>Correct Answer</summary>
+
+- [x] **B.** Use AWS CloudTrail to log and review table-level configuration API changes for security auditing, and implement AWS X-Ray to track request tracing and isolate code-layer latency bottlenecks.
+  - **Explanation:** For auditing _who_ modified table settings or configurations from a compliance standpoint, **CloudTrail** is the required choice. For diagnosing _why_ requests are running slow across a distributed microservice layer, **X-Ray** is the industry standard tool.
+
+</details>
+
+**Question**: A company uses microservices-based infrastructure to process the API calls from clients, perform request filtering and cache requests using the AWS API Gateway. Users report receiving 501 error code and you have been contacted to find out what is failing.
+
+Which service will you choose to help you troubleshoot?
+
+- [ ] Use CloudWatch service
+- [ ] Use CloudTrail service
+- [ ] Use X-Ray service
+- [ ] Use API Gateway service
+
+<details>
+<summary>Correct Answer</summary>
+
+- [ ] Use CloudWatch service
+- **Explanation**: Amazon CloudWatch is a monitoring and management service that provides data and actionable insights for AWS, hybrid, and on-premises applications and infrastructure resources. CloudWatch can collect numbers and respond to AWS service-related events, but it can't help you debug microservices specific issues on AWS.
+- [ ] Use CloudTrail service
+  - **Explanation**: With CloudTrail, you can get a history of AWS API calls for your account - including API calls made via the AWS Management Console, AWS SDKs, command-line tools, and higher-level AWS services (such as AWS CloudFormation). This is a very useful service for general monitoring and tracking. But, it will not give a detailed analysis of the outcome of microservices or drill into specific issues. For the current use case, X-Ray offers a better solution.
+- [x] Use X-Ray service
+  - **Explanation**: AWS X-Ray helps developers analyze and debug production, distributed applications, such as those built using a microservices architecture. With X-Ray, you can understand how your application and its underlying services are performing to identify and troubleshoot the root cause of performance issues and errors. X-Ray provides an end-to-end view of requests as they travel through your application, and shows a map of your application’s underlying components. You can use X-Ray to analyze both applications in development and in production, from simple three-tier applications to complex microservices applications consisting of thousands of services.  
+    ![](./img/xray-diagram.jpg)
+
+    AWS X-Ray creates a map of services used by your application with trace data that you can use to drill into specific services or issues. This provides a view of connections between services in your application and aggregated data for each service, including average latency and failure rates. You can create dependency trees, perform cross-availability zone or region call detections, and more.
+
+    X-Ray Service Maps:
+    ![](./img/xray-service-map.jpg)
+    X-Ray Trace Timeline:
+    ![](./img/xray-trace-timeline.jpg)
+
+- [ ] Use API Gateway service
+  - **Explanation**: Amazon API Gateway is an AWS service for creating, publishing, maintaining, monitoring, and securing REST, HTTP, and WebSocket APIs at any scale. API Gateway will not be able to drill into the flow between different microservices or their issues.
+
+</details>
