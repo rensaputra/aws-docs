@@ -4,7 +4,7 @@ sidebar_position: 6
 
 # Three Tier Architecture
 
-Think of these of three separate security zones. If a hacker breaks nto Tier 1, they aren't "inside" your database because of the firewall boundaries we built.
+Think of these of three separate security zones. If a hacker breaks into Tier 1, they aren't "inside" your database because of the firewall boundaries we built.
 
 ![Three tier architecture diagram](./img/three-tier-architecture-diagram.png)
 
@@ -51,3 +51,28 @@ Stephane recommends you to read the official [WordPress architecture diagram](ht
 
 **The "Public IP" Red Flag"**: If an exam question says, _"You are deploying a 3-tier app. To save costs, you want your EC2 instances to be able to download patches from the internet without a NAT Gateway. How should you configure them?"_.  
 **The answer is a Trap**. To do this, you'd have to put the EC2 instances in a **Public Subnet** and give them **Public IPs**. While this is cheaper (no NAT Gateway cost), it is a **Security Failure** because those instances are now directly "reachable" by the whole internet. For a Developer Associate, always prioritize the **NAT Gateway + Private Subnet** pattern for backend logic.
+
+### Practice Test
+
+**Question 1**: A company's e-commerce application becomes slow when traffic spikes. The application has a three-tier architecture (web, application and database tier) that uses synchronous transactions. The development team at the company has identified certain bottlenecks in the application tier and it is looking for a long term solution to improve the application's performance.
+
+As a developer associate, which of the following solutions would you suggest to meet the required application response times while accounting for any traffic spikes?
+
+- [ ] Leverage horizontal scaling for the web and application tiers by using Auto Scaling groups and Application Load Balancer
+- [ ] Leverage vertical scaling for the application instance by provisioning a larger Amazon EC2 instance size
+- [ ] Leverage horizontal scaling for the application's persistence layer by adding Oracle RAC on AWS
+- [ ] Leverage SQS with asynchronous AWS Lambda calls to decouple the application and data tiers
+
+<details>
+<summary>Correct Answer</summary>
+
+- [x] Leverage horizontal scaling for the web and application tiers by using Auto Scaling groups and Application Load Balancer
+  - **Explanation**: Horizontally scaling web and application tiers using Auto Scaling groups (ASGs) and Application Load Balancers (ALBs) allows the application to automatically scale out or in based on incoming traffic spikes. This preserves synchronous application processing while eliminating bottlenecks without requiring an architecture overhaul.
+- [ ] Leverage vertical scaling for the application instance by provisioning a larger Amazon EC2 instance size
+  - **Explanation**: Vertical scaling (scaling up instance size) has a hard upper limit and requires downtime during resize operations. It acts as a temporary band-aid rather than a viable long-term solution for traffic spikes.
+- [ ] Leverage horizontal scaling for the application's persistence layer by adding Oracle RAC on AWS
+  - **Explanation**: The performance bottleneck was specifically identified in the application tier, not the database/persistence layer.
+- [ ] Leverage SQS with asynchronous AWS Lambda calls to decouple the application and data tiers
+  - **Explanation**: This is incorrect as it uses asynchronous AWS Lambda calls and the application uses synchronous transactions. The question says there should be no change in the application architecture.
+
+</details>
