@@ -96,3 +96,87 @@ Which of the following characteristics of the ALB can be identified as correct? 
     - **Lambda**: The target is a Lambda function.
 
 </details>
+
+**Question**: A developer is configuring the redirect actions for an Application Load Balancer. The developer stumbled upon the following snippet of code.
+
+Which of the following is an example of a query string condition that the developer can use on AWS CLI?
+
+- ```json
+  [
+    {
+      "Type": "redirect",
+      "RedirectConfig": {
+        "Protocol": "HTTPS",
+        "Port": "443",
+        "Host": "#{host}",
+        "Path": "/#{path}",
+        "Query": "#{query}",
+        "StatusCode": "HTTP_301"
+      }
+    }
+  ]
+  ```
+- ```json
+  [
+    {
+      "Field": "query-string",
+      "QueryStringConfig": {
+        "Values": [
+          {
+            "Key": "version",
+            "Value": "v1"
+          },
+          {
+            "Value": "*example*"
+          }
+        ]
+      }
+    }
+  ]
+  ```
+- ```json
+  [
+    {
+      "Field": "query-string",
+      "StringHeaderConfig": {
+        "Values": ["*.example.com"]
+      }
+    }
+  ]
+  ```
+- ```json
+  [
+    {
+      "Field": "query-string",
+      "PathPatternConfig": {
+        "Values": ["/img/*"]
+      }
+    }
+  ]
+  ```
+
+<details>
+  <summary>Correct Answer</summary>
+
+- ```json
+  [
+    {
+      "Field": "query-string",
+      "QueryStringConfig": {
+        "Values": [
+          {
+            "Key": "version",
+            "Value": "v1"
+          },
+          {
+            "Value": "*example*"
+          }
+        ]
+      }
+    }
+  ]
+  ```
+
+  - **Explanation**: The query string condition is used to route requests based on the query string parameters in the URL. In this example, the condition checks for a query string parameter with the key "version" and the value "v1", as well as any value that contains the substring "example". This allows for more granular routing based on specific query string parameters.
+
+</details>
