@@ -120,3 +120,31 @@ How will you configure this requirement?
   - **Explanation**: CloudWatch CPU and memory utilization metrics are resource/performance metrics, not application logs. This does not address the audit requirement for storing application log data.
 
 </details>
+
+**Question 3**: The development team at an e-commerce company wants to run a serverless data store service on two docker containers that share resources.
+
+Which of the following ECS configurations can be used to facilitate this use-case?
+
+- [ ] Put the two containers into a single task definition using a Fargate Launch Type
+- [ ] Put the two containers into a single task definition using an EC2 Launch Type
+- [ ] Put the two containers into two separate task definitions using a Fargate Launch Type
+- [ ] Put the two containers into two separate task definitions using an EC2 Launch Type
+
+<details>
+<summary>Correct Answer</summary>
+
+- [x] Put the two containers into a single task definition using a Fargate Launch Type
+  - **Explanation**: Amazon Elastic Container Service (Amazon ECS) is a highly scalable, fast, container management service that makes it easy to run, stop, and manage Docker containers on a cluster. You can host your cluster on a serverless infrastructure that is managed by Amazon ECS by launching your services or tasks using the Fargate launch type. For more control over your infrastructure, you can host your tasks on a cluster of Amazon Elastic Compute Cloud (Amazon EC2) instances that you manage by using the EC2 launch type.  
+    ![](./img/ecs-fargate-launch-type.png)
+
+    As the development team is looking for a serverless data store service, therefore the two containers should be launched into a single task definition using a Fargate Launch Type. Using a single task definition allows the two containers to share resources. Please see these use-cases for Fargate Launch type when you should put multiple containers into the same task definition:  
+     ![](./img/ecs-fargate-multiple-containers.jpg)
+
+- [ ] Put the two containers into a single task definition using an EC2 Launch Type
+  - **Explanation**: The EC2 launch type requires provisioning and managing underlying EC2 instances, which does not meet the requirement for a serverless data store service.
+- [ ] Put the two containers into two separate task definitions using a Fargate Launch Type
+  - **Explanation**: Placing containers in separate task definitions isolates them, preventing them from sharing resources directly within the same task boundary.
+- [ ] Put the two containers into two separate task definitions using an EC2 Launch Type
+  - **Explanation**: This uses the non-serverless EC2 launch type and separates the containers into distinct tasks, failing both the serverless and resource-sharing requirements.
+
+</details>
