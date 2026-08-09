@@ -101,6 +101,7 @@
     "awseb",
     "awsevents",
     "awsexamplebucket",
+    "awslogs",
     "awsvpc",
     "daxs",
     "dbeaver",
