@@ -151,3 +151,27 @@ sam delete
 
 - **The Validation Hooks Sequence:** Remember for scenario questions that SAM lets you define two custom Lambda functions to validate code states: **`PreTraffic`** (runs tests _before_ the traffic shift begins; if it fails, the rollout aborts immediately) and **`PostTraffic`** (runs tests _after_ traffic hits 100% to run final production checkouts, chief!).
 - **The CloudWatch Rollback Binding:** If an exam prompt introduces a DevOps team that needs to enforce automated rollback logic for serverless code updates based specifically on API Gateway latency spikes or Lambda error rates—**ensure you declare the exact CloudWatch Alarm resource names directly inside the `Alarms:` configuration array block under the function's `DeploymentPreference` block within the `template.yaml` file.**
+
+### Practice Test
+
+**Question**: A media analytics company has built a streaming application on Lambda using Serverless Application Model (SAM). As a Developer Associate, which of the following would you identify as the correct order of execution to successfully deploy the application?
+
+- [ ] Develop the SAM template locally => upload the template to Lambda => deploy your application to the cloud
+- [ ] Develop the SAM template locally => upload the template to CodeCommit => deploy your application to CodeDeploy
+- [ ] Develop the SAM template locally => upload the template to S3 => deploy your application to the cloud
+- [ ] Develop the SAM template locally => deploy the template to S3 => use your application in the cloud
+
+<details>
+<summary>Correct Answer</summary>
+
+- [ ] Develop the SAM template locally => upload the template to Lambda => deploy your application to the cloud
+  - **Explanation**: You cannot upload raw SAM templates directly to AWS Lambda. Lambda executes packaged code artifacts, while SAM uses CloudFormation behind the scenes to provision infrastructure.
+- [ ] Develop the SAM template locally => upload the template to CodeCommit => deploy your application to CodeDeploy
+  - **Explanation**: CodeCommit and CodeDeploy are CI/CD components. While they can be part of a pipeline, they are not the fundamental execution steps of the AWS SAM CLI framework itself.
+- [x] Develop the SAM template locally => upload the template to S3 => deploy your application to the cloud
+  - **Explanation**: The standard workflow for AWS SAM involves developing the template and code locally. When running `sam deploy` (or `sam package` followed by `sam deploy`), the SAM CLI packages your code artifacts and uploads the template/assets to an Amazon S3 deployment bucket. It then uses AWS CloudFormation to deploy the serverless stack to the cloud.  
+    ![](./img/sam-deploy-mechanism.jpg)
+- [ ] Develop the SAM template locally => deploy the template to S3 => use your application in the cloud
+  - **Explanation**: Uploading/packaging deployment artifacts to S3 is an intermediate step before creating the CloudFormation stack; simply placing a template in S3 does not deploy or activate the resources.
+
+</details>
