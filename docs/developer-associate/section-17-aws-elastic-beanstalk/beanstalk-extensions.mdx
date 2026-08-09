@@ -28,16 +28,18 @@ option_settings:
 ```math
 \text{DeploymentBundle} = \begin{cases} \text{/ (Root)} \\ ├── \mathbf{.ebextensions/} \\ │   └── \text{environment-variables.config} \\ ├── \text{app.js} \\ └── \text{package.json} \end{cases}
 ```
+
 #### Phase 2: Deploying the Configuration Bundle
 
 - **Zipping Root Content**: Select the files inside your project directory—including your application scripts (`app.js`) and your newly created `.ebextensions/` folder—and compress them directly into a flat root archive (`nodejs-V3-ebextensions.zip`).
 - **Console Upload Execution**: Navigate to your environment console, click Upload and Deploy, label the application version (e.g., `MyApplication-EBExtensionsDemo`), and submit. Beanstalk extracts the archive, discovers the `.ebextensions/` block, and immediately adjusts the infrastructure state.
-![](./img/beanstalk-ebextensions-upload.png)
+  ![](./img/beanstalk-ebextensions-upload.png)
+
 #### Phase 3: Resource Verification & Lifecycle Binding
 
 - **Properties Validation**: Once the deployment logs finish processing, navigate to the Configuration dashboard in Beanstalk and scroll down to Environment properties. The keys `DB_URL` and `DB_USER` will appear pre-populated straight from your code file.
 - **The Lifecycle Trap**: You can use these configuration files to spin up raw infrastructure components (like an ElastiCache or a DynamoDB table). However, any AWS resource created inside an `.ebextensions` file belongs explicitly to that Beanstalk environment. **If you terminate the Beanstalk environment, those auxiliary resources are instantly deleted along with it**.
-![](./img/beanstalk-ebextensions-resources.png)
+  ![](./img/beanstalk-ebextensions-resources.png)
 
 ### Architectural Dependency
 
@@ -83,9 +85,36 @@ Injects Keys into EC2 OS Environment        Provisions Managed Cluster Stack
 
 ### Practice Test
 
-**Question**: A developer needs to deploy a Python application to AWS Elastic Beanstalk. The application requires three custom OS environment variables to establish a connection to an external database cluster. Additionally, these variables must be version-controlled alongside the application source code. How should the developer configure this?
-    - **A**. Create a file named `env.yaml` inside a directory named `.ebextensions/` at the project root, and declare the keys under the options namespace.
-    - **B**. Create a file ending with .config inside a directory named `.ebextensions/` at the root of the source bundle, and define the variables under the `aws:elasticbeanstalk:application:environment` namespace.
-    - **C**. Define the environment variables directly inside the application's `requirements.txt` file.
-    - **D**. Use the AWS CLI to manually run `aws elasticbeanstalk update-environment` commands before running each build pipeline iteration.  
-**Correct Answer: B**. To bundle configuration settings alongside your application code for source control, you must place a `.config` file within the `.ebextensions/` root directory and use the correct environment namespace blocks.
+**Question 1**: A developer needs to deploy a Python application to AWS Elastic Beanstalk. The application requires three custom OS environment variables to establish a connection to an external database cluster. Additionally, these variables must be version-controlled alongside the application source code. How should the developer configure this? - [ ] Create a file named `env.yaml` inside a directory named `.ebextensions/` at the project root, and declare the keys under the options namespace. - [ ] Create a file ending with .config inside a directory named `.ebextensions/` at the root of the source bundle, and define the variables under the `aws:elasticbeanstalk:application:environment` namespace. - [ ] Define the environment variables directly inside the application's `requirements.txt` file. - [ ] Use the AWS CLI to manually run `aws elasticbeanstalk update-environment` commands before running each build pipeline iteration.
+
+<details>
+<summary>Correct Answer</summary>
+
+- [x] Create a file ending with .config inside a directory named `.ebextensions/` at the root of the source bundle, and define the variables under the `aws:elasticbeanstalk:application:environment` namespace.
+  - **Explanation**: To bundle configuration settings alongside your application code for source control, you must place a `.config` file within the `.ebextensions/` root directory and use the correct environment namespace blocks.
+
+</details>
+
+**Question 2**: A startup manages its Cloud resources with Elastic Beanstalk. The environment consists of few Amazon EC2 instances, an Auto Scaling Group (ASG), and an Elastic Load Balancer. Even after the Load Balancer marked an EC2 instance as unhealthy, the ASG has not replaced it with a healthy instance.
+
+As a Developer, suggest the necessary configurations to automate the replacement of unhealthy instance.
+
+- [ ] The ping path field of the Load Balancer is configured incorrectly
+- [ ] Auto Scaling group doesn't automatically replace the unhealthy instances marked by the load balancer. They have to be manually replaced from AWS Console
+- [ ] The health check type of your instance's Auto Scaling group, must be changed from EC2 to ELB by using a configuration file
+- [ ] Health check parameters were configured for checking the instance health alone. The instance failed because of application failure which was not configured as a parameter for health check status
+
+<details>
+<summary>Correct Answer</summary>
+
+- [ ] The ping path field of the Load Balancer is configured incorrectly
+  - **Explanation**: Ping path is a health check configuration field of Elastic Load Balancer. If the ping path is configured wrong, ELB will not be able to reach the instance and hence will consider the instance unhealthy. However, this would then apply to all instances, not just one instance. So it does not address the issue given in the use-case.
+- [ ] Auto Scaling group doesn't automatically replace the unhealthy instances marked by the load balancer. They have to be manually replaced from AWS Console
+  - **Explanation**: This statement is incorrect. If the health check type of the Auto Scaling group is changed from EC2 to ELB, Auto Scaling will automatically replace any instances marked as unhealthy by the load balancer.
+- [x] The health check type of your instance's Auto Scaling group, must be changed from EC2 to ELB by using a configuration file
+  - **Explanation**: By default, the health check configuration of your Auto Scaling group is set as an EC2 type that performs a status check of EC2 instances only. To automate the replacement of unhealthy EC2 instances based on ELB health checks, you must change the health check type of your instance's Auto Scaling group from EC2 to ELB by using a configuration file.  
+    ![](./img/beanstalk-health-check.png)
+- [ ] Health check parameters were configured for checking the instance health alone. The instance failed because of application failure which was not configured as a parameter for health check status
+  - **Explanation**: This is an incorrect statement. EC2 status checks, by definition, cover only the EC2 instance hardware/system health, whereas ELB health checks test the availability of the application running on the instance. Changing the ASG health check type to ELB resolves this exact scenario.
+
+</details>
