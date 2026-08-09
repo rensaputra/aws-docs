@@ -97,3 +97,32 @@ CodeBuild processes instructions through a strict, sequential timeline called **
 - **The Secret Leak Mitigation Scenario:** If an exam prompt introduces a team that needs to pass an external database connection password down to a CodeBuild container, but demands a secure, audited architecture that completely avoids saving plaintext secrets in the Git repository—**look straight for declaring the variable inside the `env/secrets-manager` block of the `buildspec.yml` file, matching the IAM execution role with read permissions to Secrets Manager.**
 - **The Runaway Cache Acceleration Optimization:** If a prompt describes a CodeBuild project that is completely functional but taking a massive amount of time on every single run because it has to fetch hundreds of megabytes of third-party dependencies from scratch over the open web—the answer is to **implement a Local or Custom S3 Cache block inside the buildspec file to cache the project's dependency folder (like `node_modules` or `.m2` blocks) across sequential runs.**
 - **The Silent Webhook Alert Setup:** If your DevOps team needs an automated alert system to ping a developer Slack room or email list the exact second a build phase fails—the solution is to **configure an Amazon EventBridge Rule watching for `CodeBuild Build State Change` with a status of `FAILED`, mapping the destination straight to an Amazon SNS topic.**
+
+### Practice Test
+
+**Question 1**: A developer in your company has configured a build using AWS CodeBuild. The build fails and the developer needs to quickly troubleshoot the issue to see which commands or settings located in the BuildSpec file are causing an issue.
+
+Which approach will help them accomplish this?
+
+- [ ] SSH into the CodeBuild Docker container
+- [ ] Freeze the CodeBuild during its next execution
+- [ ] Enable detailed monitoring
+- [ ] Run AWS CodeBuild locally using CodeBuild Agent
+
+<details>
+<summary>Correct Answer</summary>
+
+- [ ] SSH into the CodeBuild Docker container
+  - **Explanation**: It is not possible to SSH into the CodeBuild Docker container, that's why you should test and fix errors locally.
+- [ ] Freeze the CodeBuild during its next execution
+  - **Explanation**: You cannot freeze the CodeBuild process but you can stop it.
+- [ ] Enable detailed monitoring
+  - **Explanation**: Detailed monitoring is available for EC2 instances. You do not enable detailed monitoring for CodeBuild, though you can specify output logs to be captured via CloudTrail or CloudWatch Logs.
+- [x] Run AWS CodeBuild locally using CodeBuild Agent
+  - **Explanation**: AWS CodeBuild is a fully managed build service. With local build support for AWS CodeBuild, you can use the AWS CodeBuild agent to test and debug builds on a local machine.
+    By building an application on a local machine you can:
+    - Test the integrity and contents of a buildspec file locally.
+    - Test and build an application locally before committing.
+    - Identify and fix errors quickly from your local development environment.
+
+</details>

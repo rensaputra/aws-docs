@@ -69,11 +69,25 @@ When building enterprise applications, you can configure the X-Ray Daemon to ass
 
 ### 🚀 Practice Test
 
-**Scenario:** A senior full-stack developer is troubleshooting an asynchronous data processing pipeline that relies on several AWS Lambda functions and Amazon DynamoDB tables. The developer wants to inject custom business metadata—specifically, a unique internal string tracking tag named `BillingTier`—into the telemetry pipeline so that engineers can run targeted searches in the CloudWatch Service Map to evaluate latency specifically for enterprise-tier users. Which configuration option achieves this?
+**Question 1**: You have been collecting AWS X-Ray traces across multiple applications and you would now like to index your X-Ray traces to search and filter through them efficiently.
 
-- **A.** Append the `BillingTier` tracking parameter directly inside the application trace's Metadata block.
-- **B.** Configure an inline `.ebextensions` configuration shell script to execute a continuous `PurgeQueue` sequence loop.
-- **C.** Append the `BillingTier` tracking parameter as an **Annotation** using the AWS X-Ray SDK code libraries.
-- **D.** Modify the centralized JSON configuration blueprint map inside multi-region CloudFormation StackSets.
+What should you use in your instrumentation?
 
-**Correct Answer: C.** Because the requirements state the team needs to perform _targeted searches_ against the `BillingTier` attribute within the CloudWatch trace dashboard, the value must be added as an **Annotation**! Metadata holds data but is completely unindexed, making annotations the exact blueprint option you need.
+- [ ] Metadata
+- [ ] Sampling
+- [ ] Segments
+- [ ] Annotations
+
+<details>
+<summary>Correct Answer</summary>
+
+- [ ] Metadata
+  - **Explanation**: Metadata consists of key-value pairs of any type (including complex objects and lists), but it is **not indexed**. Use metadata to store arbitrary diagnostic data in the trace when you do not need to search or filter by it.
+- [ ] Sampling
+  - **Explanation**: Sampling defines the algorithm/rules used by the X-Ray SDK to control the percentage of requests that get traced to minimize overhead, rather than indexing key-value data for trace searches.
+- [ ] Segments
+  - **Explanation**: A segment contains the fundamental JSON payload sent by a resource running application logic, detailing the request, response, and work performed. It is the core trace unit, not the specific mechanism used to index key-value pairs for filtering.
+- [x] Annotations
+  - **Explanation**: Annotations are simple key-value pairs that are **indexed** for use with filter expressions in AWS X-Ray. You can use annotations to record business data or execution context that you want to search on, group by in the X-Ray console, or filter using the `GetTraceSummaries` API. X-Ray indexes up to 50 annotations per trace.
+
+</details>

@@ -38,3 +38,28 @@ An NLB target group can point to three distinct types of backends:
 - **The Static IP Clue**: If an exam scenario says, "A third-party corporate partner needs to access your backend API, but their security team requires a set of fixed, immutable IP addresses to whitelist in their firewall rules", the _ALB is an immediate wrong answer_. **You must deploy a Network Load Balancer (NLB) and assign Elastic IPs to it**.
 
 - **The High Throughput/Non-HTTP Clue**: Watch out for keywords like "millions of request per second", "ultra-low latency", "gaming server backends (UDP), "IoT data ingestion streams". or "streaming raw TCP connections". These are immediate, explicit tells to pick NLB.
+
+### Practice Test
+
+**Question 1**: You are running a public DNS service on an EC2 instance where the DNS name is pointing to the IP address of the instance. You wish to upgrade your DNS service but would like to do it without any downtime.
+
+Which of the following options will help you accomplish this?
+
+- [ ] Provide a static private IP
+- [ ] Create a Load Balancer and an auto scaling group
+- [ ] Use Route 53
+- [ ] Elastic IP
+
+<details>
+<summary>Correct Answer</summary>
+
+- [ ] Provide a static private IP
+  - **Explanation**: Private IP addresses are not publicly routable over the internet, so users outside your VPC would not be able to reach your public DNS service.
+- [ ] Create a Load Balancer and an auto scaling group
+  - **Explanation**: AWS Elastic Load Balancers expose a DNS domain name rather than a static public IP address. Since DNS clients query specific public IP addresses, an ALB does not fit this requirement.
+- [ ] Use Route 53
+  - **Explanation**: Amazon Route 53 is AWS's managed DNS service. However, the scenario specifically asks about upgrading a custom DNS software service running directly on an EC2 instance, not migrating to Route 53.
+- [x] Elastic IP
+  - **Explanation**: An Elastic IP (EIP) address is a static, publicly routable IPv4 address designed for dynamic cloud computing. You can associate an Elastic IP with a new EC2 instance running the upgraded DNS software, instantly remapping the public IP from the old instance to the new instance with zero downtime for clients querying that IP.
+
+</details>

@@ -82,3 +82,29 @@ To crawl through your database table segments step-by-step using the CLI tool, y
 
 - **The Staging Network Timeout Scenario:** If an exam prompt introduces a script designed to back up a heavy DynamoDB table that continuously throws connection timeouts during large batches—even though your table has plenty of provisioned RCU headroom—look for the CLI fix: **Inject the `--page-size` parameter to split up the behind-the-scenes payload transactions into smaller, stable network blocks without reducing your final output data pool!**
 - **The Token Naming Shift Trap ⚠️:** Pay close attention to this strict syntax naming delta. When you execute raw commands via the AWS CLI tool, the parameter you use to resume your position is called **`--starting-token`**, and it returns a **`NextToken`**. However, if you are writing low-level Node.js or Python application code targeting the core DynamoDB API directly using the SDK, those parameters map to **`ExclusiveStartKey`** and **`LastEvaluatedKey`**! Don't mix up your script names on the layout sheet!
+
+### Practice Test
+
+**Question 1**: Which of the following CLI options will allow you to retrieve a subset of the attributes coming from a DynamoDB scan?
+
+- [ ] --page-size
+- [ ] --max-items
+- [ ] --filter-expression
+- [ ] --projection-expression
+
+<details>
+<summary>Correct Answer</summary>
+
+- [ ] --page-size
+  - **Explanation**: You can use the `--page-size` option to specify that the AWS CLI requests a smaller number of items per API call to avoid timeouts. The CLI still retrieves the full result set by making multiple smaller calls behind the scenes.
+- [ ] --max-items
+  - **Explanation**: `--max-items` controls the total number of items returned in the AWS CLI output for pagination purposes. It limits the count of full items returned, not the specific attributes within those items.
+- [ ] --filter-expression
+  - **Explanation**: A `--filter-expression` determines which items within the scan/query results are returned to you (filtering whole records based on conditions). It does not select or exclude specific attributes from the returned items, and it still consumes read capacity for all scanned items.
+- [x] --projection-expression
+  - **Explanation**: A projection expression is a string that identifies the attributes you want. To retrieve a single attribute, specify its name. For multiple attributes, the names must be comma-separated.  
+    ![](./img/dynamodb-cli-projection.jpg)
+
+    To read data from a table, you use operations such as GetItem, Query, or Scan. DynamoDB returns all of the item attributes by default. To get just some, rather than all of the attributes, use a projection expression.
+
+</details>

@@ -69,11 +69,40 @@ Resources:
 
 ### Practice Test
 
-**Question**: A developer is constructing an AWS CloudFormation template to deploy an application cluster. The template contains an `AWS::EC2::Instance` resource with the logical ID `ApplicationServer`. The developer also needs to configure an Amazon Route 53 Record Set resource within the same template, which requires the public IP address of the newly spun-up instance to resolve the routing destination. Which syntax string should the developer use to dynamically fetch this value?
+**Question 1**: A developer is constructing an AWS CloudFormation template to deploy an application cluster. The template contains an `AWS::EC2::Instance` resource with the logical ID `ApplicationServer`. The developer also needs to configure an Amazon Route 53 Record Set resource within the same template, which requires the public IP address of the newly spun-up instance to resolve the routing destination. Which syntax string should the developer use to dynamically fetch this value?
 
-- **A**. `!Ref ApplicationServer`
-- **B**. `!GetAtt ApplicationServer.PublicIp`
-- **C**. `!ImportValue ApplicationServer.PublicIp`
-- **D**. `!FindInMap [ ApplicationServer, PublicIp ]`
+- [ ] `!Ref ApplicationServer`
+- [ ] `!GetAtt ApplicationServer.PublicIp`
+- [ ] `!ImportValue ApplicationServer.PublicIp`
+- [ ] `!FindInMap [ ApplicationServer, PublicIp ]`
 
-**Correct Answer: B**. While the `!Ref` function only yields the core physical asset instance ID string, the `!GetAtt` function allows you to drill down into the resource specification catalog to extract post-provisioned contextual attributes, such as `PublicIp`, at deployment runtime.
+<details>
+<summary>Correct Answer</summary>
+
+- [x] `!GetAtt ApplicationServer.PublicIp`
+  - **Explanation**: While the `!Ref` function only yields the core physical asset instance ID string, the `!GetAtt` function allows you to drill down into the resource specification catalog to extract post-provisioned contextual attributes, such as `PublicIp`, at deployment runtime.
+
+</details>
+
+**Question 2**: As an AWS Certified Developer Associate, you are writing a CloudFormation template in YAML. The template consists of an EC2 instance creation and one RDS resource. Once your resources are created you would like to output the connection endpoint for the RDS database.
+
+Which intrinsic function returns the value needed?
+
+- [ ] !GetAtt
+- [ ] !Sub
+- [ ] !Ref
+- [ ] !FindInMap
+
+<details>
+<summary>Correct Answer</summary>
+
+- [x] !GetAtt
+  - **Explanation**: The `Fn::GetAtt` (or `!GetAtt` in YAML) intrinsic function returns the value of a specific attribute from a resource in the template. For an RDS DB instance, resource attributes like `Endpoint.Address` or `Endpoint.Port` are retrieved at runtime using `!GetAtt`.
+- [ ] !Sub
+  - **Explanation**: The `Fn::Sub` intrinsic function substitutes variables in an input string with values that you specify. While it can format strings, it does not fetch resource attributes directly.
+- [ ] !Ref
+  - **Explanation**: The `Ref` intrinsic function returns the value of a specified parameter or resource identifier (for an RDS instance, `!Ref` returns its logical ID / DB instance identifier, not its connection endpoint).
+- [ ] !FindInMap
+  - **Explanation**: The `Fn::FindInMap` intrinsic function returns the value corresponding to keys in a two-level map declared in the `Mappings` section of the CloudFormation template.
+
+</details>

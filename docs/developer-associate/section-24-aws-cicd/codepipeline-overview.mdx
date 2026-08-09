@@ -70,3 +70,29 @@ When your pipeline execution throws a red block or freezes up, the DVA-C02 bluep
 
 - **The Transient Storage Dependency:** If a test question asks why a newly created pipeline is instantly crashing during its compilation stage, and states that an engineer cleared out some old, unmanaged storage assets earlier in the day—**look straight for the S3 Artifact Bucket.** If someone manually purges or modifies the permissions on the central S3 bucket assigned as the pipeline's artifact store, the data pipeline completely collapses.
 - **The Cross-Account Delivery Wall:** If an enterprise scenario requires a pipeline hosted in a `Dev` AWS Account to deploy code straight to an S3 bucket or EC2 fleet hosted over in a completely separate `Production` AWS Account—remember the security handshake: **You must configure a Customer-Managed KMS Key to encrypt the pipeline artifacts, grant the Production account cross-account access to the Dev S3 artifact bucket, and let CodePipeline execute an `sts:AssumeRole` call to use a deployment role inside the Production tier.**
+
+### Practice Test
+
+**Question 1**: An IT company leverages CodePipeline to automate its release pipelines. The development team wants to write a Lambda function that will send notifications for state changes within the pipeline.
+
+As a Developer Associate, which steps would you suggest to associate the Lambda function with the event source?
+
+- [ ] Use the CodePipeline console to set up a trigger for the Lambda function
+- [ ] Set up an Amazon EventBridge rule that uses CodePipeline as an event source with the target as the Lambda function
+- [ ] Set up an Amazon CloudWatch alarm that monitors status changes in Code Pipeline and triggers the Lambda function
+- [ ] Use the Lambda console to configure a trigger that invokes the Lambda function with CodePipeline as the event source
+
+<details>
+<summary>Correct Answer</summary>
+
+- [ ] Use the CodePipeline console to set up a trigger for the Lambda function
+  - **Explanation**: You cannot configure direct Lambda function triggers from within the CodePipeline console. CodePipeline emits state change events to Amazon EventBridge, where rules and targets are defined.
+- [x] Set up an Amazon EventBridge rule that uses CodePipeline as an event source with the target as the Lambda function
+  - **Explanation**: You can use Amazon EventBridge to detect and react to changes in the state of a pipeline, stage, or action. Then, based on rules you create, EventBridge invokes one or more target actions when a pipeline, stage, or action enters the state you specify in a rule. For the given use-case, you can set up a rule that detects pipeline changes and invokes an AWS Lambda function.  
+    ![](./img/codepipeline-eventbridge.jpg)
+- [ ] Set up an Amazon CloudWatch alarm that monitors status changes in Code Pipeline and triggers the Lambda function
+  - **Explanation**: CloudWatch Alarms evaluate metric thresholds (such as CPU utilization or error counts) rather than matching specific event-based state transition JSON payloads. Real-time pipeline state detection requires an EventBridge rule.
+- [ ] Use the Lambda console to configure a trigger that invokes the Lambda function with CodePipeline as the event source
+  - **Explanation**: CodePipeline is not a direct event source supported natively inside the AWS Lambda console trigger configuration. You must route CodePipeline state changes through Amazon EventBridge.
+
+</details>

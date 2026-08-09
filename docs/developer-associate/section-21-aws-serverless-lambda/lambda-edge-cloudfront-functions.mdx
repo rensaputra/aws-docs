@@ -4,7 +4,7 @@ sidebar_position: 26
 
 # Lambda@Edge & CloudFront Functions
 
-breaking down the difference between **CloudFront Functions** and **Lambda@Edge** is the absolute peak of edge architecture engineering! 🌐⚡
+Breaking down the difference between **CloudFront Functions** and **Lambda@Edge** is the absolute peak of edge architecture engineering! 🌐⚡
 
 The DVA-C02 exam _loves_ to test you on this exact choice. It all comes down to a classic architectural trade-off: **raw, blistering speed and massive scale** versus **heavy compute power and deep system integrations**.
 
@@ -74,3 +74,49 @@ When an enterprise needs to deploy logic out to the edge locations, the specific
 
 - **The Global Deployment Trap:** If an exam scenario asks you why a developer cannot deploy a Lambda@Edge function inside the `ap-southeast-2` (Sydney) region, remember the rule: **Lambda@Edge functions must be explicitly authored inside the `us-east-1` (N. Virginia) region.** Once you publish a version there, the AWS global backbone automatically clones and replicates that function code footprint to every Edge Location across the entire planet!
 - **The External API Call Pitfall:** If a scenario states that an edge script needs to make an HTTP call out to a third-party billing gateway to validate a user cookie, and asks if a CloudFront Function can do it—**reject it immediately, bro.** CloudFront Functions have zero network access. For any external API calling, database querying, or third-party SDK dependencies, **Lambda@Edge is the only answer.**
+
+### Practice Test
+
+**Question**: A media application uses Amazon CloudFront distribution to distribute static content configured on an Amazon S3 bucket. The application is used across different countries and various AWS Regions. Some regions have been experiencing latency when there is a cache miss on CloudFront.
+
+Which of the following configuration changes will you suggest to decrease latency and improve user performance by redirecting requests on cache misses to the S3 bucket in the Region that is nearest to the user's country?
+
+- [ ] Redirect requests on cache misses to the S3 bucket nearest to the user country. Create a CloudFront function to redirect requests based on the value of the CloudFront-Viewer-Country header. Associate the CloudFront function with the distribution's viewer request event
+- [ ] Redirect requests on cache misses to the S3 bucket nearest to the user country. Create a CloudFront function to redirect requests based on the value of the CloudFront-Viewer-Country header. Associate the CloudFront function with the distribution's origin request event
+- [ ] Redirect requests on cache misses to the S3 bucket nearest to the user country. Create a Lambda@Edge function to redirect requests based on the value of the CloudFront-Viewer-Country header. Associate the Lambda@Edge function with the distribution's viewer request event
+- [ ] Redirect requests on cache misses to the S3 bucket nearest to the user country. Create a Lambda@Edge function to redirect requests based on the value of the CloudFront-Viewer-Country header. Associate the Lambda@Edge function with the distribution's origin request event
+
+<details>
+<summary>Correct Answer</summary>
+
+- [ ] Redirect requests on cache misses to the S3 bucket nearest to the user country. Create a CloudFront function to redirect requests based on the value of the CloudFront-Viewer-Country header. Associate the CloudFront function with the distribution's viewer request event
+  - **Explanation**: If you use the viewer request event, the function would be triggered on all user requests rather than only when you have a cache miss. Additionally, CloudFront Functions only support viewer request and viewer response events. So, this option is incorrect.
+
+- [ ] Redirect requests on cache misses to the S3 bucket nearest to the user country. Create a CloudFront function to redirect requests based on the value of the CloudFront-Viewer-Country header. Associate the CloudFront function with the distribution's origin request event
+  - **Explanation**: You can invoke CloudFront functions for only two events: viewer request and viewer response. Origin request and origin response events are not supported for CloudFront Functions.
+
+- [ ] Redirect requests on cache misses to the S3 bucket nearest to the user country. Create a Lambda@Edge function to redirect requests based on the value of the CloudFront-Viewer-Country header. Associate the Lambda@Edge function with the distribution's viewer request event
+  - **Explanation**: The viewer request event executes when CloudFront receives a request from a viewer before checking whether the requested object is in the CloudFront cache. If you use the viewer request event, the function would be triggered on all user requests rather than only on a cache miss.
+
+- [x] Redirect requests on cache misses to the S3 bucket nearest to the user country. Create a Lambda@Edge function to redirect requests based on the value of the CloudFront-Viewer-Country header. Associate the Lambda@Edge function with the distribution's origin request event
+  - **Explanation**: When a viewer request to CloudFront results in a cache miss (the requested object is not cached at the edge location), CloudFront sends a request to the origin to retrieve the object. This is called an origin request. The origin request always includes the following information from the viewer request:
+
+    The URL path (the path only, without URL query strings or the domain name)
+
+    The request body (if there is one)
+
+    The HTTP headers that CloudFront automatically includes in every origin request, including Host, User-Agent, and X-Amz-Cf-Id
+
+    The example below shows a Lambda@Edge function with a handler that is used to change response based on user country:  
+     ![](./img/lambda-edge-origin-request.jpg)
+
+    Choosing between CloudFront Functions and Lambda@Edge:  
+     ![](./img/lambda-edge-cloudfront-functions.jpg)
+
+    We use the value of the CloudFront-Viewer-Country header to update the S3 bucket domain name to a bucket in a Region that is closer to the viewer. This can be useful in several ways:
+    1. It reduces latencies when the Region specified is nearer to the viewer's country.
+    2. It provides data sovereignty by making sure that data is served from an origin that's in the same country that the request came from.
+
+    So, for the given use case, we need to leverage the origin request event (to address the cache miss) and trigger the Lambda@Edge function to redirect the requests on cache miss to the S3 bucket nearest to the user country.
+
+</details>

@@ -74,3 +74,31 @@ To achieve this absolute row-level and column-level safety, you inject dynamic r
 
 - **The Multi-Region Scaling Blueprint:** If an exam prompt presents a scenario where a global web application requires multi-region data persistence with active-active write access paths to keep latencies low for international users, and asks what the mandatory first step is to enable this—**the absolute correct answer is to enable DynamoDB Streams on the source table before configuring Global Tables.**
 - **The Shared Multi-Tenant Mobile Table Scenario:** If a question introduces a mobile multiplayer game where millions of distinct smartphone client apps need to save their inventory metrics directly to a single shared DynamoDB table, and asks how to prevent players from snooping or overwriting sibling accounts without spinning up complex server middleware layers—look straight for **Cognito Identity Federation combined with an IAM policy utilizing the `dynamodb:LeadingKeys` condition check matching the user's identity token variable.**
+
+### Practice Test
+
+**Question**: An organization with high data volume workloads have successfully moved to DynamoDB after having many issues with traditional database systems. However, a few months into production, DynamoDB tables are consistently recording high latency.
+
+As a Developer Associate, which of the following would you suggest to reduce the latency? (Select two)
+
+- [ ] Use DynamoDB Accelerator (DAX) for businesses with heavy write-only workloads
+- [ ] Consider using Global tables if your application is accessed by globally distributed users
+- [ ] Reduce connection pooling, which keeps the connections alive even when user requests are not present, thereby, blocking the services
+- [ ] Use eventually consistent reads in place of strongly consistent reads whenever possible
+- [ ] Increase the request timeout settings, so the client gets enough time to complete the requests, thereby reducing retries on the system
+
+<details>
+<summary>Correct Answer</summary>
+
+- [ ] Use DynamoDB Accelerator (DAX) for businesses with heavy write-only workloads
+  - **Explanation**: DAX is an in-memory cache designed for read-heavy workloads (not write-only), delivering up to a 10x performance improvement for read requests.
+- [x] Consider using Global tables if your application is accessed by globally distributed users
+  - **Explanation**: If you have globally dispersed users, using DynamoDB Global Tables allows data to be replicated across your chosen AWS Regions, significantly reducing latency by bringing data closer to your users.
+- [ ] Reduce connection pooling, which keeps the connections alive even when user requests are not present, thereby, blocking the services
+  - **Explanation**: Reusing connections or leveraging connection pooling helps keep internal caches warm and avoids the overhead of establishing new connections for each request, keeping latency low.
+- [x] Use eventually consistent reads in place of strongly consistent reads whenever possible
+  - **Explanation**: Eventually consistent reads maximize read throughput, use half the read capacity units compared to strongly consistent reads, and are less likely to experience higher latency.
+- [ ] Increase the request timeout settings, so the client gets enough time to complete the requests, thereby reducing retries on the system
+  - **Explanation**: The recommended approach is to reduce request timeout settings so high-latency requests are abandoned quickly and retried, which often completes much faster on the second attempt.
+
+</details>

@@ -23,3 +23,31 @@ Stephane's analogy that it's like a "network USB stick", is perfect to make us u
   - **Root Volume**: The primary drive containing the OS. By default, **Delete on Termination is ENABLED**. When you terminate the EC2 instance, the root drive gets wiped instantly.
   - **Extra Volumes**: Any secondary data drives you attach later. By default, **Delete on Termination is DISABLED**. If you kill the instance, these volume persist in your account (and keep racking up charges until you delete them manually).
   - You can override these defaults in the Console/CLI at launch time to preserve logs or database files on the root volume when an instance is torn down.
+
+### Practice Test
+
+**Question 1**: A Company uses a large set of EBS volumes for their fleet of Amazon EC2 instances. As an AWS Certified Developer Associate, your help has been requested to understand the security features of the EBS volumes. The company does not want to build or maintain their own encryption key management infrastructure.
+
+Can you help them understand what works for Amazon EBS encryption? (Select two)
+
+- [ ] You can encrypt an existing unencrypted volume or snapshot by using AWS Key Management Service (KMS) AWS SDKs
+- [ ] Encryption by default is a Region-specific setting. If you enable it for a Region, you cannot disable it for individual volumes or snapshots in that Region
+- [ ] A volume restored from an encrypted snapshot, or a copy of an encrypted snapshot is always encrypted
+- [ ] A snapshot of an encrypted volume can be encrypted or unencrypted
+- [ ] Encryption by default is an AZ specific setting. If you enable it for an AZ, you cannot disable it for individual volumes or snapshots in that AZ
+
+<details>
+<summary>Correct Answers</summary>
+
+- [ ] You can encrypt an existing unencrypted volume or snapshot by using AWS Key Management Service (KMS) AWS SDKs
+  - **Explanation**: This is an incorrect statement. There is no direct way to encrypt an existing unencrypted volume or snapshot. You can encrypt an unencrypted snapshot by copying and enabling encryption while copying the snapshot. To encrypt an EBS volume, you need to create a snapshot and then encrypt the snapshot as described earlier. From this new encrypted snapshot, you can then create an encrypted volume.
+- [x] Encryption by default is a Region-specific setting. If you enable it for a Region, you cannot disable it for individual volumes or snapshots in that Region
+  - **Explanation**: You can configure your AWS account to enforce the encryption of the new EBS volumes and snapshot copies that you create. Encryption by default is a Region-specific setting. If you enable it for a Region, you cannot disable it for individual volumes or snapshots in that Region.
+- [x] A volume restored from an encrypted snapshot, or a copy of an encrypted snapshot is always encrypted
+  - **Explanation**: By default, the CMK that you selected when creating a volume encrypts the snapshots that you make from the volume and the volumes that you restore from those encrypted snapshots. You cannot remove encryption from an encrypted volume or snapshot, which means that a volume restored from an encrypted snapshot, or a copy of an encrypted snapshot is always encrypted.
+- [ ] A snapshot of an encrypted volume can be encrypted or unencrypted
+  - **Explanation**: This is an incorrect statement. You cannot remove encryption from an encrypted volume or snapshot, which means that a volume restored from an encrypted snapshot, or a copy of an encrypted snapshot is always encrypted.
+- [ ] Encryption by default is an AZ specific setting. If you enable it for an AZ, you cannot disable it for individual volumes or snapshots in that AZ
+  - **Explanation**: This is an incorrect statement. Encryption by default is a Region-specific setting. If you enable it for a Region, you cannot disable it for individual volumes or snapshots in that Region.
+
+</details>

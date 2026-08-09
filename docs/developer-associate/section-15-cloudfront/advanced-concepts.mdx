@@ -58,3 +58,35 @@ If your corporate security officer mandates absolute compliance boundaries for h
 
 **The Regional Outage Architecture Matrix**: An exam scenario states, _"You host a dynamic, global API endpoint utilizing an Application Load Balancer origin behind a CloudFront distribution. To guarantee maximum high availability during an active regional disaster, you provision an identical backup ALB environment inside a secondary AWS region. How should you configure CloudFront to seamlessly reroute production application web traffic to the backup region without manual intervention or DNS changes?"_  
 **The absolute, textbook answer on test day is to configure an S3/ALB Origin Group**. > You register both regional ALB load balancers as separate origins inside your distribution settings. Next, you bundle them inside a new Origin Group, establishing the primary region ALB as the main actor and setting the secondary region ALB inside the backup slot. You map this Origin Group directly onto your target `/api/*` cache behavior rule, checking off HTTP status blocks like 502 Bad Gateway and 503 Service Unavailable as execution triggers. The moment the primary region falters, CloudFront switches the active data path automatically!
+
+### Practice Test
+
+**Question 1**: A video streaming application uses Amazon CloudFront for its data distribution. The development team has decided to use CloudFront with origin failover for high availability.
+
+Which of the following options are correct while configuring CloudFront with Origin Groups? (Select two)
+
+- [ ] To set up origin failover, you must have a distribution with at least three origins
+- [ ] CloudFront routes all incoming requests to the primary origin, even when a previous request failed over to the secondary origin
+- [ ] CloudFront fails over to the secondary origin only when the HTTP method of the viewer request is GET, HEAD or OPTIONS
+- [ ] In the Origin Group of your distribution, all the origins are defined as primary for automatic failover in case an origin fails
+- [ ] When there’s a cache hit, CloudFront routes the request to the primary origin in the origin group
+
+<details>
+<summary>Correct Answer</summary>
+
+- [ ] To set up origin failover, you must have a distribution with at least three origins
+  - **Explanation**: You only need a distribution with at least two origins (a primary and a secondary) to create an origin group for failover.
+- [x] CloudFront routes all incoming requests to the primary origin, even when a previous request failed over to the secondary origin
+  - **Explanation**: CloudFront routes all incoming requests to the primary origin by default, even if a previous request was routed to the secondary origin. CloudFront only sends a request to the secondary origin after a request to the primary origin fails.
+- [x] CloudFront fails over to the secondary origin only when the HTTP method of the viewer request is GET, HEAD or OPTIONS
+  - **Explanation**: CloudFront supports origin failover only for idempotent read HTTP methods (GET, HEAD, and OPTIONS). It does not fail over when a viewer request uses other HTTP methods such as POST or PUT.
+
+    How origin failover works:  
+     ![](./img/origin-failover.jpg)
+
+- [ ] In the Origin Group of your distribution, all the origins are defined as primary for automatic failover in case an origin fails
+  - **Explanation**: An origin group contains exactly two origins: one designated as the primary origin and the other as the secondary origin. You cannot define both/all origins as primary.
+- [ ] When there’s a cache hit, CloudFront routes the request to the primary origin in the origin group
+  - **Explanation**: When there is a cache hit, CloudFront serves the cached object directly from the edge location without sending a request to any origin. Origins are only contacted on a cache miss.
+
+</details>

@@ -1,0 +1,80 @@
+---
+sidebar_position: 7
+---
+
+# S3 Data Consistency Model
+
+### 1. **Core Data Consistency Rules**
+
+- **Strong Read-After-Write Consistency:** Amazon S3 automatically provides strong read-after-write consistency for all `PUT` (new uploads or overwrites) and `DELETE` requests across all AWS Regions.
+- **Immediate Visibility:** Any successful `GET` or `LIST` request initiated _after_ a write operation returns the updated data or reflects the newly added/deleted key immediately.
+- **Atomic Single-Key Updates:** Updating a single key is atomic. Concurrent reads will return either the _old complete data_ or the _new complete data_, but never corrupted or partial data.
+- **No Cross-Key Atomicity:** Updates cannot be made dependent across different keys natively unless you build this logic into your application.
+
+---
+
+### 2. **Bucket Configurations (Eventual Consistency)**
+
+While data objects are strongly consistent, **bucket-level metadata/configurations use an eventual consistency model**:
+
+- Deleting a bucket and listing all buckets immediately after may still show the deleted bucket in the list for a short duration.
+- Enabling bucket versioning for the first time may take up to **15 minutes** to propagate fully. It is recommended to pause writes/deletes during this window.
+
+---
+
+## Exam Tips
+
+- **Data Objects (`PUT`/`GET`/`DELETE`/`LIST`):** Strongly Consistent.
+- **Bucket Metadata (Versioning, Bucket Listing):** Eventually Consistent.
+- **Concurrency Handling:** Native Last-Writer-Wins (requires custom application locking or S3 Conditional Writes if race-condition overwrites must be prevented).
+
+### Practice Test
+
+**Question 1**: An e-commerce application writes log files into Amazon S3. The application also reads these log files in parallel on a near real-time basis. The development team wants to address any data discrepancies that might arise when the application overwrites an existing log file and then tries to read that specific log file.
+
+Which of the following options BEST describes the capabilities of Amazon S3 relevant to this scenario?
+
+- [ ] A process replaces an existing object and immediately tries to read it. Until the change is fully propagated, Amazon S3 might return the new data
+- [ ] A process replaces an existing object and immediately tries to read it. Until the change is fully propagated, Amazon S3 might return the previous data
+- [ ] A process replaces an existing object and immediately tries to read it. Until the change is fully propagated, Amazon S3 does not return any data
+- [ ] A process replaces an existing object and immediately tries to read it. Amazon S3 always returns the latest version of the object
+
+<details>
+<summary>Correct Answer</summary>
+
+- [ ] A process replaces an existing object and immediately tries to read it. Until the change is fully propagated, Amazon S3 might return the new data
+  - **Explanation**: Amazon S3 provides strong read-after-write consistency, so there is no window where stale or unpredictable data is returned during propagation.
+- [ ] A process replaces an existing object and immediately tries to read it. Until the change is fully propagated, Amazon S3 might return the previous data
+  - **Explanation**: This described S3's legacy eventual consistency model for overwrites. S3 now provides strong read-after-write consistency for all PUT and DELETE operations.
+- [ ] A process replaces an existing object and immediately tries to read it. Until the change is fully propagated, Amazon S3 does not return any data
+  - **Explanation**: S3 does not block reads or withhold data; it immediately returns the latest version of the object upon successful write completion.
+- [x] A process replaces an existing object and immediately tries to read it. Amazon S3 always returns the latest version of the object
+  - **Explanation**: Amazon S3 delivers strong read-after-write consistency automatically for GET, PUT, and LIST operations in all AWS Regions. After a successful write of a new object or an overwrite of an existing object, any subsequent read request immediately receives the latest version of the object.
+
+</details>
+
+**Question 2**: A development team has been using Amazon S3 service as an object store. With Amazon S3 turning strongly consistent, the team wants to understand the impact of this change on its data storage practices.
+
+As a developer associate, can you identify the key characteristics of the strongly consistent data model followed by S3? (Select two)
+
+- [ ] A process deletes an existing object and immediately lists keys within its bucket. The object could still be visible for few more minutes till the change propagates
+- [ ] A process replaces an existing object and immediately tries to read it. Amazon S3 might return the old data
+- [ ] A process deletes an existing object and immediately tries to read it. Amazon S3 will not return any data as the object has been deleted
+- [ ] If you delete a bucket and immediately list all buckets, the deleted bucket might still appear in the list
+- [ ] A process deletes an existing object and immediately tries to read it. Amazon S3 can return data as the object deletion has not yet propagated completely
+
+<details>
+<summary>Correct Answer</summary>
+
+- [ ] A process deletes an existing object and immediately lists keys within its bucket. The object could still be visible for few more minutes till the change propagates
+  - **Explanation**: S3 provides strong consistency for LIST operations as well. Once an object is deleted, immediate key listings reflect that deletion right away.
+- [ ] A process replaces an existing object and immediately tries to read it. Amazon S3 might return the old data
+  - **Explanation**: Amazon S3 delivers strong read-after-write consistency, meaning an immediate read request after an overwrite will always return the new data.
+- [x] A process deletes an existing object and immediately tries to read it. Amazon S3 will not return any data as the object has been deleted
+  - **Explanation**: Amazon S3 provides strong read-after-write consistency for PUTs and DELETEs of objects in all AWS Regions. Once an object is deleted, subsequent read requests will immediately fail (HTTP 404 Not Found) because the deletion is strongly consistent.
+- [x] If you delete a bucket and immediately list all buckets, the deleted bucket might still appear in the list
+  - **Explanation**: While object-level operations (PUT, DELETE, LIST) in S3 have strong read-after-write consistency, bucket-level metadata and configuration operations retain an eventual consistency model.
+- [ ] A process deletes an existing object and immediately tries to read it. Amazon S3 can return data as the object deletion has not yet propagated completely
+  - **Explanation**: This describes eventually consistent behavior. Under S3's strong consistency model, a deleted object cannot be returned in subsequent reads.
+
+</details>
