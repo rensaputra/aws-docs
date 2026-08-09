@@ -69,7 +69,7 @@ Tasks running concurrently anywhere inside your network VPC can read and write t
 
 ### Practice Scenario
 
-**Question**: You are working for a shipping company that is automating the creation of ECS clusters with an Auto Scaling Group using an AWS CloudFormation template that accepts cluster name as its parameters. Initially, you launch the template with input value 'MainCluster', which deployed five instances across two availability zones. The second time, you launch the template with an input value 'SecondCluster'. However, the instances created in the second run were also launched in 'MainCluster' even after specifying a different cluster name.
+**Question 1**: You are working for a shipping company that is automating the creation of ECS clusters with an Auto Scaling Group using an AWS CloudFormation template that accepts cluster name as its parameters. Initially, you launch the template with input value 'MainCluster', which deployed five instances across two availability zones. The second time, you launch the template with an input value 'SecondCluster'. However, the instances created in the second run were also launched in 'MainCluster' even after specifying a different cluster name.
 
 What is the root cause of this issue?
 
@@ -89,5 +89,34 @@ What is the root cause of this issue?
   - **Explanation**: Security groups govern the rules about the incoming network traffic to your ECS containers. The issue here is not about user access and hence is a wrong choice for the current use case.
 - [ ] The EC2 instance is missing IAM permissions to join the other clusters
   - **Explanation**: EC2 instances are getting registered to the first cluster, so permissions are not an issue here and hence this statement is an incorrect choice for the current use case.
+
+</details>
+
+**Question 2**: An application runs on Amazon Elastic Container Service (Amazon ECS) on AWS Fargate. The company's audit requirements mandate that logging and storing of application log data must be done centrally on AWS.
+
+How will you configure this requirement?
+
+- [ ] Use the awslogs log driver to send log information to CloudWatch Logs. To turn on the awslogs log driver, your Amazon ECS container instances require at least version 1.9.0 of the container agent
+- [ ] Download and install the unified CloudWatch agent on the ECS instances to collect internal system-level metrics and application logs from the instances. The logs collected by the unified CloudWatch agent are processed and stored in Amazon CloudWatch logs and can be queried for report generation
+- [ ] Use the awslogs log driver to configure the containers in your tasks to send log information to CloudWatch Logs. Add the required logConfiguration parameters to your task definition
+- [ ] Amazon ECS metric data is automatically sent to CloudWatch in 1-minute periods. Amazon ECS service using the Fargate launch type has CloudWatch CPU and memory utilization metrics that can be enabled from the ECS console
+
+<details>
+<summary>Correct Answer</summary>
+
+- [ ] Use the awslogs log driver to send log information to CloudWatch Logs. To turn on the awslogs log driver, your Amazon ECS container instances require at least version 1.9.0 of the container agent
+  - **Explanation**: This statement applies to the EC2 launch type (where you manage the underlying container instances and agent version), not the serverless Fargate launch type.
+- [ ] Download and install the unified CloudWatch agent on the ECS instances to collect internal system-level metrics and application logs from the instances. The logs collected by the unified CloudWatch agent are processed and stored in Amazon CloudWatch logs and can be queried for report generation
+  - **Explanation**: ECS Fargate is serverless, so you do not have direct access to host instances to manually download and install host-level software agents.
+- [x] Use the awslogs log driver to configure the containers in your tasks to send log information to CloudWatch Logs. Add the required logConfiguration parameters to your task definition
+  - **Explanation**: Using the awslogs log driver you can configure the containers in your tasks to send log information to CloudWatch Logs. If you're using the Fargate launch type for your tasks, you need to add the required logConfiguration parameters to your task definition to turn on the awslogs log driver.
+
+    Before your containers can send logs to CloudWatch, you must specify the awslogs log driver for containers in your task definition. The example task definition JSON that follows has a logConfiguration object specified for each container. One is for the WordPress container that sends logs to a log group called awslogs-wordpress. The other is for a MySQL container that sends logs to a log group that's called awslogs-mysql. Both containers use the awslogs-example log stream. prefix.
+
+    Specifying a log configuration in your task definition:  
+     ![](./img/ecs-log-configuration.jpg)
+
+- [ ] Amazon ECS metric data is automatically sent to CloudWatch in 1-minute periods. Amazon ECS service using the Fargate launch type has CloudWatch CPU and memory utilization metrics that can be enabled from the ECS console
+  - **Explanation**: CloudWatch CPU and memory utilization metrics are resource/performance metrics, not application logs. This does not address the audit requirement for storing application log data.
 
 </details>
