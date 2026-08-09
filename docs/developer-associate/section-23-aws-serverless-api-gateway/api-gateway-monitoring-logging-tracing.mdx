@@ -82,3 +82,35 @@ The DVA-C02 blueprint forces you to triage distributed network bugs based on the
 
 - **The Elusive 502 Proxy Disconnect Trap ⚠️:** If an exam prompt presents a backend Lambda function that tests perfectly inside the Lambda console panel (returning standard dictionary data structures) but continuously spits out an ugly **`502 Bad Gateway`** error code the exact second a live browser hits the public API Gateway URL—look straight for the proxy payload contract format. **The backend developer returned raw text or omitted the strict `"statusCode"` or stringified `"body"` keys from their handler dictionary output string, chief!**
 - **The Cloud Cost Timeout Optimization:** If a scenario presents an API endpoint that handles deep, complex batch data processing loops, and clients are getting constant **`504 Gateway Timeout`** errors while your backend workers keep running in the background for minutes—look for the asynchronous serverless decoupling pattern: **Refactor the API Gateway path to immediately drop the incoming packet into an Amazon SQS queue using a direct service integration, return an instant `202 Accepted` response back to the client browser, and let Lambda drain the queue asynchronously in the background.**
+
+### Practice Test
+
+**Question 1**: A developer has just integrated an AWS Lambda function to an Amazon API Gateway API. The integration has led to errors that the developer is unable to troubleshoot. The developer has decided to enable CloudWatch logging at the method level for the API Gateway API.
+
+What are the key points of consideration while configuring method-level logging for the API Gateway? (Select two)
+
+- [ ] API Gateway API log groups or streams can only be deleted and recreated by redeploying the API
+- [ ] To enable CloudWatch Logs for all or only some of the methods, you must also specify the ARN of an IAM role that enables API Gateway to write information to CloudWatch Logs on behalf of your user. The IAM role must also contain the following trust relationship statement
+- [ ] AWS Security Token Service(STS) is used by API Gateway for logging data to CloudWatch logs. Hence, AWS STS has to be enabled for the Region that you're using
+- [ ] You are charged for accessing method-level and stage-level CloudWatch metrics, but not for API-level metrics
+- [ ] In access logging, only \$context and \$input variables are supported
+
+<details>
+<summary>Correct Answer</summary>
+
+- [ ] API Gateway API log groups or streams can only be deleted and recreated by redeploying the API
+  - **Explanation**: API Gateway API log groups or streams can be deleted directly from the CloudWatch console, though it is not recommended as it may disrupt logging until the API is redeployed.
+- [x] To enable CloudWatch Logs for all or only some of the methods, you must also specify the ARN of an IAM role that enables API Gateway to write information to CloudWatch Logs on behalf of your user. The IAM role must also contain the following trust relationship statement
+  - **Explanation**: To enable CloudWatch Logs for all or only some of the methods, you must also specify the ARN of an IAM role that enables API Gateway to write information to CloudWatch Logs on behalf of your user. To do so, choose `Settings` from the APIs main navigation pane. Then enter the ARN of an IAM role in the `CloudWatch log role ARN` text field. The IAM role must also contain the trust relationship statement.
+
+    Policy of AmazonAPiGatewayCloudWatchLogsRole for IAM Role:  
+     ![](./img/api-gateway-logging-role.jpg)
+
+- [x] AWS Security Token Service(STS) is used by API Gateway for logging data to CloudWatch logs. Hence, AWS STS has to be enabled for the Region that you're using
+  - **Explanation**: API Gateway calls AWS STS to assume the IAM role assigned for CloudWatch logging. Therefore, AWS STS must be enabled in the AWS Region you are using to avoid authorization errors when setting or executing the logging role.
+- [ ] You are charged for accessing method-level and stage-level CloudWatch metrics, but not for API-level metrics
+  - **Explanation**: You are charged for accessing method-level CloudWatch metrics, but API-level and stage-level metrics are provided at no extra charge.
+- [ ] In access logging, only \$context and \$input variables are supported
+  - **Explanation**: In API Gateway access logging, only `$context` variables are supported. `$input` variables are not supported for access logging.
+
+</details>
