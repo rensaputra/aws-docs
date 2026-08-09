@@ -55,11 +55,43 @@ Resources:
 
 ### Practice Test
 
-**Question**: A software developer needs to automate the provisioning of an AWS service that was released last week. The developer discovers that the service does not currently have a native resource type identifier listed in the AWS CloudFormation Resource Types Reference documentation. How can the developer integrate the provisioning of this new service directly into the existing automated CloudFormation stack lifecycle?
+**Question 1**: A software developer needs to automate the provisioning of an AWS service that was released last week. The developer discovers that the service does not currently have a native resource type identifier listed in the AWS CloudFormation Resource Types Reference documentation. How can the developer integrate the provisioning of this new service directly into the existing automated CloudFormation stack lifecycle?
 
-- **A**. Write a procedural python macro block directly inside the template's `Mappings` section.
-- **B**. Configure a CloudFormation Custom Resource (`AWS::CloudFormation::CustomResource`) and create an AWS Lambda function to handle the custom service API creation calls.
-- **C**. Force the stack compiler to use an outdated `AWSTemplateFormatVersion` string to skip verification.
-- **D**. Use an `.ebextensions` configuration folder to override the global CloudFormation resource registry schema.
+- [ ] Write a procedural python macro block directly inside the template's `Mappings` section.
+- [ ] Configure a CloudFormation Custom Resource (`AWS::CloudFormation::CustomResource`) and create an AWS Lambda function to handle the custom service API creation calls.
+- [ ] Force the stack compiler to use an outdated `AWSTemplateFormatVersion` string to skip verification.
+- [ ] Use an `.ebextensions` configuration folder to override the global CloudFormation resource registry schema.
 
-**Correct Answer: B**. When an AWS service or specific feature is so new that it lacks native CloudFormation resource specification coverage, utilizing a Custom Resource backed by an AWS Lambda function is the standard architectural extension pattern to handle the service setup lifecycle cleanly during stack operations
+<details>
+<summary>Correct Answer</summary>
+
+- [x] Configure a CloudFormation Custom Resource (`AWS::CloudFormation::CustomResource`) and create an AWS Lambda function to handle the custom service API creation calls.
+  - **Explanation**: When an AWS service or specific feature is so new that it lacks native CloudFormation resource specification coverage, utilizing a Custom Resource backed by an AWS Lambda function is the standard architectural extension pattern to handle the service setup lifecycle cleanly during stack operations.
+
+</details>
+
+**Question 2**: Your company wants to move away from manually managing Lambda in the AWS console and wants to upload and update them using AWS CloudFormation.
+
+How do you declare an AWS Lambda function in CloudFormation? (Select two)
+
+- [ ] Write the AWS Lambda code inline in CloudFormation in the AWS::Lambda::Function block as long as there are no third-party dependencies
+- [ ] Upload all the code as a zip to S3 and refer the object in AWS::Lambda::Function block
+- [ ] Upload all the code to CodeCommit and refer to the CodeCommit Repository in AWS::Lambda::Function block
+- [ ] Write the AWS Lambda code inline in CloudFormation in the AWS::Lambda::Function block and reference the dependencies as a zip file stored in S3
+- [ ] Upload all the code as a folder to S3 and refer the folder in AWS::Lambda::Function block
+
+<details>
+<summary>Correct Answer</summary>
+
+- [x] Write the AWS Lambda code inline in CloudFormation in the AWS::Lambda::Function block as long as there are no third-party dependencies
+  - **Explanation**: You can write inline code in the `ZipFile` property of the `Code` block for Node.js and Python runtimes, provided your code doesn't rely on external third-party dependencies that aren't already included in the standard Lambda runtime.
+- [x] Upload all the code as a zip to S3 and refer the object in AWS::Lambda::Function block
+  - **Explanation**: You can package your function code and its dependencies into a `.zip` archive, upload it to an S3 bucket, and reference the `S3Bucket` and `S3Key` in the `Code` property of the `AWS::Lambda::Function` resource.
+- [ ] Upload all the code to CodeCommit and refer to the CodeCommit Repository in AWS::Lambda::Function block
+  - **Explanation**: CloudFormation's `AWS::Lambda::Function` resource directly references code from Amazon S3 (as a `.zip` file), container images from ECR, or inline string code—it cannot directly pull source code from a CodeCommit repository without a build step (like AWS CodePipeline or AWS CodeBuild).
+- [ ] Write the AWS Lambda code inline in CloudFormation in the AWS::Lambda::Function block and reference the dependencies as a zip file stored in S3
+  - **Explanation**: You cannot split inline code and external S3 zip dependencies in the same `Code` block configuration. If external dependencies are needed, the entire application package (code + dependencies) or Lambda layers must be used.
+- [ ] Upload all the code as a folder to S3 and refer the folder in AWS::Lambda::Function block
+  - **Explanation**: S3 objects used for Lambda deployment packages must be archived into a `.zip` file format; pointing to an uncompressed folder path in S3 is not supported.
+
+</details>
