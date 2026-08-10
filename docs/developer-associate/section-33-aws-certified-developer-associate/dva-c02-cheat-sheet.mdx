@@ -344,7 +344,7 @@ Serverless NoSQL key-value / document database. Single-digit-millisecond reads a
 - **FIFO:** Exactly-once processing, strict ordering within a message group, 300 msg/s (3,000 with batching).
 - **Visibility timeout:** After receive, message is hidden for N seconds. If not deleted in time, reappears. Default 30 s. Extend via `ChangeMessageVisibility` for long processing.
 - **Long polling:** `ReceiveMessageWaitTimeSeconds` up to 20 s. Reduces empty responses and cost.
-- **Message size:** 256 KB. For larger payloads, use Extended Client (stores payload in S3, reference in SQS message).
+- **Message size:** 1 MiB (upgraded from 256 KB in August 2025). For larger payloads, use Extended Client (stores payload in S3, reference in SQS message).
 - **Dead-letter queue (DLQ):** Messages that exceed `maxReceiveCount` go here. Set up before production, not after.
 - **Delay queues:** Delay message delivery up to 15 min. For retry backoff or scheduled triggers.
 
