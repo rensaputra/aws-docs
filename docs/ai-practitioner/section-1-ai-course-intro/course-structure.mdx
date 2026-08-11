@@ -1,0 +1,87 @@
+---
+sidebar_position: 1
+---
+
+# Course Structure
+
+## Key Takeaways
+
+This course is laser-focused on teaching you how **20+ AWS AI/ML services** operate and how to pass the technical AIF-C01 exam using a blend of theory diagrams and console walkthroughs.
+
+Crucially, it is **not** a general cloud administration course (like Cloud Practitioner or Solutions Architect), nor is it a generic guide on using third-party consumer AI tools like ChatGPT or Midjourney.
+
+## Key Architecture
+
+Understanding where AIF-C01 fits within the broader AWS certification ecosystem and what the course boundaries are:
+
+- **Certification Tier:** Sits at the **Foundational Level** alongside the AWS Certified Cloud Practitioner (CLF-C02). It validates broad knowledge of AI, Machine Learning, and Generative AI concepts on AWS without requiring deep coding or model engineering skills.
+- **Target Scope:** Covers 20+ managed AWS AI/ML services (Amazon Bedrock, SageMaker, Comprehend, Rekognition, Polly, Transcribe, Lex, Kendra, etc.).
+- **Out of Scope:** General AWS cloud infrastructure provisioning (VPC networking, EC2 auto-scaling groups, deep IAM policy syntax) and non-AWS consumer AI tools.
+
+$$\text{AWS AI Practitioner Scope} = \text{AI/ML Fundamentals} + \text{Generative AI (Bedrock)} + 20\text{+ Managed AI Services}$$
+
+$$\text{Exam Architecture} = 65 \text{ Questions} \quad \Big\vert{} \quad 90 \text{ Minutes} \quad \Big\vert{} \quad \text{Passing Score: } 700 / 1000$$
+
+## Certification Hierarchy & Service Mapping Matrix
+
+```
+                      ┌─────────────────────────────────────────┐
+                      │    AWS Certification Hierarchy          │
+                      └─────────────────────────────────────────┘
+                                           │
+         ┌─────────────────────────────────┴─────────────────────────────────┐
+         ▼                                                                   ▼
+┌─────────────────────────────────┐                         ┌─────────────────────────────────┐
+│ Cloud Practitioner (CLF-C02)    │                         │  AI Practitioner (AIF-C01)      │
+│ Focus: Core Cloud Infrastructure│                         │  Focus: AI / ML / GenAI Services│
+└─────────────────────────────────┘                         └─────────────────────────────────┘
+         │                                                                   │
+         ▼                                                                   ▼
+[Associate Level: SAA, DVA, SOA]                          [Specialty / Associate: MLA, AIP]
+```
+
+- **Service Scope Blueprint:** The course bridges foundational AI concepts with practical service usage. You will learn to map specific business requirements to native AWS AI services (e.g., text-to-speech, computer vision, natural language processing, and foundation model orchestration).
+
+## Exam Guide
+
+### Exam Tips
+
+- **Breadth Over Depth:** The AIF-C01 exam evaluates your ability to pick the right AWS service for a given business problem. You will not be asked to write Python code, tune hyperparameters, or build models from scratch.
+- **Managed Services First:** Always look for turnkey, fully managed AWS AI services before considering custom SageMaker model training when a scenario specifies "minimal operational overhead" or "no ML expertise required".
+
+---
+
+### Practice Test
+
+**Question 1:**
+A company wants to introduce a digital assistant to its internal portal to help employees find HR policy documents using natural language queries. The company wants a fully managed solution with minimal setup. Which AWS service is best suited for this task?
+
+- [ ] A. Amazon SageMaker JumpStart
+- [ ] B. Amazon Q Business
+- [ ] C. AWS Direct Connect
+- [ ] D. Amazon EC2
+
+<details>
+<summary>Correct Answer</summary>
+- [x] B. Amazon Q Business
+    - **Explanation:** Amazon Q Business is a fully managed, AI-powered assistant designed to answer questions, provide summaries, and execute tasks using data existing in enterprise systems. SageMaker JumpStart requires more customization, while EC2 and Direct Connect are core infrastructure services unrelated to managed conversational search.
+
+</details>
+
+---
+
+**Question 2:**
+A candidate with no prior cloud experience is looking for an AWS certification that validates foundational knowledge of artificial intelligence, machine learning concepts, and generative AI services on AWS. Which certification exam code should they target?
+
+- [ ] A. SAA-C03
+- [ ] B. CLF-C02
+- [ ] C. AIF-C01
+- [ ] D. MLA-C01
+
+<details>
+<summary>Correct Answer</summary>
+
+- [x] C. AIF-C01
+  - **Explanation:** AIF-C01 is the official exam code for the AWS Certified AI Practitioner, a foundational certification specifically covering AI, ML, and Generative AI services on AWS. SAA-C03 is Solutions Architect Associate, CLF-C02 is Cloud Practitioner, and MLA-C01 is Machine Learning Engineer Associate.
+
+</details>
