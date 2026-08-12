@@ -45,3 +45,14 @@ GIT_USER=<Your GitHub username> npm run deploy
 ```
 
 If you are using GitHub pages for hosting, this command is a convenient way to build the website and push to the `gh-pages` branch.
+
+### IndexNow Integration
+
+The deployment pipeline is configured to automatically submit updated URLs to search engines via the IndexNow protocol whenever a successful deployment occurs.
+
+To enable this feature, you must configure a repository secret:
+1. Generate an IndexNow key (e.g., using an online generator or creating a random UUID).
+2. Go to your GitHub repository **Settings** > **Secrets and variables** > **Actions**.
+3. Create a new repository secret named `INDEXNOW_KEY` and paste your key as the value.
+
+If the secret is not set, the IndexNow submission steps in the deployment workflow will simply be skipped.
