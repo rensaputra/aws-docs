@@ -35,7 +35,6 @@ export default function Home(): ReactNode {
   return (
     <Layout
       title={`${siteConfig.title}`}
-      description="This is Rendy E Saputra's Site. Rendy is a Software Engineer working on TypeScript, AWS, React, Node.js, Java and more."
     >
       <HomepageHeader />
       <main>
