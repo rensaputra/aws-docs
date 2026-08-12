@@ -115,6 +115,9 @@ const config: Config = {
       { property: "og:site_name", content: "Rendy's AWS Notes" },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
+      { name: "author", content: "Rendy E. Saputra" },
+      { name: "robots", content: "index, follow" },
+      { name: "theme-color", content: "#0073bb" },
     ],
     // Replace with your project's social card
     image: "img/docusaurus-social-card.jpg",
