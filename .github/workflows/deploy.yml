@@ -33,6 +33,14 @@ jobs:
       - name: Build website
         run: npm run build
 
+      - name: Generate IndexNow key file
+        if: ${{ secrets.INDEXNOW_KEY != '' }}
+        env:
+          INDEXNOW_KEY: ${{ secrets.INDEXNOW_KEY }}
+        run: |
+          echo "$INDEXNOW_KEY" > "./build/$INDEXNOW_KEY.txt"
+          echo "Generated IndexNow verification file."
+
       - name: Checkout gh-pages branch
         uses: actions/checkout@v4
         continue-on-error: true
@@ -66,3 +74,13 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./build
+
+      - name: Submit URLs to IndexNow
+        if: ${{ secrets.INDEXNOW_KEY != '' }}
+        uses: bojieyang/indexnow-action@v2
+        env:
+          INDEXNOW_KEY: ${{ secrets.INDEXNOW_KEY }}
+        with:
+          sitemap-location: 'https://rensaputra.github.io/sitemap.xml'
+          key: ${{ secrets.INDEXNOW_KEY }}
+          lastmod-required: false
