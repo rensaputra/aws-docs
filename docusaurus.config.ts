@@ -101,6 +101,21 @@ const config: Config = {
   ],
 
   themeConfig: {
+    metadata: [
+      {
+        name: "description",
+        content:
+          "This is Rendy E Saputra's Site. Rendy is a Software Engineer working on TypeScript, AWS, React, Node.js, Java and more.",
+      },
+      {
+        name: "keywords",
+        content:
+          "Rendy, Eka, Saputra, AWS, TypeScript, React, Software Engineer, Java",
+      },
+      { property: "og:site_name", content: "Rendy's AWS Notes" },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
+    ],
     // Replace with your project's social card
     image: "img/docusaurus-social-card.jpg",
     colorMode: {
