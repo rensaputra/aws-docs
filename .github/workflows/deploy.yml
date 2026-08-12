@@ -79,6 +79,6 @@ jobs:
         if: ${{ env.INDEXNOW_KEY != '' }}
         uses: bojieyang/indexnow-action@v2
         with:
-          sitemap-location: 'https://rensaputra.github.io/sitemap.xml'
+          sitemap-location: 'https://res.id.au/sitemap.xml'
           key: ${{ secrets.INDEXNOW_KEY }}
           lastmod-required: false
