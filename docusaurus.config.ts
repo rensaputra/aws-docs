@@ -57,6 +57,27 @@ const config: Config = {
   // For GitHub pages deployment, it is often '/<projectName>/'
   baseUrl: process.env.BASE_URL || "/",
 
+  headTags: [
+    {
+      tagName: "script",
+      attributes: {
+        type: "application/ld+json",
+      },
+      innerHTML: JSON.stringify({
+        "@context": "https://schema.org/",
+        "@type": "WebSite",
+        "name": "Rendy's AWS Notes",
+        "url": "https://res.id.au/",
+        "alternateName": ["Rendy E. Saputra's Site", "Rendy's AWS Notes"],
+        "potentialAction": {
+          "@type": "SearchAction",
+          "target": "https://res.id.au/search?q={search_term_string}",
+          "query-input": "required name=search_term_string"
+        }
+      }),
+    },
+  ],
+
   // GitHub pages deployment config.
   // If you aren't using GitHub pages, you don't need these.
   organizationName: "rensaputra", // Usually your GitHub org/user name.
@@ -136,6 +157,24 @@ const config: Config = {
   ],
 
   themeConfig: {
+    metadata: [
+      {
+        name: "description",
+        content:
+          "This is Rendy E Saputra's Site. Rendy is a Software Engineer working on TypeScript, AWS, React, Node.js, Java and more.",
+      },
+      {
+        name: "keywords",
+        content:
+          "Rendy, Eka, Saputra, AWS, TypeScript, React, Software Engineer, Java",
+      },
+      { property: "og:site_name", content: "Rendy's AWS Notes" },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
+      { name: "author", content: "Rendy E. Saputra" },
+      { name: "robots", content: "index, follow" },
+      { name: "theme-color", content: "#0073bb" },
+    ],
     // Replace with your project's social card
     image: "img/docusaurus-social-card.jpg",
     colorMode: {
@@ -145,7 +184,7 @@ const config: Config = {
     navbar: {
       title: "Home",
       logo: {
-        alt: "Mascot",
+        alt: "Rendy's AWS Notes",
         src: "img/wolf.svg",
       },
       items: [
