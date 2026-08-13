@@ -17,47 +17,29 @@ Financially, AWS boils cloud billing down to three core drivers: **Compute** (pa
 [ IaaS ]                 ---> AWS manages Hardware/Virtualization; You manage OS & App
 [ PaaS ]                 ---> AWS manages Hardware & OS; You manage Code & Data
 [ SaaS ]                 ---> AWS manages everything; You just consume the service
-
 ```
 
 ---
 
-## 2. Main Discussion
+## Main Discussion
 
 ### The Shared Responsibility Gradient: Service Model Breakdown
 
 Understanding cloud service models means understanding **who manages what** in the technology stack.
 
-```
-+-----------------------------------------------------------------------------------------+
-| RESPONSIBILITY MATRIX                                                                   |
-+----------------------+--------------------+--------------------+------------------------+
-| Technology Layer     | IaaS (e.g. EC2)    | PaaS (Beanstalk)   | SaaS (Rekognition)     |
-+----------------------+--------------------+--------------------+------------------------+
-| Applications         | Managed by You     | Managed by You     | Managed by AWS         |
-| Data                 | Managed by You     | Managed by You     | Managed by AWS         |
-| Runtime              | Managed by You     | Managed by AWS     | Managed by AWS         |
-| Middleware           | Managed by You     | Managed by AWS     | Managed by AWS         |
-| Operating System     | Managed by You     | Managed by AWS     | Managed by AWS         |
-| Virtualization       | Managed by AWS     | Managed by AWS     | Managed by AWS         |
-| Servers              | Managed by AWS     | Managed by AWS     | Managed by AWS         |
-| Storage              | Managed by AWS     | Managed by AWS     | Managed by AWS         |
-| Networking           | Managed by AWS     | Managed by AWS     | Managed by AWS         |
-+----------------------+--------------------+--------------------+------------------------+
-
-```
+![](./img/responsibility-matrix.png)
 
 - **Infrastructure as a Service (IaaS):** Provides raw networking, virtual machines, and storage. Gives maximum flexibility and architectural control.
-- _AWS Example:_ **Amazon EC2**
-- _Industry Examples:_ Google Cloud Compute Engine, Microsoft Azure VMs, Linode, DigitalOcean
+  - _AWS Example:_ **Amazon EC2**
+  - _Industry Examples:_ Google Cloud Compute Engine, Microsoft Azure VMs, Linode, DigitalOcean
 
 - **Platform as a Service (PaaS):** Abstracts away OS patching, hardware provisioning, and runtime management so developers can focus solely on application deployment and code.
-- _AWS Example:_ **AWS Elastic Beanstalk**
-- _Industry Examples:_ Heroku, Google App Engine
+  - _AWS Example:_ **AWS Elastic Beanstalk**
+  - _Industry Examples:_ Heroku, Google App Engine
 
 - **Software as a Service (SaaS):** Fully managed, end-user applications delivered over the internet. You configure settings and consume capabilities without touching underlying code or infrastructure.
-- _AWS Example:_ **Amazon Rekognition** (pre-trained AI vision API)
-- _Industry Examples:_ Gmail, Zoom, Dropbox
+  - _AWS Example:_ **Amazon Rekognition** (pre-trained AI vision API)
+  - _Industry Examples:_ Gmail, Zoom, Dropbox
 
 ---
 
@@ -90,7 +72,6 @@ AWS eliminates upfront hardware costs by driving all consumption through a utili
   [ 1. COMPUTE ]                 [ 2. STORAGE ]              [ 3. NETWORKING ]
 Charged per second/hour        Charged per GB stored        Pay for Data OUT only
 (EC2, Lambda, Bedrock)           (S3, EBS, DynamoDB)          (Data IN is FREE!)
-
 ```
 
 $$\text{Total Monthly AWS Cost} = f(\text{Compute Duration}) + f(\text{GB Stored}) + f(\text{GB Data Transferred OUT})$$
@@ -98,39 +79,41 @@ $$\text{Total Monthly AWS Cost} = f(\text{Compute Duration}) + f(\text{GB Stored
 1. **Compute:** Billed based on execution duration and instance size (e.g., clock hours or seconds an EC2 instance or AI inference task runs).
 2. **Storage:** Billed based on the total volume of data (in Gigabytes/Terabytes) stored persistently in services like Amazon S3 or EBS.
 3. **Networking (Data Transfer):**
-
-- **Inbound Data Transfer (Data IN):** **100% Free** across all AWS services.
-- **Outbound Data Transfer (Data OUT):** Aggregated across services and charged on a per-GB basis as data leaves the AWS Cloud.
+   - **Inbound Data Transfer (Data IN):** **100% Free** across all AWS services.
+   - **Outbound Data Transfer (Data OUT):** Aggregated across services and charged on a per-GB basis as data leaves the AWS Cloud.
 
 ---
 
-## 3. Exam Guide
+## Exam Guide
 
 ### Exam Tips
 
 - **Identify Service Models for AI Services:** Pay close attention to how AWS AI services are categorized on the exam:
-- **Amazon EC2 / EBS:** IaaS (you manage the virtual machine and OS).
-- **AWS Elastic Beanstalk / SageMaker Managed Endpoints:** PaaS (managed runtime environment for applications/models).
-- **Amazon Rekognition / Amazon Polly / Amazon Transcribe:** SaaS (turnkey, pre-trained AI APIs where you pass data and get instant results without managing models or servers).
-
+  - **Amazon EC2 / EBS:** IaaS (you manage the virtual machine and OS).
+  - **AWS Elastic Beanstalk / SageMaker Managed Endpoints:** PaaS (managed runtime environment for applications/models).
+  - **Amazon Rekognition / Amazon Polly / Amazon Transcribe:** SaaS (turnkey, pre-trained AI APIs where you pass data and get instant results without managing models or servers).
 - **Data Transfer In vs. Out:** A classic trap question involves egress fees. Remember: **Data coming into AWS is always free**. You only pay when data leaves the AWS region or cloud environment to the internet.
 
 ---
 
-### Sample AIF-C01 Questions
+### Practice Test
 
 #### Question 1
 
 A developer wants to integrate image classification capabilities into a web application. They prefer to send images to an existing pre-trained AWS API and receive JSON label predictions without managing training jobs, virtual machines, or operating system patches. Which cloud service model and AWS service best fit this requirement?
 
-- A. IaaS using Amazon EC2
-- B. PaaS using AWS Elastic Beanstalk
-- C. SaaS using Amazon Rekognition
-- D. Hybrid Cloud using AWS Outposts
+- [ ] A. IaaS using Amazon EC2
+- [ ] B. PaaS using AWS Elastic Beanstalk
+- [ ] C. SaaS using Amazon Rekognition
+- [ ] D. Hybrid Cloud using AWS Outposts
 
-**Answer:** C
+<details>
+<summary>Correct Answer</summary>
 
-**Explanation:** **Amazon Rekognition** provides a ready-to-use, pre-trained machine learning API, making it a **Software as a Service (SaaS)** capability where AWS manages all models, servers, runtimes, and underlying infrastructure.
+- [x] C. SaaS using Amazon Rekognition
+  - **Explanation:** **Amazon Rekognition** provides a ready-to-use, pre-trained machine learning API, making it a **Software as a Service (SaaS)** capability where AWS manages all models, servers, runtimes, and underlying infrastructure.
+
+</details>
 
 ---
 
@@ -138,13 +121,17 @@ A developer wants to integrate image classification capabilities into a web appl
 
 A cloud practitioner is reviewing a monthly AWS invoice and notices a line item for network charges. Which network traffic pattern incur a fee under standard AWS billing rules?
 
-- A. Uploading 500 GB of training datasets from an on-premises workstation into an Amazon S3 bucket
-- B. Inbound data transfer from the internet into an Amazon EC2 instance
-- C. Transferring data out from an Amazon S3 bucket to an external internet destination
-- D. Data ingress coming through a public endpoint into an AI processing pipeline
+- [ ] A. Uploading 500 GB of training datasets from an on-premises workstation into an Amazon S3 bucket
+- [ ] B. Inbound data transfer from the internet into an Amazon EC2 instance
+- [ ] C. Transferring data out from an Amazon S3 bucket to an external internet destination
+- [ ] D. Data ingress coming through a public endpoint into an AI processing pipeline
 
-**Answer:** C
+<details>
+<summary>Correct Answer</summary>
 
-**Explanation:** Under the AWS pricing fundamentals, **Data Transfer IN is always free**. AWS charges network egress fees specifically when data is transferred **OUT** of the AWS cloud to the internet or another external region.
+- [x] C. Transferring data out from an Amazon S3 bucket to an external internet destination
+  - **Explanation:** Under the AWS pricing fundamentals, **Data Transfer IN is always free**. AWS charges network egress fees specifically when data is transferred **OUT** of the AWS cloud to the internet or another external region.
+
+</details>
 
 ---
