@@ -149,7 +149,7 @@ const config: Config = {
     navbar: {
       title: "Home",
       logo: {
-        alt: "Mascot",
+        alt: "Rendy's AWS Notes",
         src: "img/wolf.svg",
       },
       items: [
