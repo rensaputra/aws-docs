@@ -12,36 +12,54 @@ const config: Config = {
 
   headTags: [
     {
-      tagName: 'link',
+      tagName: "script",
       attributes: {
-        rel: 'icon',
-        type: 'image/png',
-        sizes: '512x512',
-        href: '/img/icon-512.png',
+        type: "application/ld+json",
+      },
+      innerHTML: JSON.stringify({
+        "@context": "https://schema.org/",
+        "@type": "WebSite",
+        name: "Rendy's AWS Notes",
+        url: "https://res.id.au/",
+        alternateName: ["Rendy E. Saputra's Site", "Rendy's AWS Notes"],
+        potentialAction: {
+          "@type": "SearchAction",
+          target: "https://res.id.au/search?q={search_term_string}",
+          "query-input": "required name=search_term_string",
+        },
+      }),
+    },
+    {
+      tagName: "link",
+      attributes: {
+        rel: "icon",
+        type: "image/png",
+        sizes: "512x512",
+        href: "/img/icon-512.png",
       },
     },
     {
-      tagName: 'link',
+      tagName: "link",
       attributes: {
-        rel: 'icon',
-        type: 'image/svg+xml',
-        href: '/img/icon.svg',
+        rel: "icon",
+        type: "image/svg+xml",
+        href: "/img/icon.svg",
       },
     },
     {
-      tagName: 'link',
+      tagName: "link",
       attributes: {
-        rel: 'icon',
-        type: 'image/x-icon',
-        href: '/favicon.ico',
+        rel: "icon",
+        type: "image/x-icon",
+        href: "/favicon.ico",
       },
     },
     {
-      tagName: 'link',
+      tagName: "link",
       attributes: {
-        rel: 'apple-touch-icon',
-        sizes: '180x180',
-        href: '/img/apple-touch-icon.png',
+        rel: "apple-touch-icon",
+        sizes: "180x180",
+        href: "/img/apple-touch-icon.png",
       },
     },
   ],
@@ -56,27 +74,6 @@ const config: Config = {
   // Set the /<baseUrl>/ pathname under which your site is served
   // For GitHub pages deployment, it is often '/<projectName>/'
   baseUrl: process.env.BASE_URL || "/",
-
-  headTags: [
-    {
-      tagName: "script",
-      attributes: {
-        type: "application/ld+json",
-      },
-      innerHTML: JSON.stringify({
-        "@context": "https://schema.org/",
-        "@type": "WebSite",
-        "name": "Rendy's AWS Notes",
-        "url": "https://res.id.au/",
-        "alternateName": ["Rendy E. Saputra's Site", "Rendy's AWS Notes"],
-        "potentialAction": {
-          "@type": "SearchAction",
-          "target": "https://res.id.au/search?q={search_term_string}",
-          "query-input": "required name=search_term_string"
-        }
-      }),
-    },
-  ],
 
   // GitHub pages deployment config.
   // If you aren't using GitHub pages, you don't need these.
