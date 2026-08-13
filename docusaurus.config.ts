@@ -33,7 +33,7 @@ const config: Config = {
       attributes: {
         rel: 'icon',
         type: 'image/x-icon',
-        href: '/img/favicon.ico',
+        href: '/favicon.ico',
       },
     },
     {
