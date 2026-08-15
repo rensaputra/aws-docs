@@ -154,6 +154,11 @@ const config: Config = {
   ],
 
   themeConfig: {
+    docs: {
+      sidebar: {
+        hideable: true,
+      },
+    },
     metadata: [
       {
         name: "description",
