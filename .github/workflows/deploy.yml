@@ -74,6 +74,7 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./build
+          force_orphan: true
 
       - name: Submit URLs to IndexNow
         if: ${{ env.INDEXNOW_KEY != '' }}
