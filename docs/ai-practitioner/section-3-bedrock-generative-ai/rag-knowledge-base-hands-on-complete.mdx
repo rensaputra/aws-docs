@@ -1,0 +1,151 @@
+---
+sidebar_position: 12
+---
+
+# RAG & Knowledge Base - Complete Setup - Hands On
+
+---
+
+## Key Takeaways
+
+Setting up a complete, production-grade Retrieval-Augmented Generation (RAG) system on Amazon Bedrock requires orchestrating multiple AWS components: **IAM administrative credentials**, an **Amazon S3 document storage bucket**, an **Embeddings Model** (e.g., Titan Text Embeddings V2), and an underlying **Vector Database** (e.g., Amazon OpenSearch Serverless).
+
+```
+[ Local PDF ] ---> [ Amazon S3 Bucket ]
+                          |
+                          v (Sync Job / Ingestion)
+               [ Bedrock Ingestion Engine ]
+                 |                      |
+                 | (Text Chunking)      v (Generate Embeddings)
+                 |                 [ Titan Embeddings V2 ]
+                 |                              |
+                 +--------------+---------------+
+                                |
+                                v
+               [ OpenSearch Serverless Collection ]
+                 (Vector Index: Embeddings + Metadata)
+                                |
+[ User Query ] ---> [ Bedrock RAG Engine ] ---> [ Claude / FM ] ---> [ Answer + S3 URI Citation ]
+```
+
+:::warning
+Crucial billing and lifecycle rule: **Deleting an Amazon Bedrock Knowledge Base does not automatically delete its underlying Amazon OpenSearch Serverless collection**. Because OpenSearch Serverless carries active OpenSearch Compute Unit (OCU) baseline costs (~$0.24/OCU-hour), you must delete the OpenSearch collection independently to prevent ongoing charges.
+:::
+
+---
+
+## Hands-On Workflow: Complete Bedrock RAG Setup
+
+1. **Establish an IAM Administrative User:**
+   - Navigate to the **AWS IAM Console** (never build production assets as the root user).
+   - Under **Access Management > Users**, click **Create user**.
+   - Define a username (e.g., `Rendy-Admin`) and enable **AWS Management Console access**.
+   - Set a custom password and attach the **AdministratorAccess** policy directly.
+   - Sign out of the root user account and sign in using the unique IAM console sign-in URL with your new IAM user credentials.
+2. **Provision S3 Data Bucket & Upload Source Documents:**
+   - Navigate to the **Amazon S3 Console** in your target region (e.g., `us-east-1`).
+   - Click **Create bucket**.
+   - Enter a **globally unique bucket name** (e.g., `demo-kb-bedrock-[your-unique-suffix]`).
+   - Keep default general-purpose settings and click **Create bucket**.
+   - Open your new bucket, click **Upload**, select your reference document (e.g., [Evolution of the Internet Detailed.pdf](./assets/Evolution_of_the_Internet_Detailed.pdf), and confirm the upload.
+3. **Configure Amazon Bedrock Knowledge Base & S3 Data Source:**
+   - Navigate to the **Amazon Bedrock Console** and select **Knowledge Bases** under Builder tools.
+   - Click **Create Unstructured Vector Store KB**.  
+     ![](./img/bedrock-kb-create.png)
+   - **IAM Permissions:** Select _Create and use a new service role_ (Bedrock automatically configures the required IAM trust and access policies).
+   - **Data Source:** Select **Amazon S3**.  
+     ![](./img/bedrock-kb-s3.png)
+   - Point the data source configuration to your newly created S3 bucket URI.
+4. **Select Embeddings Model & Vector Database:**
+   - Choose the vector conversion and storage configuration:
+   - **Embeddings Model:** Select **Amazon Titan Text Embeddings V2** (keep the default vector dimension settings).  
+     ![](./img/bedrock-kb-titan.png)
+   - **Vector Store Configuration:** Select **Quick create a new vector store** (Amazon OpenSearch Serverless).  
+     ![](./img/bedrock-kb-opensearch.png)
+   - Review the provisioning summary and click **Create knowledge base**. Bedrock automatically deploys the OpenSearch Serverless collection, security policies, and vector index.
+5. **Trigger Ingestion Sync & Inspect OpenSearch Vectors:**
+   - Once provisioning finishes:
+   - Navigate to the **Data sources** tab and click **Sync** to initiate document parsing, chunking, and embedding generation.  
+     ![](./img/bedrock-kb-sync.png)
+   - Open the **Amazon OpenSearch Service Console** and select **Collections** under Serverless.  
+     ![](./img/bedrock-kb-opensearch-collection.png)
+   - Notice the generated vector index containing the document chunks and multi-dimensional vector arrays created by the Titan Embeddings model.
+6. **Explore OpenSearch Dashboards & Visualize Vector Embeddings**
+   - Open the **Amazon OpenSearch Service Console** and select **Collections** under Serverless.
+   - Click on your Bedrock-generated collection to view the collection endpoint and index overview (confirming the vector index and document chunks).
+   - Click on the **OpenSearch Dashboards URL** to open the visualization UI.
+   - In OpenSearch Dashboards, navigate to the left-hand menu and select **Discover**.
+   - Click Create index pattern, paste the exact index name from your collection, click Next step, and select **Create index pattern**.  
+     ![](./img/created-index-pattern.png)
+   - Return to **Discover** to inspect the ingested data:
+     - Text Chunks **(AMAZON_BEDROCK_TEXT)**: The raw text passages extracted from your PDF.
+     - Vector Embeddings (**bedrock-knowledge-base-default-vector**): The actual high-dimensional numerical arrays generated by the Titan Embeddings model for semantic similarity search.  
+       ![](./img/bedrock-kb-opensearch-vectors.png)
+7. **Test Dynamic Inferences & Validate S3 Citations:**
+   - Return to the **Bedrock Knowledge Base Test Panel**:
+   - Select a generator model (e.g., **Anthropic Claude 3.5 Sonnet** or **Amazon Nova**).
+   - Run a grounded query: `Who and when invented the World Wide Web?`  
+     ![](./img/bedrock-kb-test-panel.png)
+   - Verify that the response contains accurate data grounded in the PDF and displays a direct, clickable hyperlink citation leading to the specific object in your Amazon S3 bucket.  
+     ![](./img/bedrock-kb-test-panel-response.png)
+8. **Execute Resource Cleanup & Prevent Idle Costs:**
+   - To avoid ongoing baseline charges from OpenSearch Compute Units (OCUs):
+     - In Bedrock, select your Knowledge Base and click **Delete**.  
+       ![](./img/knowledge-base-delete.png)
+     - **CRITICAL SECOND STEP:** Navigate to **Amazon OpenSearch Service > Serverless > Collections**.
+     - Select the Bedrock-generated collection and click **Delete** to terminate the underlying search and indexing compute units.  
+       ![](./img/opensearch-collection-delete.png)
+     - (Optional) The Amazon S3 bucket can remain without incurring compute fees, as storage costs for small test PDFs are negligible.
+
+---
+
+## Exam Guide
+
+### Exam Tips
+
+- **Root vs. IAM Best Practice:** Always remember for the exam that daily administrative, development, and AI engineering tasks must be conducted using **IAM users/roles** with the principle of least privilege, rather than the AWS account Root User.
+- **S3 Global Uniqueness:** Amazon S3 bucket names are **globally unique** across all AWS accounts worldwide, even though buckets are created within a specific regional scope.
+- **Bedrock Service Role Automation:** When creating a Knowledge Base, selecting _Create a new service role_ automatically constructs the IAM policy granting Bedrock permissions to invoke `s3:GetObject` on the data bucket and execute vector read/writes against OpenSearch Serverless.
+- **OpenSearch Serverless Lifecycle Decoupling:** Be mindful of the architectural boundary: deleting a Bedrock Knowledge Base removes the high-level orchestration layer, but **the underlying vector storage (OpenSearch Serverless collection) persists independently** until manually removed.
+
+---
+
+### Practice Test
+
+#### Question 1
+
+A cloud engineer creates an Amazon Bedrock Knowledge Base using the "Quick create a new vector store" option with Amazon OpenSearch Serverless. After running a prototype evaluation, the engineer deletes the Knowledge Base from the Amazon Bedrock console. At the end of the billing cycle, the company continues to receive charges for OpenSearch Compute Units (OCUs). What is the root cause of these ongoing charges?
+
+- [ ] A. Amazon Bedrock retains a hidden backup copy of the S3 bucket indefinitely
+- [ ] B. The Amazon OpenSearch Serverless collection remains active and must be deleted separately in the OpenSearch console
+- [ ] C. Embeddings models continue to charge token processing fees after the Knowledge Base is removed
+- [ ] D. AWS IAM service roles incur hourly fees when tied to deleted AI resources
+
+<details>
+<summary>Correct Answer</summary>
+
+- [x] B. The Amazon OpenSearch Serverless collection remains active and must be deleted separately in the OpenSearch console.
+  - **Explanation:** Deleting a Knowledge Base in Amazon Bedrock does **not** automatically delete the underlying Amazon OpenSearch Serverless vector collection. Because OpenSearch Serverless charges for provisioned OpenSearch Compute Units (OCUs) while active, the collection must be deleted manually from the OpenSearch Service console to halt billing.
+
+</details>
+
+---
+
+#### Question 2
+
+An AI developer is configuring an Amazon Bedrock Knowledge Base to ingest technical manuals from an Amazon S3 bucket. Which sequence of operations correctly reflects the ingestion and vectorization workflow when the "Sync" action is triggered?
+
+- [ ] A. The LLM updates its internal weights directly $\rightarrow$ S3 documents are deleted $\rightarrow$ The Knowledge Base closes
+- [ ] B. Documents are chunked $\rightarrow$ An embeddings model (e.g., Titan Text Embeddings) converts chunks into vectors $\rightarrow$ Vectors and metadata are stored in the vector database
+- [ ] C. OpenSearch creates SQL tables $\rightarrow$ Documents are converted into JPEG images $\rightarrow$ Bedrock Guardrails indexes the text
+- [ ] D. The user query is generated $\rightarrow$ The base foundation model is fine-tuned on S3 $\rightarrow$ The S3 URI is deleted
+
+<details>
+<summary>Correct Answer</summary>
+
+- [x] B. Documents are chunked $\rightarrow$ An embeddings model (e.g., Titan Text Embeddings) converts chunks into vectors $\rightarrow$ Vectors and metadata are stored in the vector database.
+  - **Explanation:** During the Bedrock Knowledge Base sync pipeline, raw documents from Amazon S3 are parsed and split into chunks, processed by a text embeddings model to create numerical vector representations, and written into the vector store (such as OpenSearch Serverless) along with text metadata for runtime similarity matching.
+
+</details>
+
+---
