@@ -1,0 +1,170 @@
+---
+sidebar_position: 8
+---
+
+import ImageRow from "@site/src/components/ImageRow";
+import automaticEvaluation from "./img/automatic-evaluation.png";
+import humanEvaluation from "./img/human-evaluation.png";
+
+# Amazon Bedrock - FM Evaluation
+
+---
+
+## Key Takeaways
+
+Model selection isn't just about picking the biggest LLM; it requires empirical benchmarking against quality, safety, and operational criteria. Amazon Bedrock provides built-in **Automatic Evaluation** (via curated datasets and judge models) and **Human Evaluation** (via internal teams or subject matter experts) to grade candidate models objectively before deploying them into production.
+
+```
+[ Benchmark Questions + Reference Answers ]
+                 |
+                 v
+   +---------------------------+
+   |   Model Under Evaluation  | ---> Generates Model Responses
+   +---------------------------+                |
+                 |                              v
+                 +-------------------> [ Evaluation Engine ]
+                                                |
+                         +----------------------+----------------------+
+                         |                                             |
+                         v                                             v
+           [ Automatic Evaluation ]                          [ Human Evaluation ]
+        (LLM-as-a-Judge / Algo Scoring)               (SMEs / Thumbs Up / Likert Scales)
+        * ROUGE (Summarization n-grams)               * Coherence & Fluency
+        * BLEU (Translation Precision)                * Tone, Empathy, Brand Alignment
+        * BERTScore (Semantic Embeddings)             * Custom Domain Rubrics
+```
+
+Evaluating models with standard benchmark metrics—such as **ROUGE**, **BLEU**, **BERTScore**, and **Perplexity**—enables rapid identification of model bias, hallucination rates, and performance regressions with low administrative overhead.
+
+---
+
+## Main Discussion
+
+### Automatic vs. Human Evaluation Architecture
+
+Amazon Bedrock categorizes model evaluation workflows into two distinct operational paradigms:
+
+```
++----------------------------------------------------------------------------------------+
+|                          BEDROCK MODEL EVALUATION WORKFLOWS                            |
++--------------------------+------------------------------+------------------------------+
+| Dimension                | Automatic Evaluation         | Human Evaluation             |
++--------------------------+------------------------------+------------------------------+
+| Evaluator                | Pre-trained Judge LLM / Code | Internal workforce or SMEs   |
+| Evaluation Tasks         | Summarization, Q&A,          | Custom, open-ended, and      |
+|                          | Classification, Generation   | nuanced qualitative tasks    |
+| Datasets Used            | Built-in curated or custom S3| Custom business prompt sets  |
+| Scoring Mechanism        | ROUGE, BLEU, BERTScore, F1   | Thumbs Up/Down, 1-5 Ranking  |
+| Speed & Cost             | Ultra-fast, highly scalable  | Slower, higher resource cost |
++--------------------------+------------------------------+------------------------------+
+```
+
+<ImageRow>
+  <img src={automaticEvaluation} alt="Automatic Evaluation" />
+  <img src={humanEvaluation} alt="Human Evaluation" />
+</ImageRow>
+
+---
+
+### Quantitative Evaluation Metrics: ROUGE, BLEU, BERTScore & Perplexity
+
+When measuring algorithmic output quality against reference ground truth, AWS utilizes distinct standard metrics:
+
+#### 1. ROUGE (Recall-Oriented Understudy for Gisting Evaluation)
+
+Primarily used for **automatic text summarization** and content extraction. It measures how much of the reference summary appears in the model-generated text.
+
+$$\text{ROUGE-N} = \frac{\sum_{\text{gram}_n \in \text{Reference}} \text{Count}_{\text{match}}(\text{gram}_n)}{\sum_{\text{gram}_n \in \text{Reference}} \text{Count}(\text{gram}_n)}$$
+
+- **ROUGE-N (e.g., ROUGE-1, ROUGE-2):** Measures $n$-gram overlap (single words or sequential word pairs) between candidate text and ground truth.
+- **ROUGE-L:** Computes the **Longest Common Subsequence (LCS)**, rewarding models that preserve sentence-level word order without requiring continuous matches.
+
+#### 2. BLEU (Bilingual Evaluation Understudy)
+
+Primarily engineered for **machine translation** quality. BLEU is a precision-focused metric calculating modified $n$-gram precision combined with a penalty for overly short generated outputs (Brevity Penalty).
+
+$$\text{BLEU} = \text{BP} \cdot \exp \left( \sum_{n=1}^{N} w_n \ln p_n \right)$$
+
+$$\text{where } \text{BP} = \begin{cases} 1 & \text{if } c > r \\ e^{(1 - r/c)} & \text{if } c \le r \end{cases} \quad (c = \text{Candidate length}, \, r = \text{Reference length})$$
+
+#### 3. BERTScore (Semantic Vector Similarity)
+
+Unlike ROUGE and BLEU, which rely on exact string token matching, **BERTScore** computes semantic similarity using contextual token embeddings.
+
+$$\text{BERTScore} = \text{Cosine Similarity}\left(\mathbf{e}_{\text{generated}}, \mathbf{e}_{\text{reference}}\right) = \frac{\mathbf{e}_g \cdot \mathbf{e}_r}{\Vert{}\mathbf{e}_g\Vert{} \Vert{}\mathbf{e}_r\Vert{}}$$
+
+- Evaluates contextual meaning, allowing paraphrased answers with zero literal word overlap to score high if the semantic intent matches.
+
+#### 4. Perplexity (PPL)
+
+An intrinsic metric measuring how well a probability model predicts a sample. It represents the exponentiated average negative log-likelihood per token.
+
+$$\text{Perplexity}(W) = \exp \left( -\frac{1}{N} \sum_{i=1}^{N} \ln P(w_i \mid w_1, \dots, w_{i-1}) \right)$$
+
+- **Rule:** **Lower perplexity indicates higher model confidence** and predictive accuracy over the evaluation text.
+
+---
+
+### The Continuous Feedback & Production Business Metrics Loop
+
+![](./img/bedrock-model-evaluation-loop.png)
+
+- **User Engagement & Satisfaction:** Collecting explicit user feedback (e.g., thumbs up/down, satisfaction surveys).
+- **Operational & Financial Return (ROI):** Tracking revenue per interaction, customer conversion lifts, and compute inference costs per successful transaction.
+- **Cross-Domain Versatility:** Assessing the model's robustness and generalization when handling inputs outside its primary training domain.
+
+---
+
+## Exam Guide
+
+### Exam Tips
+
+- **Metric Matching Cheat-Sheet:** Memorize these associations for fast question resolution:
+  - **ROUGE:** Text **Summarization** (recall/n-gram overlap focus).
+  - **BLEU:** Machine **Translation** (precision-focused with brevity penalty).
+  - **BERTScore:** **Semantic Similarity** using contextual embeddings (meaning over syntax).
+  - **Perplexity:** Token prediction uncertainty (**Lower is better**).
+- **Bias Detection Strategy:** Using standardized, curated benchmark datasets in Amazon Bedrock provides an automated, low-overhead method to test foundation models for demographic bias, toxicity, and hallucinations before deployment.
+- **Human vs. Automated Decision:** Choose **Human Evaluation** when assessing subjective attributes like conversational empathy, humor, visual coherence, or brand style alignment. Choose **Automatic Evaluation** for high-volume, standardized regression testing across common NLP tasks.
+
+---
+
+### Practice Test
+
+#### Question 1
+
+A development team is evaluating multiple foundation models on Amazon Bedrock for an automated document summarization pipeline. They need an automated metric that measures the overlap of n-grams and longest common subsequences between model-generated summaries and human-written reference summaries. Which evaluation metric should the team select?
+
+- [ ] A. BLEU
+- [ ] B. ROUGE
+- [ ] C. Perplexity
+- [ ] D. Area Under the ROC Curve (AUC)
+
+<details>
+<summary>Correct Answer</summary>
+
+- [x] B. ROUGE
+  - **Explanation:** **ROUGE** (Recall-Oriented Understudy for Gisting Evaluation) is the industry-standard metric specifically designed to evaluate text summarization performance by measuring n-gram overlaps (ROUGE-N) and longest common subsequences (ROUGE-L) against reference texts.
+
+</details>
+
+---
+
+#### Question 2
+
+An AI practitioner needs to compare two foundation models to determine which one is generating text with greater confidence and lower predictive uncertainty over a domain-specific dataset. Which metric should the practitioner analyze, and what value indicates superior performance?
+
+- [ ] A. BLEU score; a lower score indicates better translation quality
+- [ ] B. ROUGE-1 score; a lower score indicates higher vocabulary recall
+- [ ] C. Perplexity; a lower score indicates higher confidence and predictive accuracy
+- [ ] D. Perplexity; a higher score indicates greater model reasoning depth
+
+<details>
+<summary>Correct Answer</summary>
+
+- [x] C. Perplexity; a lower score indicates higher confidence and predictive accuracy
+  - **Explanation:** **Perplexity** measures a language model's uncertainty when predicting subsequent tokens. A **lower perplexity score** indicates the model is less "perplexed," reflecting higher confidence and tighter predictive alignment with the evaluation text.
+
+</details>
+
+---
