@@ -1,5 +1,7 @@
 # AWS Study Notes
 
+[![CI](https://github.com/rensaputra/aws-docs/actions/workflows/ci.yml/badge.svg)](https://github.com/rensaputra/aws-docs/actions/workflows/ci.yml) [![pages-build-deployment](https://github.com/rensaputra/aws-docs/actions/workflows/pages/pages-build-deployment/badge.svg)](https://github.com/rensaputra/aws-docs/actions/workflows/pages/pages-build-deployment)
+
 This website is a collection of my notes, summaries, and exam tips for the AWS Certified Developer Associate (DVA-C02) exam. The content is intended to be for my personal use, but I hope it can also be a helpful resource for others preparing for the same certification.
 
 ## Installation
