@@ -1,0 +1,208 @@
+---
+sidebar_position: 6
+---
+
+# Prompt Engineering Techniques
+
+---
+
+## Key Takeaways
+
+Prompt engineering strategies provide explicit scaffolding to guide Foundation Models toward accurate, structured, and factually grounded completions. Rather than treating an LLM as a black box, selecting the appropriate prompting pattern controls both reasoning depth and output formatting:
+
+```
+[ Prompting Strategy Spectrum ]
+       |
+       +---> Zero-Shot Prompting (Direct instruction; zero examples; relies on pre-trained parametric memory)
+       |
+       +---> One-Shot / Few-Shot Prompting (Provides 1 to 5 demonstration pairs: Input -> Ground Truth Output)
+       |
+       +---> Chain-of-Thought (CoT) Prompting (Deconstructs complex reasoning via intermediate steps: "Think step-by-step")
+       |
+       +---> Retrieval-Augmented Generation (RAG) (Injects non-parametric dynamic context from external vector stores)
+```
+
+Combining these techniques (such as **Few-Shot CoT** or **RAG with Step-by-Step reasoning**) allows models to solve multi-step analytical problems while eliminating formatting errors and hallucinations.
+
+---
+
+## Main Discussion
+
+### The Strategic Prompting Taxonomy
+
+```
++----------------------------------------------------------------------------------------------------+
+|                               STRATEGIC PROMPTING METHOD MATRIX                                    |
++--------------------------+-----------------------+--------------------+----------------------------+
+| Prompting Strategy       | In-Context Examples   | Core Mechanism     | Primary Architectural Fit  |
++--------------------------+-----------------------+--------------------+----------------------------+
+| Zero-Shot Prompting      | 0 Examples            | Direct task        | Simple Q&A, sentiment      |
+|                          |                       | instruction        | classification, drafts     |
++--------------------------+-----------------------+--------------------+----------------------------+
+| One-Shot / Few-Shot      | 1 to 5 Input-Output   | In-context pattern | Precise JSON/XML schemas,  |
+| Prompting                | demonstrations        | matching           | domain-specific formatting |
++--------------------------+-----------------------+--------------------+----------------------------+
+| Chain-of-Thought (CoT)   | Step-by-step breakdown| Sequential latent  | Multi-step logic, math,    |
+| Prompting                | instructions          | reasoning steps    | planning, complex Q&A      |
++--------------------------+-----------------------+--------------------+----------------------------+
+| Retrieval-Augmented      | External dynamic      | Non-parametric     | Dynamic enterprise facts,  |
+| Generation (RAG)         | document chunks       | context injection  | citation-backed research   |
++--------------------------+-----------------------+--------------------+----------------------------+
+```
+
+---
+
+### Zero-Shot vs. Few-Shot Prompting Mechanics
+
+#### 1. Zero-Shot Prompting
+
+Submits a direct natural language instruction without providing demonstration pairs. The model relies entirely on weights learned during pre-training and reinforcement learning (RLHF).
+
+```
++-------------------------------------------------------------------------------+
+| ZERO-SHOT PROMPT ARCHITECTURE                                                 |
+|                                                                               |
+|  [ Prompt ] ---> "Classify the sentiment of this review: 'Battery life is OK'|
+|  [ Output ] <--- "Neutral"                                                    |
++-------------------------------------------------------------------------------+
+```
+
+#### 2. Few-Shot (In-Context Learning) Prompting
+
+Injects 1 to 5 input-output demonstration pairs inside the prompt payload. This teaches the model the exact stylistic pattern, tone, and syntactic structure expected without running model fine-tuning jobs.
+
+```
++-------------------------------------------------------------------------------+
+| FEW-SHOT PROMPT ARCHITECTURE (Pattern Anchoring)                              |
+|                                                                               |
+|  [ In-Context Demonstration 1 ]                                               |
+|  Input: "The engine runs smoothly and delivers great power."                  |
+|  Output: {"sentiment": "POSITIVE", "confidence": 0.95, "domain": "automotive"}|
+|                                                                               |
+|  [ In-Context Demonstration 2 ]                                               |
+|  Input: "Delivery took two weeks longer than promised."                       |
+|  Output: {"sentiment": "NEGATIVE", "confidence": 0.98, "domain": "logistics"} |
+|                                                                               |
+|  [ Target Query ]                                                             |
+|  Input: "The screen colors are bright but battery drains fast."               |
+|  Output: ---> Model automatically produces identical JSON structure           |
++-------------------------------------------------------------------------------+
+```
+
+$$\text{Few-Shot Prompt Payload} = \sum_{i=1}^{k} \left( \text{Example Input}_i + \text{Example Output}_i \right) + \text{Target Input}$$
+
+---
+
+### Chain-of-Thought (CoT) Prompting: Deconstructing Complex Logic
+
+Standard autoregressive generation can produce logic errors on complex math, planning, or reasoning tasks when forced to jump directly from question to final answer. **Chain-of-Thought (CoT)** prompting introduces intermediate reasoning tokens to construct a step-by-step trajectory.
+
+$$\text{Standard Prompt: } P(\text{Answer} \mid \text{Question}) \quad \Big\vert{} \quad \text{CoT Prompt: } P(\text{Steps} \mid \text{Question}) \times P(\text{Answer} \mid \text{Steps}, \text{Question})$$
+
+```
++-----------------------------------------------------------------------------------+
+| CHAIN-OF-THOUGHT (CoT) REASONING WORKFLOW                                         |
+|                                                                                   |
+|  User Request: "Write a short story about a dog solving a mystery."               |
+|                               |                                                   |
+|                               v (CoT Explicit Instruction)                        |
+|  "Break down your thought process step by step:                                   |
+|   1. Establish the setting and introduce the detective dog.                       |
+|   2. Introduce the missing neighborhood item.                                     |
+|   3. Trace the physical clue discovery using scent tracking.                      |
+|   4. Conclude with the item recovery and case resolution."                        |
+|                               |                                                   |
+|                               v                                                   |
+|  [ Foundation Model Trajectory ]                                                  |
+|  * Step 1: Max the Golden Retriever sits on the front porch in Willow Creek...    |
+|  * Step 2: The baker's prized silver whisk has disappeared from the kitchen...    |
+|  * Step 3: Max detects a faint scent of vanilla leading to the treehouse...       |
+|  * Step 4: Max recovers the whisk and returns it to the grateful baker.           |
++-----------------------------------------------------------------------------------+
+```
+
+- **Trigger Phrases:** Adding explicit steering phrases such as _"Let's think step by step"_ or providing explicit numbered milestones prevents the model from generating premature or disjointed conclusions.
+
+---
+
+### Retrieval-Augmented Generation (RAG) Prompt Integration
+
+RAG enriches the prompt by injecting external, non-parametric knowledge retrieved from databases (e.g., Amazon S3 / OpenSearch Serverless) directly into the context window before execution.
+
+![](./img/rag-architecture.png)
+
+```
++-----------------------------------------------------------------------------------+
+| RAG AUGMENTED PROMPT PAYLOAD                                                      |
+|                                                                                   |
+|  +-----------------------------------------------------------------------------+  |
+|  | [ RETRIEVED ENTERPRISE CONTEXT (Amazon S3 / Vector DB) ]                    |  |
+|  | Document Chunk 1: "Canine olfactory tracking can follow scents >24h old."   |  |
+|  | Document Chunk 2: "Residential theft cases commonly involve garage tools."  |  |
+|  +-----------------------------------------------------------------------------+  |
+|  | [ USER INSTRUCTION ]                                                        |  |
+|  | Write a story about a canine tracking case using strictly the facts above.  |  |
+|  +-----------------------------------------------------------------------------+  |
+|                                        |                                          |
+|                                        v                                          |
+|  [ Grounded Output: Factual canine tracking story with accurate scent timelines ] |
++-----------------------------------------------------------------------------------+
+```
+
+---
+
+## Exam Guide
+
+### Exam Tips
+
+- **Strategy Recognition Rules:**
+  - **Zero-Shot:** Direct instruction; **no examples** provided in the prompt.
+  - **One-Shot / Few-Shot:** Prompt includes **one or a few demonstration input-output pairs** to enforce formatting, structure, or tone.
+  - **Chain-of-Thought (CoT):** Guides the model to solve complex multi-step reasoning by explicitly prompting it to **break the problem down step by step**.
+  - **RAG:** Injects **external context retrieved from a database/document store** into the prompt to provide real-time facts and reduce hallucinations.
+- **Few-Shot vs. Fine-Tuning:**
+  - Use **Few-Shot Prompting** for lightweight in-context demonstration of formats without training costs or weight modifications.
+  - Use **Supervised Fine-Tuning** when hundreds or thousands of examples are required and you want to reduce prompt token consumption across millions of requests.
+- **Combining Patterns:** Exam scenarios frequently combine techniques (e.g., using **Few-Shot Chain-of-Thought** to provide 2 examples showing step-by-step mathematical reasoning).
+
+---
+
+### Practice Test
+
+#### Question 1
+
+A developer wants an Amazon Bedrock foundation model to extract customer sentiment from feedback emails and output the results strictly as a standardized JSON schema. The developer adds three complete examples of raw email text paired with their corresponding target JSON structures directly into the prompt before the user query. Which prompt engineering technique is being utilized?
+
+- [ ] A. Zero-Shot Prompting
+- [ ] B. Few-Shot Prompting
+- [ ] C. Model Distillation
+- [ ] D. Continued Pre-training
+
+<details>
+<summary>Correct Answer</summary>
+
+- [x] B. Few-Shot Prompting
+  - **Explanation:** **Few-Shot Prompting** involves providing a small number of concrete input-output demonstration pairs within the prompt context to guide the model on formatting, schema structure, and task execution.
+
+</details>
+
+---
+
+#### Question 2
+
+An AI system needs to solve multi-step word math problems and financial risk calculations. When queried directly, the foundation model frequently returns incorrect final numerical values due to skipped calculation steps. Which prompt engineering technique should the engineer apply to improve reasoning accuracy?
+
+- [ ] A. Zero-Shot Prompting with maximum Temperature
+- [ ] B. Chain-of-Thought (CoT) Prompting instructing the model to think step-by-step
+- [ ] C. Increasing Top-K to 500
+- [ ] D. Applying a PII masking filter in Bedrock Guardrails
+
+<details>
+<summary>Correct Answer</summary>
+
+- [x] B. Chain-of-Thought (CoT) Prompting instructing the model to think step-by-step
+  - **Explanation:** **Chain-of-Thought (CoT) Prompting** prompts the model to generate intermediate reasoning steps before arriving at a final answer (e.g., _"Let's think step by step"_), significantly improving accuracy on multi-step logical, mathematical, and reasoning tasks.
+
+</details>
+
+---
