@@ -1,0 +1,180 @@
+---
+sidebar_position: 5
+title: Amazon Q Developer
+---
+
+# Amazon Q Developer: Cloud Operations & AI Code Companion
+
+---
+
+## Key Takeaways
+
+:::note
+Amazon Q Developer has been rebranded as **Kiro**
+:::
+
+**Amazon Q Developer** is a specialized generative AI assistant designed for software engineers, DevOps practitioners, and cloud architects. It operates across two primary functional roles: an **AWS Cloud & Operations Expert** and an **AI Coding Companion**.
+
+```mermaid
+flowchart TD
+    subgraph Users [Software Engineers & Cloud Architects]
+        Dev[Developers & DevOps Engineers]
+    end
+
+    subgraph QDev [Amazon Q Developer]
+        subgraph CloudOps [Pillar 1: AWS Operations & Architecture]
+            Q1[Account Resource Inventory]
+            Q2[CLI Command Generation]
+            Q3[Cost Analysis & Billing Insights]
+            Q4[Console Error Troubleshooting]
+        end
+
+        subgraph CodeCompanion [Pillar 2: AI Coding Companion]
+            C1[Real-Time Inline Code Completion]
+            C2[Full-Project Bootstrapping]
+            C3[Security Vulnerability Scanning]
+            C4[Automated Software Agents: Refactoring & Docs]
+        end
+    end
+
+    Dev <-->|AWS Console / CLI / Chat| CloudOps
+    Dev <-->|IDE Extensions: VS Code / JetBrains| CodeCompanion
+
+```
+
+In the AWS Console and CLI, Amazon Q Developer queries account inventory, generates exact AWS CLI syntax, and analyzes billing trends. In the IDE (Visual Studio Code, JetBrains), it provides inline code completions, project bootstrapping, automated unit testing, code transformations (e.g., Java runtime upgrades), and security vulnerability scans.
+
+---
+
+## Main Discussion
+
+### Pillar 1: AWS Cloud Expert & Operational Intelligence
+
+Amazon Q Developer integrates natively into the AWS Management Console, CLI, and mobile apps to interact with your live AWS environments using natural language:
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor Engineer as DevOps Engineer
+    participant Q as Amazon Q Developer (Console/CLI)
+    participant AWS as Live AWS Account APIs (Cost Explorer / Config / Resource Groups)
+
+    Engineer->>Q: "What were my top 3 highest cost services in Q1?"
+    Q->>AWS: Query AWS Cost Explorer & billing telemetry
+    AWS-->>Q: Return expenditure breakdown
+    Q-->>Engineer: "1. SageMaker AI, 2. ECS, 3. AWS Config (with exact $ deltas)"
+
+    Engineer->>Q: "Update Lambda 'TestAPI1' timeout in ap-southeast-1 to 10s"
+    Q-->>Engineer: Generates exact CLI: `aws lambda update-function-configuration --function-name TestAPI1 --region ap-southeast-1 --timeout 10`
+
+```
+
+![](./img/amazon-q-developer-console-chat.png)
+
+| Operational Capability      | Technical Functionality                                                     | Example Use Case                                            |
+| --------------------------- | --------------------------------------------------------------------------- | ----------------------------------------------------------- |
+| **Resource Inventory**      | Queries live AWS account resources across regions via natural language      | _"List all running EC2 instances in us-west-2"_             |
+| **CLI Generation**          | Synthesizes precise AWS CLI commands with parameters and flags              | _"Generate CLI command to attach an IAM policy to my role"_ |
+| **Billing & Cost Analysis** | Ingests AWS Cost Explorer data to summarize spend and identify cost drivers | _"Why did my RDS bill increase by 30% this month?"_         |
+| **Error Diagnostics**       | Analyzes console error traces and recommends remediation steps              | Diagnosing IAM permission denials (`AccessDeniedException`) |
+
+---
+
+### Pillar 2: AI Code Companion & Autonomous Developer Agents
+
+Inside supported Integrated Development Environments (IDEs), Amazon Q Developer serves as an end-to-end coding assistant optimized for AWS services and enterprise programming languages (Python, Java, JavaScript, TypeScript, C#, Go, and SQL):
+
+```mermaid
+flowchart LR
+    subgraph IDE [Integrated Development Environments: VS Code / JetBrains / Visual Studio]
+        Editor[Source Code Editor]
+        Terminal[Integrated Terminal]
+    end
+
+    subgraph AgentCapabilities [Amazon Q Developer AI Capabilities]
+        Generate[Code Generation & Auto-complete]
+        Scan[Security Vulnerability Scanning & Fixes]
+        Agent[Autonomous Agent: Project Bootstrapping & Refactoring]
+    end
+
+    Editor <--> Generate
+    Editor <--> Scan
+    Terminal <--> Agent
+
+```
+
+![](./img/amazon-q-developer-ide.png)
+
+| Developer Capability       | Scope & Workflow                                                                                                |
+| -------------------------- | --------------------------------------------------------------------------------------------------------------- |
+| **Inline Code Generation** | Proposes full functions and multiline completions as you type or write docstrings                               |
+| **Security Scanning**      | Identifies security vulnerabilities, hardcoded secrets, and OWASP Top 10 risks with one-click fixes             |
+| **Autonomous Task Agents** | Builds base project structures, implements complete features across multiple files, and generates documentation |
+| **Code Transformation**    | Automates legacy codebase refactoring (e.g., upgrading Java 8/11 codebases to Java 17/21)                       |
+
+---
+
+### Feature Matrix: Amazon Q Developer vs. Amazon Q Business
+
+| Dimension              | Amazon Q Developer                                      | Amazon Q Business                                              |
+| ---------------------- | ------------------------------------------------------- | -------------------------------------------------------------- |
+| **Target Persona**     | Developers, DevOps, SREs, Cloud Architects              | Business employees, HR, Marketing, Operations                  |
+| **Primary Interfaces** | IDEs (VS Code, JetBrains), AWS Console, AWS CLI         | Standalone Web Chat, Slack, Microsoft Teams, Q Apps            |
+| **Core Functions**     | Coding, debugging, IaC generation, AWS billing & CLI    | Workplace Q&A, enterprise document search, ticket logging      |
+| **Data Sources**       | Code repositories, AWS docs, live AWS account telemetry | 40+ SaaS/Storage connectors (SharePoint, S3, Jira, Salesforce) |
+| **Action Mechanism**   | Executes CLI scripts, IDE refactoring agents            | Invokes business plugins (ServiceNow, Jira, Zendesk)           |
+
+---
+
+## Exam Guide
+
+### Exam Tips
+
+- **Amazon Q Developer vs. Amazon Q Business Disambiguation:**
+  - Choose **Amazon Q Developer** when scenarios involve **writing code**, **generating unit tests**, **troubleshooting AWS console errors**, **generating AWS CLI commands**, or **upgrading Java versions**.
+  - Choose **Amazon Q Business** when scenarios involve non-technical staff querying **corporate policy PDFs**, searching **SharePoint/Confluence wikis**, or creating **no-code workplace applications (Q Apps)**.
+- **CLI & Account Telemetry Role:** Amazon Q Developer can read AWS account resources and write executable CLI syntax, but it will **not silently execute destructive infrastructure changes** without user confirmation.
+- **Security & Vulnerability Scanning:** Amazon Q Developer includes automated static security scanning in the IDE, flagging vulnerabilities and offering remediation code patches.
+- **Supported IDEs:** Visual Studio Code, JetBrains IDE family (IntelliJ IDEA, PyCharm), Visual Studio, and AWS Cloud9.
+
+---
+
+### Practice Test
+
+#### Question 1
+
+A DevOps engineer needs to identify all inactive AWS Lambda functions across three AWS regions and determine which services contributed most to an unexpected increase in the monthly AWS bill. The engineer wants to interact with AWS account telemetry using natural language without writing custom analytical scripts. Which tool should the engineer use?
+
+- [ ] A. Amazon SageMaker JumpStart
+- [ ] B. Amazon Q Developer
+- [ ] C. Amazon Comprehend Medical
+- [ ] D. Amazon Bedrock Knowledge Bases
+
+<details>
+<summary>Correct Answer</summary>
+
+- [x] B. Amazon Q Developer
+  - **Explanation:** **Amazon Q Developer** provides conversational operational intelligence within the AWS Management Console and CLI, allowing engineers to query live resource inventories (like Lambda functions) and analyze AWS Cost Explorer billing data directly using natural language.
+
+</details>
+
+---
+
+#### Question 2
+
+A software development team wants an AI assistant in Visual Studio Code that generates Python functions for Amazon S3 file handling, performs automated security scans for vulnerabilities before commit, and assists with refactoring legacy application code. Which AWS service provides these features?
+
+- [ ] A. Amazon Q Developer
+- [ ] B. Amazon Q Business
+- [ ] C. Amazon Polly
+- [ ] D. AWS AppSync
+
+<details>
+<summary>Correct Answer</summary>
+
+- [x] A. Amazon Q Developer
+  - **Explanation:** **Amazon Q Developer** integrates directly into IDEs like VS Code to deliver inline code generation, project scaffolding, security vulnerability scanning, and automated code refactoring.
+
+</details>
+
+---
