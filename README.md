@@ -24,6 +24,22 @@ This command starts a local development server and opens up a browser window. Mo
 
 > **Note on Search functionality:** The local search plugin (`@easyops-cn/docusaurus-search-local`) only generates its search index during the production build. Therefore, search will **not** work when running `npm start`. To test search locally, you must run `npm run build` followed by `npm run serve`.
 
+## Testing
+
+This project uses Playwright for end-to-end testing. The testing framework is configured to spin up the local server and verify key interactions across Chromium, Firefox, and WebKit browsers.
+
+To run tests locally, you must first build the site:
+
+```bash
+npm run build
+```
+
+Then you can run tests with:
+
+```bash
+npm run test:e2e
+```
+
 ## Build
 
 ```bash
