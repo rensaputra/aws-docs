@@ -45,6 +45,7 @@
     "postdeploy",
     "predeploy",
     "prefetchers",
+    "Pretrained",
     "Qwen",
     "RDBMS",
     "Redrive",
