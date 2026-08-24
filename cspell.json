@@ -40,6 +40,7 @@
     "logits",
     "mindmap",
     "misordering",
+    "Overfit",
     "overfitting",
     "Pempek",
     "Pluggability",
@@ -60,6 +61,8 @@
     "standups",
     "subnetting",
     "treehouse",
+    "Underfit",
+    "Underfitting",
     "unscored",
     "unvetted"
   ],
