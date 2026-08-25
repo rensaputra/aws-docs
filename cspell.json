@@ -67,7 +67,8 @@
     "Underfit",
     "Underfitting",
     "unscored",
-    "unvetted"
+    "unvetted",
+    "voiceovers"
   ],
   "ignorePaths": [
     "node_modules/**",
@@ -130,6 +131,7 @@
     "RumahWeb",
     "SBMA",
     "SDXL",
+    "SPOFs",
     "SQSD",
     "SSHSG",
     "Sanji",
@@ -140,6 +142,7 @@
     "Textr",
     "Trainium",
     "Translat",
+    "Trns",
     "Zoro",
     "apig",
     "awsdns",
