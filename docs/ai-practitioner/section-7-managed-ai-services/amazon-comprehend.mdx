@@ -1,0 +1,194 @@
+---
+sidebar_position: 3
+title: Amazon Comprehend
+description: Managed Natural Language Processing (NLP) Service for Text Analysis
+---
+
+import ImageRow from "@site/src/components/ImageRow";
+import ComprehendNER from "./img/comprehend-named-entity-recognition.png";
+
+# Amazon Comprehend: Natural Language Processing (NLP) & Custom Entity Extraction
+
+---
+
+## Key Takeaways
+
+**Amazon Comprehend** is a fully managed, serverless **Natural Language Processing (NLP)** service that uses machine learning to extract insights, sentiments, entities, and structural relationships from unstructured text without requiring custom ML model development.
+
+```mermaid
+flowchart TD
+    subgraph Ingestion [Unstructured Text Inputs]
+        Text[Customer Emails / Support Tickets / Reviews / Articles]
+    end
+
+    subgraph ComprehendEngine [Amazon Comprehend Engine]
+        subgraph PreTrained [Pre-Trained Out-of-the-Box APIs]
+            NER[Named Entity Recognition: NER]
+            Sent[Sentiment Analysis: Positive / Negative / Neutral / Mixed]
+            Lang[Dominant Language Detection]
+            KeyP[Key Phrase Extraction]
+            Syntax[Syntax Analysis & Tokenization]
+            Topic[Topic Modeling: LDA Document Grouping]
+        end
+
+        subgraph Customization [Custom Model Extensions]
+            CustomClass[Custom Classification: Categorize by Business Rules]
+            CustomNER[Custom Entity Recognition: Extract IDs / Custom Terms]
+        end
+    end
+
+    Ingestion --> PreTrained
+    Ingestion --> Customization
+```
+
+Out of the box, Amazon Comprehend provides **Named Entity Recognition (NER)**, **Sentiment Analysis**, **Key Phrase Extraction**, **Dominant Language Detection**, and **Topic Modeling**. For domain-specific workflows, it supports **Custom Classification** (labeling documents based on business taxonomy) and **Custom Entity Recognition** (extracting proprietary terms like policy numbers, parts codes, or legal clauses).
+
+---
+
+## Main Discussion
+
+### Pre-Trained Capabilities vs. Custom Extensions
+
+#### Pre-Trained Capabilities
+
+```mermaid
+flowchart LR
+    subgraph PreTrainedCaps [Standard Pre-Trained NLP]
+        P1["Detects People, Organizations, Dates, Locations"]
+        P2["Classifies Sentiment: Positive, Negative, Neutral, Mixed"]
+        P3["Identifies Language (e.g., en, es, fr, ja)"]
+    end
+```
+
+#### Custom Extensions
+
+<div className="flex flex-col md:flex-row gap-x-2">
+
+    <div className="flex flex-col">
+        ```mermaid
+        flowchart LR
+            subgraph CustomCaps [Custom Comprehend Models]
+                C1["Custom Classification: Inbound Routing (Billing vs. Support vs. Complaints)"]
+                C2["Custom Entities: Specialized extraction (Policy #, Claim ID, SKU)"]
+            end
+        ```
+
+        ![](./img/comprehend-custom-classifier.png)
+
+    </div>
+
+    ![](./img/comprehend-custom-classifier-inference.png)
+
+</div>
+
+<ImageRow>
+  <img
+    src={ComprehendNER}
+    alt="Amazon Comprehend Named Entity Recognition (NER) Example"
+  />
+</ImageRow>
+
+#### Comprehend Capabilities Summary
+
+| Capability                         | Model Type          | How It Works                                                                                            | Representative Output / Use Case                                                                  |
+| ---------------------------------- | ------------------- | ------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------- |
+| **Named Entity Recognition (NER)** | Pre-trained         | Identifies standard semantic categories automatically.                                                  | Flags _"Zhang Wei"_ as `PERSON`, _"AnyCompany LLC"_ as `ORGANIZATION`, and _"July 31"_ as `DATE`. |
+| **Sentiment Analysis**             | Pre-trained         | Analyzes emotional tone and outputs confidence scores across four emotional classes.                    | `POSITIVE: 0.02`, `NEGATIVE: 0.88`, `NEUTRAL: 0.08`, `MIXED: 0.02`.                               |
+| **Key Phrase Extraction**          | Pre-trained         | Surfaces noun phrases and critical topical phrases.                                                     | Extracts _"annual health plan maximum"_, _"customer service escalation"_.                         |
+| **Dominant Language Detection**    | Pre-trained         | Determines the primary RFC-5646 language code.                                                          | Identifies `en` (English), `es` (Spanish), `fr` (French) with confidence metrics.                 |
+| **Topic Modeling**                 | Pre-trained (Async) | Uses Latent Dirichlet Allocation (LDA) to group large document collections into thematic clusters.      | Groups 100,000 raw support tickets into 10 distinct underlying problem topics.                    |
+| **Custom Classification**          | Custom-trained      | Maps documents into custom, user-defined business categories based on training examples in Amazon S3.   | Automatically routes emails to `Complaints`, `Billing Inquiry`, or `Technical Support`.           |
+| **Custom Entity Recognition**      | Custom-trained      | Learns to detect proprietary terms, specific codes, or unique business entities from annotated samples. | Extracts insurance policy IDs (e.g., `POL-9843-X`) or part serial numbers.                        |
+
+---
+
+### Custom Classification & Entity Recognition Pipeline
+
+When standard pre-trained models do not capture business-specific jargon, Comprehend enables custom training workflows:
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor Admin as ML / Data Engineer
+    participant S3 as Amazon S3 (Training Corpus)
+    participant Comp as Amazon Comprehend (Training Job)
+    participant Endpt as Custom Real-Time / Batch Endpoint
+    actor Client as Production Application
+
+    Admin->>S3: Upload labeled training CSV/annotations (Doc + Label/Entity)
+    Admin->>Comp: Launch Custom Classifier / Custom Entity training job
+    Comp->>S3: Ingest labeled training dataset
+    Comp->>Comp: Train, tune, and evaluate custom model artifact
+    Comp-->>Endpt: Deploy real-time endpoint or batch pipeline
+    Client->>Endpt: Send new unstructured document
+    Endpt-->>Client: Return custom class (e.g., "Complaint") or custom entities (e.g., "Policy_Number: POL-1029")
+
+```
+
+1. **Custom Document Classification:** Accepts multi-class (mutually exclusive) or multi-label training data. Supported formats include plain text, PDF, Word documents, and images.
+2. **Custom Entity Recognition:** Uses entity lists or annotated documents to train Comprehend to recognize specialized patterns without writing regular expressions or complex rule engines.
+
+---
+
+### Real-Time vs. Asynchronous Batch Analysis
+
+| Analysis Mode                        | Latency & Interaction Profile                                               | Supported File Modalities                                           | Best Suited For                                                                                 |
+| ------------------------------------ | --------------------------------------------------------------------------- | ------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------- |
+| **Real-Time Analysis (Synchronous)** | Sub-second responses for interactive, single-document API calls.            | Plain UTF-8 text strings.                                           | Live chat sentiment scoring, real-time ticket triage, user submission filtering.                |
+| **Asynchronous Batch Processing**    | Distributed batch processing jobs running against large pools of documents. | Plain text, PDF, DOCX, scanned document images stored in Amazon S3. | Nightly support ticket audits, regulatory document reviews, historical data warehouse analysis. |
+
+---
+
+## Exam Guide
+
+### Exam Tips
+
+- **Core Service Purpose:** **Amazon Comprehend** is the go-to AWS service for **text-based NLP**, **sentiment analysis**, **topic modeling**, and **entity extraction** on unstructured text.
+- **Pre-Trained vs. Custom Rules:**
+  - If a question asks to detect standard entities (people, dates, locations, organizations) $\rightarrow$ Use **Pre-trained Named Entity Recognition (NER)**.
+  - If a question asks to extract proprietary business IDs (e.g., policy numbers, claim codes, internal product SKUs) $\rightarrow$ Use **Amazon Comprehend Custom Entity Recognition**.
+  - If a question asks to route incoming support emails into specific business queues (e.g., billing, cancellation, technical support) $\rightarrow$ Use **Amazon Comprehend Custom Classification**.
+- **Topic Modeling:** Comprehend uses **unsupervised topic modeling** to organize large document collections into clusters based on shared themes.
+- **Serverless & Managed:** Comprehend is fully serverless; you do not provision or manage underlying EC2 instances or GPU clusters.
+
+---
+
+### Practice Test
+
+#### Question 1
+
+A customer service organization receives thousands of feedback emails daily in multiple languages. The organization wants an automated solution that analyzes incoming email text to identify the overall customer sentiment (Positive, Negative, Neutral) and extract referenced dates, locations, and company names without training or managing a custom machine learning model. Which AWS service should they use?
+
+- [ ] A. Amazon Rekognition
+- [ ] B. Amazon Comprehend
+- [ ] C. Amazon Polly
+- [ ] D. AWS Glue DataBrew
+
+<details>
+<summary>Correct Answer</summary>
+
+- [x] B. Amazon Comprehend
+  - **Explanation:** **Amazon Comprehend** is a fully managed NLP service that provides pre-trained APIs out of the box for sentiment analysis, dominant language detection, and Named Entity Recognition (NER) for standard categories such as dates, locations, and organizations.
+
+</details>
+
+---
+
+#### Question 2
+
+An insurance enterprise wants to automatically review legal claim documents to locate and extract custom policy numbers that follow a proprietary alphanumeric structure (`POL-XXXXX`). The solution must not require building or managing custom deep learning training scripts. Which approach meets these requirements?
+
+- [ ] A. Use Amazon Rekognition Custom Labels
+- [ ] B. Train an Amazon Comprehend Custom Entity Recognizer using annotated sample claim documents
+- [ ] C. Deploy a linear regression model on Amazon SageMaker
+- [ ] D. Configure an Amazon Kendra web crawler
+
+<details>
+<summary>Correct Answer</summary>
+
+- [x] B. Train an Amazon Comprehend Custom Entity Recognizer using annotated sample claim documents
+  - **Explanation:** **Amazon Comprehend Custom Entity Recognition** allows you to train a specialized entity extraction model using your own domain-specific training documents and annotations to reliably detect custom business entities, such as proprietary policy numbers.
+
+</details>
+
+---
