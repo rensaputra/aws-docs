@@ -67,6 +67,15 @@ const config: Config = {
   // Future flags, see https://docusaurus.io/docs/api/docusaurus-config#future
   future: {
     v4: true, // Improve compatibility with the upcoming Docusaurus v4
+    faster: {
+      swcJsLoader: true,
+      swcJsMinimizer: true,
+      swcHtmlMinimizer: true,
+      lightningCssMinimizer: true,
+      rspackBundler: false, // disable rspack as it breaks with DefinePlugin in the pan-zoom plugin
+      rspackPersistentCache: false,
+      mdxCrossCompilerCache: true,
+    },
   },
 
   // Set the production url of your site here
@@ -110,6 +119,7 @@ const config: Config = {
   ],
 
   plugins: [
+    "docusaurus-plugin-mermaid-pan-zoom",
     async function myPlugin(context, options) {
       return {
         name: "docusaurus-tailwindcss",
