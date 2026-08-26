@@ -1,0 +1,200 @@
+---
+sidebar_position: 11
+title: Amazon Rekognition
+description: Overview of Amazon Rekognition, including computer vision, custom labels, and content moderation.
+keywords:
+  [Amazon Rekognition, computer vision, custom labels, content moderation]
+---
+
+# Amazon Rekognition: Computer Vision, Custom Labels & Content Moderation
+
+---
+
+## Key Takeaways
+
+**Amazon Rekognition** is a fully managed, serverless **Computer Vision (CV)** service that allows developers to analyze images, stored video files, and live streaming video feeds via pre-trained deep learning APIs without needing machine learning expertise.
+
+```mermaid
+flowchart TD
+    subgraph MediaIngestion [Visual Input Sources]
+        Images[Images: S3 Objects / Base64 Bytes]
+        VideoFiles[Stored Videos: S3 MP4/MOV]
+        LiveStreams[Live Video Streams: Amazon Kinesis Video Streams]
+    end
+
+    subgraph RekognitionEngine [Amazon Rekognition Processing Engine]
+        direction TB
+
+        subgraph PreTrainedCV [Pre-Trained Capabilities]
+            Labels[Object, Scene & Concept Detection]
+            FaceAnalysis[Facial Detection, Attributes & Face Liveness]
+            FaceSearch[Facial Search & Face Collections]
+            TextDetect[Text in Image Detection: OCR]
+            Celeb[Celebrity Recognition]
+            PPE[Personal Protective Equipment: PPE Detection]
+            Pathing[Person Pathing across Video Frames]
+            Mod[Content Moderation: DetectModerationLabels API]
+        end
+
+        subgraph CustomizationLayer [Custom Deep Learning Adapters]
+            CL[Custom Labels: Detect proprietary logos & custom products]
+            CMod[Custom Moderation Adapters: Tailor safety rules & thresholds]
+        end
+    end
+
+    subgraph OutputData [Analytical Output Payloads]
+        JSONOut[Bounding Boxes + Bounding Polygons + Timestamps + Confidence Scores]
+    end
+
+    MediaIngestion --> RekognitionEngine
+    RekognitionEngine --> OutputData
+```
+
+Out of the box, Rekognition provides **Object/Scene Detection**, **Facial Analysis & Verification**, **Face Liveness Detection** (anti-spoofing), **Text in Image Detection**, **PPE Detection**, and **Content Moderation**. For specialized use cases, it provides **Custom Labels** (recognizing proprietary logos and custom objects with small training sets) and **Custom Moderation Adapters**, with seamless integration into **Amazon Augmented AI (Amazon A2I)** for human review workflows.
+
+---
+
+## Main Discussion
+
+### Core Pre-Trained Computer Vision Capabilities
+
+```mermaid
+flowchart LR
+    subgraph AnalysisType [Core Vision Capabilities]
+        direction TB
+        F1["Facial Analysis & Liveness (Age, Emotion, Anti-Spoofing)"]
+        F2["Object, Scene & Text Detection (Bounding Boxes & Text)"]
+        F3["Content Moderation (Detect Unsafe & Offensive Content)"]
+        F4["Video Pathing & PPE Tracking (Safety Compliance)"]
+    end
+```
+
+| Feature                                 | Primary Mechanism                                                                                                                                 | Typical Business Application                                                                    |
+| --------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------- |
+| **Object, Scene & Label Detection**     | Identifies thousands of common objects (vehicles, pets, tools) and environmental scenes (outdoors, beach).                                        | Auto-tagging media assets, searchable digital asset management (DAM) libraries.                 |
+| **Facial Analysis & Comparison**        | Detects faces, estimates age ranges, emotions (happy, calm), eye state (open/closed), and compares similarity across photos.                      | User onboarding, photo organization, entry security checkpoints.                                |
+| **Face Liveness Detection**             | Verifies that a real, physically present user is interacting with the camera, blocking printed photos, screen replays, and 3D mask spoof attacks. | Fraud prevention and identity verification in mobile banking and authentication apps.           |
+| **Facial Search (Collections)**         | Indexes facial vectors into managed **Face Collections** in Amazon Rekognition to match faces across large databases.                             | Employee access control, VIP guest identification, suspect lookup in authorized security feeds. |
+| **Text Detection**                      | Extracts printed and handwritten text across various orientations and fonts in images.                                                            | Reading highway signs, license plates, race bib numbers, or billboard advertisements.           |
+| **Personal Protective Equipment (PPE)** | Identifies face covers, hand covers, and head covers on persons, checking if equipment covers the intended body parts.                            | Industrial safety audits, automated workplace OSHA compliance monitoring.                       |
+| **Celebrity Recognition**               | Recognizes known actors, athletes, politicians, and public figures.                                                                               | Media indexing, cataloging broadcast television footage, marketing analytics.                   |
+| **Person Pathing**                      | Tracks the spatial movement coordinates and trajectory of individuals across video frames over time.                                              | Sports performance tracking, retail foot-traffic pattern analysis, physical security.           |
+
+---
+
+### Amazon Rekognition Custom Labels
+
+When standard pre-trained models cannot recognize specialized business products, proprietary logos, or industrial defects, **Custom Labels** enables transfer learning with minimal training overhead:
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor Dev as Developer / Business User
+    participant S3 as Amazon S3 (Image Store)
+    participant RekCL as Rekognition Custom Labels
+    participant Endpoint as Provisioned Custom Model
+    actor ClientApp as Client Application
+
+    Dev->>S3: Upload small dataset (few dozen to a few hundred labeled images)
+    Dev->>RekCL: Create Project & train Custom Model
+    RekCL->>S3: Ingest images & bounding box annotations
+    RekCL->>RekCL: Automated Transfer Learning & Model Evaluation
+    RekCL-->>Endpoint: Host custom model endpoint
+    ClientApp->>Endpoint: Send social media post / product photo
+    Endpoint-->>ClientApp: Return custom bounding boxes (e.g., "Brand_Logo: 98%")
+```
+
+- **Low Data Requirement:** Requires only a small labeled dataset (often fewer than a few hundred images) to achieve high domain accuracy.
+- **No Machine Learning Code:** Amazon Rekognition handles model selection, transfer learning, hyperparameter optimization, and endpoint hosting behind the scenes.  
+  ![](./img/rekognition-custom-labels.png)
+
+---
+
+### Automated Content Moderation & Human-in-the-Loop (Amazon A2I)
+
+Amazon Rekognition provides granular content moderation to protect brand reputation and user safety across user-generated content (UGC) and generative AI outputs:
+
+<div className="grid grid-cols-1 md:grid-cols-3">
+
+<div className="col-span-1 md:col-span-2">
+```mermaid
+flowchart TD
+    UserUpload[User Upload / GenAI Output] --> RekMod[Rekognition: DetectModerationLabels]
+
+    RekMod --> ScoreCheck{Confidence Threshold Evaluation}
+
+    ScoreCheck -->|High Confidence Safe > 95%| Pass[Allow Content / Display to User]
+    ScoreCheck -->|High Confidence Unsafe > 95%| Block[Block & Redact Automatically]
+    ScoreCheck -->|Borderline / Low Confidence 1% to 5%| A2I[Send to Amazon A2I: Augmented AI]
+
+    A2I --> HumanReviewers[Human Review Team / Amazon Mechanical Turk]
+    HumanReviewers --> FinalDecision[Approve or Reject]
+    FinalDecision -->|Feedback Loop| FeedbackS3[(Labeled Dataset S3)]
+    FeedbackS3 -.->|Retrain| Adapter[Rekognition Custom Moderation Adapter]
+
+```
+</div>
+
+![](./img/rekognition-moderation-a2i.png)
+
+</div>
+
+1. **Automated Filtering:** The `DetectModerationLabels` API evaluates content across categories (nudity, violence, hate symbols, suggestive content, drugs/tobacco). It handles 95% to 99% of images automatically.
+  ![](./img/rekognition-moderation-api-diagram.png)
+2. **Amazon Augmented AI (Amazon A2I):** For ambiguous or low-confidence predictions (typically 1% to 5% of total volume), Rekognition routes the image to **Amazon A2I** for human verification.
+3. **Custom Moderation Adapters:** Organizations can train custom adapters using domain-annotated training data to adjust sensitivity thresholds for region-specific compliance rules.
+
+---
+
+## Exam Guide
+
+### Exam Tips
+
+- **Core Service Purpose:** **Amazon Rekognition** is the primary AWS service for **image and video analysis**, object detection, facial recognition, and content moderation.
+- **Custom Object / Logo Detection:** If a scenario asks to detect proprietary brand logos, custom manufactured parts, or specific store products using a small set of sample images, choose **Amazon Rekognition Custom Labels**.
+- **Anti-Spoofing Face Verification:** If an exam question asks how to verify that a user in a facial authentication workflow is physically present and not holding up a printed photo or playing a video loop, select **Amazon Rekognition Face Liveness Detection**.
+- **Human Review Integration:** The designated AWS service for routing low-confidence machine learning predictions (such as ambiguous moderation flags) to human reviewers is **Amazon Augmented AI (Amazon A2I)**.
+- **Face Collections:** Rekognition does not store raw photos when building face registries; it extracts and indexes mathematical vector representations into a **Face Collection**.
+
+---
+
+### Practice Test
+
+#### Question 1
+
+A marketing intelligence platform wants to track how often its corporate logo appears in user-uploaded event photos on social media. The company has 150 sample photos of the logo and wants a managed solution with minimal operational overhead and no custom model scripting. Which AWS solution meets these requirements?
+
+- A. Train a custom convolutional neural network from scratch on Amazon EC2 GPU instances
+- B. Use Amazon Rekognition Custom Labels trained on the sample logo images
+- C. Use Amazon Textract Key-Value extraction
+- D. Configure an Amazon Comprehend Custom Entity Recognizer
+
+<details>
+<summary>Correct Answer</summary>
+
+- [x] B. Use Amazon Rekognition Custom Labels trained on the sample logo images
+  - **Explanation:** **Amazon Rekognition Custom Labels** allows developers to train a custom object detection model using a small labeled dataset (in this case, 150 images of the corporate logo) without needing to write machine learning code or manage infrastructure.
+
+</details>
+
+---
+
+#### Question 2
+
+A social media platform processes millions of daily photo uploads using the Amazon Rekognition `DetectModerationLabels` API to remove inappropriate content. For borderline images where the machine learning confidence score is between 60% and 80%, the platform requires human moderators to review the images before final publication. Which AWS service provides this human review workflow integration?
+
+- A. Amazon QuickSight
+- B. Amazon Augmented AI (Amazon A2I)
+- C. AWS Step Functions with Amazon Polly
+- D. Amazon CloudWatch Synthetics
+
+<details>
+<summary>Correct Answer</summary>
+
+- [x] B. Amazon Augmented AI (Amazon A2I)
+  - **Explanation:** **Amazon Augmented AI (Amazon A2I)** integrates directly with Amazon Rekognition to route low-confidence or ambiguous machine learning predictions to human review workflows automatically.
+
+</details>
+
+---
+```
