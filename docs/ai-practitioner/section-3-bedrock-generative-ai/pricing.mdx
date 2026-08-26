@@ -80,25 +80,16 @@ flowchart BT
 
 ### Cost Optimization Levers & Token Management
 
-```
-+-------------------------------------------------------------------------------+
-| BEDROCK COST OPTIMIZATION LEVERS                                              |
-|                                                                               |
-|  1. INPUT TOKEN PRUNING:                                                      |
-|     * Strip redundant boilerplate and irrelevant conversational history       |
-|                                                                               |
-|  2. OUTPUT LENGTH CONSTRAINTS (`max_tokens`):                                 |
-|     * Cap maximum completion tokens and enforce concise generation formats    |
-|                                                                               |
-|  3. RIGHT-SIZING FOUNDATION MODELS:                                           |
-|     * Route short NLP/classification tasks to lightweight models (e.g., Nova  |
-|       Micro/Lite or Titan Text) instead of expensive flagship reasoning models|
-|                                                                               |
-|  4. LEVERAGING BATCH MODE:                                                    |
-|     * Shift non-urgent, offline bulk jobs to batch inference for 50% savings  |
-+-------------------------------------------------------------------------------+
+### Bedrock Cost Optimization Levers
 
-```
+1. **INPUT TOKEN PRUNING:**
+   - Strip redundant boilerplate and irrelevant conversational history
+2. **OUTPUT LENGTH CONSTRAINTS (`max_tokens`):**
+   - Cap maximum completion tokens and enforce concise generation formats
+3. **RIGHT-SIZING FOUNDATION MODELS:**
+   - Route short NLP/classification tasks to lightweight models (e.g., Nova Micro/Lite or Titan Text) instead of expensive flagship reasoning models
+4. **LEVERAGING BATCH MODE:**
+   - Shift non-urgent, offline bulk jobs to batch inference for 50% savings
 
 - **Inference Parameters vs. Cost:** Adjusting **Temperature**, **Top-P**, or **Top-K** alters model creativity and token selection distributions, but has **zero direct impact on pricing**.
 - **Token Volume is the Pricing Driver:** The most effective lever for reducing Bedrock expenses is minimizing unnecessary input prompt tokens and capping generated output tokens.
