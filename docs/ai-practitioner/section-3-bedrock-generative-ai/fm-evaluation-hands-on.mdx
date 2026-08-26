@@ -16,16 +16,17 @@ import responsibleAIMetrics from "./img/responsible-ai-metrics.png";
 
 Amazon Bedrock provides a native, structured evaluation engine under **Inference and Assessment > Evaluations** to systematically benchmark model quality, safety, and operational fit.
 
-```
-[ Amazon Bedrock Evaluations ]
-       |
-       +---> Automatic Evaluation
-       |       |-- Programmatic (Algorithmic metrics: Toxicity, Accuracy, Robustness via datasets)
-       |       +-- Model-as-a-Judge (LLM-as-a-Judge: Uses an evaluator LLM to score generator models / BYOI)
-       |
-       +---> Human Evaluation
-               |-- AWS Managed Work Team (Crowd/AWS-managed SME reviewers)
-               +-- Bring Your Own Workforce (Internal private teams via SageMaker Ground Truth)
+```mermaid
+graph TD
+    Eval[Amazon Bedrock Evaluations]
+
+    Eval --> Auto[Automatic Evaluation]
+    Auto --> Prog[Programmatic<br/>Algorithmic metrics: Toxicity, Accuracy, Robustness via datasets]
+    Auto --> Judge[Model-as-a-Judge<br/>LLM-as-a-Judge: Uses an evaluator LLM to score generator models / BYOI]
+
+    Eval --> Human[Human Evaluation]
+    Human --> AWS[AWS Managed Work Team<br/>Crowd/AWS-managed SME reviewers]
+    Human --> Private[Bring Your Own Workforce<br/>Internal private teams via SageMaker Ground Truth]
 ```
 
 Automatic evaluation runs either **Programmatically** (using deterministic mathematical/algorithmic scoring) or via **Model-as-a-Judge** (using an advanced reasoning model like Claude 3.5 Sonnet to score outputs). For subjective tasks, **Human Evaluation** allows comparing **up to two models side-by-side** using either your own private workforce or an AWS-managed reviewer team.

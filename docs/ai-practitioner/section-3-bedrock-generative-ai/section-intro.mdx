@@ -10,13 +10,14 @@ sidebar_position: 1
 
 Generative AI (GenAI) is the subset of deep learning that creates novel, original content (text, code, images, audio) using massive Foundation Models (FMs). While the public largely equates AI with conversational chatbots like ChatGPT, GenAI powers a much broader enterprise landscape.
 
-```
-[ User Application / Prompt ] ---> ( Single Unified API ) ---> [ Amazon Bedrock ]
-                                                                       |
-                         +--------------------+------------------------+--------------------+
-                         |                    |                        |                    |
-                         v                    v                        v                    v
-                   [ Anthropic Claude ]  [ Amazon Titan ]       [ Meta Llama ]        [ Mistral AI ]
+```mermaid
+graph TD
+    App[User Application / Prompt] -->|Single Unified API| Bedrock[Amazon Bedrock]
+
+    Bedrock --> Claude[Anthropic Claude]
+    Bedrock --> Titan[Amazon Titan]
+    Bedrock --> Llama[Meta Llama]
+    Bedrock --> Mistral[Mistral AI]
 ```
 
 On AWS, **Amazon Bedrock** is the flagship serverless, fully managed service for building GenAI applications. It exposes industry-leading Foundation Models via a single unified API without requiring infrastructure provisioning or GPU management.
@@ -29,16 +30,17 @@ On AWS, **Amazon Bedrock** is the flagship serverless, fully managed service for
 
 Classical machine learning focuses on analyzing, classifying, or predicting numerical/categorical outcomes from structured data. Generative AI leverages pre-trained multi-billion parameter neural networks to generate unstructured artifacts dynamically:
 
-```
-+-------------------------------------------------------------------------------+
-| CLASSICAL PREDICTIVE ML                                                       |
-| Input: Tabular Customer Data -----> [ Classification Model ] -----> "Churn: Yes/No"
-+-------------------------------------------------------------------------------+
+```mermaid
+graph LR
+    subgraph Classical[CLASSICAL PREDICTIVE ML]
+        C_In[Input: Tabular Customer Data] --> C_Model[Classification Model]
+        C_Model --> C_Out["Churn: Yes/No"]
+    end
 
-+-------------------------------------------------------------------------------+
-| GENERATIVE AI WITH FOUNDATION MODELS                                          |
-| Input: Natural Language Prompt ---> [ Foundation Model (FM) ] ----> "Personalized Email"
-+-------------------------------------------------------------------------------+
+    subgraph Generative[GENERATIVE AI WITH FOUNDATION MODELS]
+        G_In[Input: Natural Language Prompt] --> G_Model[Foundation Model FM]
+        G_Model --> G_Out["Personalized Email"]
+    end
 ```
 
 - **Foundation Models (FMs):** Massive models trained on broad internet-scale data across billions of parameters.
@@ -50,27 +52,26 @@ Classical machine learning focuses on analyzing, classifying, or predicting nume
 
 Amazon Bedrock acts as the serverless abstraction layer between enterprise applications and third-party foundation models:
 
-```
-+-------------------------------------------------------------------------------+
-|                          ENTERPRISE APPLICATION LAYER                         |
-|             (Web Portals, Customer Chatbots, Internal Workflows)              |
-+-------------------------------------------------------------------------------+
-                                       |
-                                       v  (HTTPS / SDK API Invocations)
-+-------------------------------------------------------------------------------+
-|                              AMAZON BEDROCK                                   |
-|                                                                               |
-|  +-------------------+  +--------------------+  +--------------------------+  |
-|  | Bedrock Guardrails|  | Knowledge Bases    |  | Bedrock Agents           |  |
-|  | (Safety & PII)    |  | (RAG Integration)  |  | (Task Orchestration)     |  |
-|  +-------------------+  +--------------------+  +--------------------------+  |
-|                                       |                                       |
-|  ==================== SERVERLESS MODEL GATEWAY =============================  |
-|                                       |                                       |
-|  +------------------+  +-------------------+  +-----------------------------+ |
-|  | Amazon Titan     |  | Anthropic Claude  |  | Meta Llama / Mistral AI     | |
-|  +------------------+  +-------------------+  +-----------------------------+ |
-+-------------------------------------------------------------------------------+
+```mermaid
+graph TD
+    App[ENTERPRISE APPLICATION LAYER<br/>Web Portals, Customer Chatbots, Internal Workflows]
+
+    subgraph Bedrock[AMAZON BEDROCK]
+        Guardrails[Bedrock Guardrails<br/>Safety & PII]
+        KB[Knowledge Bases<br/>RAG Integration]
+        Agents[Bedrock Agents<br/>Task Orchestration]
+
+        Gateway[SERVERLESS MODEL GATEWAY]
+
+        Models[Amazon Titan, Anthropic Claude, Meta Llama, Mistral AI]
+
+        Guardrails --- Gateway
+        KB --- Gateway
+        Agents --- Gateway
+        Gateway --- Models
+    end
+
+    App -->|HTTPS / SDK API Invocations| Bedrock
 ```
 
 $$\text{Bedrock Value Proposition} = \text{Multi-Model Choice} + \text{Serverless API} + \text{Enterprise Data Privacy} + \text{Built-in RAG/Agents}$$
@@ -85,19 +86,15 @@ $$\text{Bedrock Value Proposition} = \text{Multi-Model Choice} + \text{Serverles
 
 To tailor foundation models to enterprise workflows, Bedrock incorporates specialized platform tools:
 
-```
-+------------------------------------------------------------------------------------+
-| CORE BEDROCK CAPABILITIES                                                          |
-+----------------------+-------------------------------------------------------------+
-| Feature              | Technical Purpose                                           |
-+----------------------+-------------------------------------------------------------+
-| Model Invocations    | Query text, image, and multimodal models via SDK/API        |
-| Knowledge Bases      | Managed Retrieval-Augmented Generation (RAG) using S3 data  |
-| Bedrock Agents       | Multi-step execution planning & API calling (ReAct logic)   |
-| Bedrock Guardrails   | Content filtering, safety guardrails, and PII masking       |
-| Model Customization  | Fine-tuning and Continued Pre-training on proprietary data  |
-+----------------------+-------------------------------------------------------------+
-```
+### Core Bedrock Capabilities
+
+| Feature | Technical Purpose |
+| :--- | :--- |
+| Model Invocations | Query text, image, and multimodal models via SDK/API |
+| Knowledge Bases | Managed Retrieval-Augmented Generation (RAG) using S3 data |
+| Bedrock Agents | Multi-step execution planning & API calling (ReAct logic) |
+| Bedrock Guardrails | Content filtering, safety guardrails, and PII masking |
+| Model Customization | Fine-tuning and Continued Pre-training on proprietary data |
 
 ---
 

@@ -10,22 +10,19 @@ sidebar_position: 12
 
 Setting up a complete, production-grade Retrieval-Augmented Generation (RAG) system on Amazon Bedrock requires orchestrating multiple AWS components: **IAM administrative credentials**, an **Amazon S3 document storage bucket**, an **Embeddings Model** (e.g., Titan Text Embeddings V2), and an underlying **Vector Database** (e.g., Amazon OpenSearch Serverless).
 
-```
-[ Local PDF ] ---> [ Amazon S3 Bucket ]
-                          |
-                          v (Sync Job / Ingestion)
-               [ Bedrock Ingestion Engine ]
-                 |                      |
-                 | (Text Chunking)      v (Generate Embeddings)
-                 |                 [ Titan Embeddings V2 ]
-                 |                              |
-                 +--------------+---------------+
-                                |
-                                v
-               [ OpenSearch Serverless Collection ]
-                 (Vector Index: Embeddings + Metadata)
-                                |
-[ User Query ] ---> [ Bedrock RAG Engine ] ---> [ Claude / FM ] ---> [ Answer + S3 URI Citation ]
+```mermaid
+graph TD
+    Local[Local PDF] --> S3[Amazon S3 Bucket]
+    S3 -->|Sync Job / Ingestion| Ingest[Bedrock Ingestion Engine]
+
+    Ingest -->|Text Chunking| OSS[OpenSearch Serverless Collection<br/>Vector Index: Embeddings + Metadata]
+    Ingest -->|Generate Embeddings| Titan[Titan Embeddings V2]
+    Titan --> OSS
+
+    Query[User Query] --> RAG[Bedrock RAG Engine]
+    OSS --> RAG
+    RAG --> Claude[Claude / FM]
+    Claude --> Answer[Answer + S3 URI Citation]
 ```
 
 :::warning
