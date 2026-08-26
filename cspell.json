@@ -23,6 +23,7 @@
     "Burstable",
     "Chrono",
     "CODEARTIFACT",
+    "concatenative",
     "containerd",
     "CUDA",
     "dealbreaker",
@@ -68,6 +69,7 @@
     "Underfitting",
     "unscored",
     "unvetted",
+    "viseme",
     "voiceovers"
   ],
   "ignorePaths": [
@@ -121,6 +123,7 @@
     "NACL",
     "NACLs",
     "NTLSCBFI",
+    "NTTS",
     "Nami",
     "OCSP",
     "OOTB",
@@ -144,6 +147,7 @@
     "Trainium",
     "Translat",
     "Trns",
+    "Visemes",
     "Zoro",
     "allez",
     "apig",
