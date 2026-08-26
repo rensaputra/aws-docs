@@ -10,12 +10,15 @@ sidebar_position: 1
 
 While the AIF-C01 exam heavily emphasizes AI concepts, foundational **AWS Cloud knowledge** is essential to understand how managed AI services operate. Services like **Amazon Bedrock** rely on underlying AWS infrastructure, security models, and cloud management frameworks.
 
-```
-+-------------------------------------------------------------+
-|               Managed AI Services (e.g., Amazon Bedrock)    |
-+-------------------------------------------------------------+
-|               AWS Cloud Infrastructure & Core Services      |
-+-------------------------------------------------------------+
+```mermaid
+flowchart TD
+    subgraph Stack[" "]
+        direction TB
+        A["Managed AI Services (e.g., Amazon Bedrock)"]
+        B["AWS Cloud Infrastructure & Core Services"]
+        A ~~~ B
+    end
+    style Stack fill:none,stroke:none
 ```
 
 Mastering core AWS concepts provides the structural foundation required to deploy, secure, and scale AI workloads effectively.
@@ -28,17 +31,12 @@ Mastering core AWS concepts provides the structural foundation required to deplo
 
 Cloud computing provides the scalable compute, storage, and networking foundation required to host modern AI workloads. Managed AI services sit on top of this cloud infrastructure to abstract away server management.
 
-```
-+-----------------------------------------------------------------+
-| Managed AI Services Layer                                      |
-| (Amazon Bedrock, Amazon SageMaker, Amazon Rekognition)          |
-+-----------------------------------------------------------------+
-                                |
-                                v
-+-----------------------------------------------------------------+
-| AWS Core Cloud Infrastructure Layer                             |
-| (IAM Security, VPC Networking, S3 Data Storage, EC2 Compute)    |
-+-----------------------------------------------------------------+
+```mermaid
+flowchart TD
+    A["Managed AI Services Layer<br/>(Amazon Bedrock, Amazon SageMaker, Amazon Rekognition)"]
+    B["AWS Core Cloud Infrastructure Layer<br/>(IAM Security, VPC Networking, S3 Data Storage, EC2 Compute)"]
+
+    A --> B
 ```
 
 ### Architectural Dependencies for AWS Managed AI

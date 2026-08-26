@@ -12,11 +12,12 @@ Cloud computing isn't one-size-fits-all; it operates on a spectrum of responsibi
 
 Financially, AWS boils cloud billing down to three core drivers: **Compute** (pay per second/hour), **Storage** (pay per GB), and **Data Transfer Out** (inbound is always free).
 
-```
-[ Traditional On-Prem ]  ---> You manage everything (Hardware, OS, App)
-[ IaaS ]                 ---> AWS manages Hardware/Virtualization; You manage OS & App
-[ PaaS ]                 ---> AWS manages Hardware & OS; You manage Code & Data
-[ SaaS ]                 ---> AWS manages everything; You just consume the service
+```mermaid
+flowchart LR
+    A[Traditional On-Prem] --> B[You manage everything: Hardware, OS, App]
+    C[IaaS] --> D[AWS manages Hardware/Virtualization; You manage OS & App]
+    E[PaaS] --> F[AWS manages Hardware & OS; You manage Code & Data]
+    G[SaaS] --> H[AWS manages everything; You just consume the service]
 ```
 
 ---
@@ -59,17 +60,17 @@ $$\text{SaaS Burden} = \text{Zero Infrastructure / Zero Code (Configuration Only
 
 AWS eliminates upfront hardware costs by driving all consumption through a utility-style pay-as-you-go model.
 
-```
-                      +----------------------------------+
-                      |   AWS 3 PRICING FUNDAMENTALS     |
-                      +----------------------------------+
-                                       |
-         +-----------------------------+-----------------------------+
-         |                             |                             |
-         v                             v                             v
-  [ 1. COMPUTE ]                 [ 2. STORAGE ]              [ 3. NETWORKING ]
-Charged per second/hour        Charged per GB stored        Pay for Data OUT only
-(EC2, Lambda, Bedrock)           (S3, EBS, DynamoDB)          (Data IN is FREE!)
+```mermaid
+flowchart TD
+    Main["AWS 3 PRICING FUNDAMENTALS"]
+
+    Compute["1. COMPUTE<br/>Charged per second/hour<br/>(EC2, Lambda, Bedrock)"]
+    Storage["2. STORAGE<br/>Charged per GB stored<br/>(S3, EBS, DynamoDB)"]
+    Network["3. NETWORKING<br/>Pay for Data OUT only<br/>(Data IN is FREE!)"]
+
+    Main --> Compute
+    Main --> Storage
+    Main --> Network
 ```
 
 $$\text{Total Monthly AWS Cost} = f(\text{Compute Duration}) + f(\text{GB Stored}) + f(\text{GB Data Transferred OUT})$$

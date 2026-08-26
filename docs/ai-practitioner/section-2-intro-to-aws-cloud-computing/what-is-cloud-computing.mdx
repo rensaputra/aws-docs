@@ -10,10 +10,11 @@ sidebar_position: 3
 
 Cloud computing is the **on-demand delivery** of compute, storage, database, and networking resources over the internet with **pay-as-you-go pricing**.
 
-```
-[ On-Demand Request ] ---> ( Cloud Service Provider ) ---> [ Instant Provisioning ]
-                                                                   |
-                                                        [ Pay ONLY for What You Use ]
+```mermaid
+flowchart LR
+    A[On-Demand Request] --> B(Cloud Service Provider)
+    B --> C[Instant Provisioning]
+    C --> D[Pay ONLY for What You Use]
 ```
 
 Instead of buying, owning, and maintaining physical data centers, you rent access to virtualized technology services from a cloud provider like Amazon Web Services (AWS). This eliminates guessing capacity and turns heavy upfront capital expenses into variable operational costs.
@@ -26,24 +27,14 @@ Instead of buying, owning, and maintaining physical data centers, you rent acces
 
 Organizations adopt cloud infrastructure across three distinct deployment models based on compliance, control, and architectural requirements:
 
-```
-+-----------------------------------------------------------------------+
-| PUBLIC CLOUD (AWS, Azure, GCP)                                        |
-| Shared, highly scalable global infrastructure accessed over internet  |
-+-----------------------------------------------------------------------+
-                                   |
-                                   v  (Connected via Direct Connect / VPN)
-+-----------------------------------------------------------------------+
-| HYBRID CLOUD                                                          |
-| Integrates on-premises/private infrastructure with public cloud       |
-+-----------------------------------------------------------------------+
-                                   ^
-                                   |
-+-----------------------------------------------------------------------+
-| PRIVATE CLOUD (On-Premises / Rackspace)                               |
-| Dedicated single-tenant hardware; maximum control and isolation       |
-+-----------------------------------------------------------------------+
+```mermaid
+flowchart TD
+    Public["PUBLIC CLOUD (AWS, Azure, GCP)<br/>Shared, highly scalable global infrastructure accessed over internet"]
+    Private["PRIVATE CLOUD (On-Premises / Rackspace)<br/>Dedicated single-tenant hardware; maximum control and isolation"]
+    Hybrid["HYBRID CLOUD<br/>Integrates on-premises/private infrastructure with public cloud"]
 
+    Public -->|Connected via Direct Connect / VPN| Hybrid
+    Private --> Hybrid
 ```
 
 - **Public Cloud:** Fully owned and operated by third-party cloud service providers (CSPs) like AWS. Resources are delivered over the public internet.
@@ -58,18 +49,19 @@ The National Institute of Standards and Technology (NIST) defines cloud computin
 
 $$\text{Cloud Utility} = \text{On-Demand Self-Service} + \text{Broad Access} + \text{Multi-Tenancy} + \text{Rapid Elasticity} + \text{Measured Service}$$
 
-```
-                          +-------------------------------+
-                          |  5 CLOUD CHARACTERISTICS      |
-                          +-------------------------------+
-                                          |
-        +------------------+--------------+--------------+------------------+
-        |                  |                             |                  |
-        v                  v                             v                  v
-[ On-Demand Self-  [ Broad Network Access ]      [ Multi-Tenancy &   [ Elasticity & Measured
-    Service ]      (Internet/Multi-Device)       Resource Pooling ]      Usage Scaling ]
-(Instant Provision)                              (Shared Hardware)     (Auto-scale & Pay-per-sec)
+```mermaid
+flowchart TD
+    Main["5 CLOUD CHARACTERISTICS"]
 
+    C1["On-Demand Self-Service<br/>(Instant Provision)"]
+    C2["Broad Network Access<br/>(Internet/Multi-Device)"]
+    C3["Multi-Tenancy & Resource Pooling<br/>(Shared Hardware)"]
+    C4["Elasticity & Measured Usage Scaling<br/>(Auto-scale & Pay-per-sec)"]
+
+    Main --> C1
+    Main --> C2
+    Main --> C3
+    Main --> C4
 ```
 
 1. **On-Demand Self-Service:** Provision compute resources instantly without human intervention from AWS.
@@ -82,17 +74,21 @@ $$\text{Cloud Utility} = \text{On-Demand Self-Service} + \text{Broad Access} + \
 
 ### The 6 Core Business Advantages of AWS Cloud
 
-```
-+-------------------------------------------------------------------------+
-|                       6 ADVANTAGES OF THE CLOUD                         |
-+-------------------------------------------------------------------------+
-| 1. Trade Capital Expense (CapEx) for Variable Operational Expense (OpEx)|
-| 2. Benefit from Massive Economies of Scale (Lower Pay-Per-Use Rates)    |
-| 3. Stop Guessing Capacity (Auto-Scale Up or Down On-Demand)             |
-| 4. Increase Speed and Agility (Launch Infrastructure in Seconds)        |
-| 5. Stop Spending Money Running and Maintaining Data Centers             |
-| 6. Go Global in Minutes (Deploy Applications Across Worldwide Regions)  |
-+-------------------------------------------------------------------------+
+```mermaid
+flowchart TD
+    subgraph Advantages["6 ADVANTAGES OF THE CLOUD"]
+        direction TB
+        A1["1. Trade Capital Expense (CapEx) for Variable Operational Expense (OpEx)"]
+        A2["2. Benefit from Massive Economies of Scale (Lower Pay-Per-Use Rates)"]
+        A3["3. Stop Guessing Capacity (Auto-Scale Up or Down On-Demand)"]
+        A4["4. Increase Speed and Agility (Launch Infrastructure in Seconds)"]
+        A5["5. Stop Spending Money Running and Maintaining Data Centers"]
+        A6["6. Go Global in Minutes (Deploy Applications Across Worldwide Regions)"]
+
+        A1 ~~~ A2 ~~~ A3 ~~~ A4 ~~~ A5 ~~~ A6
+    end
+
+    style Advantages fill:transparent
 ```
 
 ---
