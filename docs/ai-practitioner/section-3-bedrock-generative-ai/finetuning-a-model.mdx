@@ -10,10 +10,11 @@ sidebar_position: 7
 
 Fine-tuning in Amazon Bedrock isn't just prompt hacking—it **modifies the internal weights** of a private copy of a base Foundation Model (FM) using your custom datasets stored in **Amazon S3**.
 
-```
-[ Base FM Weights ] + [ Amazon S3 Dataset ] ---> ( Bedrock Training Pipeline ) ---> [ Custom Fine-Tuned Model Weights ]
-                                                                                           |
-                                                                             (Private Copy in Your AWS Account)
+```mermaid
+graph LR
+    Base[Base FM Weights] --> Pipeline[Bedrock Training Pipeline]
+    S3[Amazon S3 Dataset] --> Pipeline
+    Pipeline --> Custom[Custom Fine-Tuned Model Weights<br/>Private Copy in Your AWS Account]
 ```
 
 Bedrock gives you three distinct architectural paths to adapt models: **Supervised Fine-Tuning (SFT)** using labeled prompt-completion pairs, **Reinforcement Fine-Tuning (RFT)** using inputs evaluated against an objective or LLM-judge **Reward Function**, and **Model Distillation** to compress a large Teacher model's intelligence into a lightweight, cost-effective Student model.
@@ -24,22 +25,13 @@ Bedrock gives you three distinct architectural paths to adapt models: **Supervis
 
 ### The Three Pillars of Model Customization
 
-```
-+----------------------------------------------------------------------------------------------------+
-|                               BEDROCK CUSTOMIZATION TAXONOMY                                       |
-+--------------------------+-----------------------+--------------------+----------------------------+
-| Customization Method     | Input Data Required   | Evaluation Driver  | Primary Engineering Goal   |
-+--------------------------+-----------------------+--------------------+----------------------------+
-| Supervised Fine-Tuning   | Labeled Pairs (Prompt | Loss Minimization  | Domain terminology, tone,  |
-| (SFT)                    | + Completion)         | (Ground Truth)     | and exact output formats   |
-+--------------------------+-----------------------+--------------------+----------------------------+
-| Reinforcement Fine-      | Unlabeled Prompts     | External Reward    | Complex multi-step logic   |
-| Tuning (RFT)             | (Inputs only)         | Function / Judge   | and open-ended alignment   |
-+--------------------------+-----------------------+--------------------+----------------------------+
-| Model Distillation       | Prompts / Unlabeled   | Teacher Model      | Up to 75% cost reduction   |
-|                          | Inputs                | Knowledge Transfer | and ultra-low latency      |
-+--------------------------+-----------------------+--------------------+----------------------------+
-```
+### Bedrock Customization Taxonomy
+
+| Customization Method | Input Data Required | Evaluation Driver | Primary Engineering Goal |
+| :--- | :--- | :--- | :--- |
+| Supervised Fine-Tuning (SFT) | Labeled Pairs (Prompt + Completion) | Loss Minimization (Ground Truth) | Domain terminology, tone, and exact output formats |
+| Reinforcement Fine-Tuning (RFT) | Unlabeled Prompts (Inputs only) | External Reward Function / Judge | Complex multi-step logic and open-ended alignment |
+| Model Distillation | Prompts / Unlabeled Inputs | Teacher Model Knowledge Transfer | Up to 75% cost reduction and ultra-low latency |
 
 ---
 
@@ -49,19 +41,16 @@ SFT adapts a base model by training it directly on high-quality, labeled input-o
 
 $$\mathcal{D}_{\text{SFT}} = \left\{ (x^{(i)}, y^{(i)}) \right\}_{i=1}^{N} \quad \text{where } x = \text{Input Prompt}, \; y = \text{Target Ground-Truth Completion}$$
 
-```
-+-------------------------------------------------------------------------------+
-| SUPERVISED FINE-TUNING PIPELINE                                               |
-|                                                                               |
-|  [ Amazon S3 JSONL Data ]                                                     |
-|  {"prompt": "Who is Rendy?", "completion": "The AWS Student..."}              |
-|                         |                                                     |
-|                         v                                                     |
-|  [ Base Foundation Model ] ---> ( Gradient Descent Weight Updates )           |
-|                                         |                                     |
-|                                         v                                     |
-|                     [ Customized Model (Updated Weights) ]                    |
-+-------------------------------------------------------------------------------+
+```mermaid
+graph TD
+    subgraph Pipeline[SUPERVISED FINE-TUNING PIPELINE]
+        S3[Amazon S3 JSONL Data<br/>prompt: Who is Rendy?, completion: The AWS Student...]
+        Base[Base Foundation Model]
+        Custom[Customized Model Updated Weights]
+
+        S3 --> Base
+        Base -->|Gradient Descent Weight Updates| Custom
+    end
 ```
 
 - **Best For:** Teaching models brand-specific tone, industry jargon (legal/medical), structured JSON output schemas, and domain-specific classification.
@@ -75,31 +64,26 @@ RFT eliminates the need for human-labeled completion targets. You provide raw in
 
 ![](./img/reinforcement-fine-tuning.png)
 
-```
-+-----------------------------------------------------------------------------------+
-| REINFORCEMENT FINE-TUNING ARCHITECTURE                                            |
-|                                                                                   |
-|  [ Input Prompts (S3) ] ---> [ Base Foundation Model ]                            |
-|                                      |                                            |
-|                                      +---> Candidate Response 1 (Score: 5.0)      |
-|                                      +---> Candidate Response 2 (Score: 9.0)      |
-|                                      +---> Candidate Response 3 (Score: 2.0)      |
-|                                                    |                              |
-|                                                    v                              |
-|                                      +--------------------------+                 |
-|                                      |      REWARD ENGINE       |                 |
-|                                      +--------------------------+                 |
-|                                      | Objective: AWS Lambda    |                 |
-|                                      | (Math, Code, Unit Tests) |                 |
-|                                      |          --- OR ---      |                 |
-|                                      | Subjective: Judge LLM    |                 |
-|                                      | (Empathy, Policy Rubric) |                 |
-|                                      +--------------------------+                 |
-|                                                    |                              |
-|                                                    v (Iterative Reward Signal)    |
-|                                      [ Weight Optimization Loop ]                 |
-+-----------------------------------------------------------------------------------+
+```mermaid
+graph TD
+    subgraph Architecture[REINFORCEMENT FINE-TUNING ARCHITECTURE]
+        Prompts[Input Prompts S3] --> Base[Base Foundation Model]
 
+        Base --> Cand1[Candidate Response 1 Score: 5.0]
+        Base --> Cand2[Candidate Response 2 Score: 9.0]
+        Base --> Cand3[Candidate Response 3 Score: 2.0]
+
+        Cand1 --> RewardEngine
+        Cand2 --> RewardEngine
+        Cand3 --> RewardEngine
+
+        subgraph RewardEngine[REWARD ENGINE]
+            Obj[Objective: AWS Lambda<br/>Math, Code, Unit Tests]
+            Subj[Subjective: Judge LLM<br/>Empathy, Policy Rubric]
+        end
+
+        RewardEngine -->|Iterative Reward Signal| Loop[Weight Optimization Loop]
+    end
 ```
 
 - **Objective Reward Scoring (AWS Lambda):** Used when ground truth is mathematically verifiable (e.g., verifying Python code syntax or mathematical correctness via custom code).
@@ -115,20 +99,15 @@ Model Distillation compresses the reasoning capacity of a large, compute-heavy *
 
 ![](./img/model-distillation.png)
 
-```
-+-----------------------------------------------------------------------------------+
-| MODEL DISTILLATION WORKFLOW                                                       |
-|                                                                                   |
-|  [ Input Prompts ] ---> [ Large Teacher Model (e.g., Flagship FM) ]               |
-|                                      |                                            |
-|                                      v (Generates High-Quality Synthetic Targets) |
-|                       [ Distillation Training Engine ]                            |
-|                                      |                                            |
-|                                      v (Knowledge Transfer)                       |
-|                       [ Compact Student Model ]                                   |
-|                       * Up to 75% cheaper per token                               |
-|                       * Substantially faster inference latency                    |
-+-----------------------------------------------------------------------------------+
+```mermaid
+graph TD
+    subgraph Workflow[MODEL DISTILLATION WORKFLOW]
+        Prompts[Input Prompts] --> Teacher[Large Teacher Model e.g., Flagship FM]
+
+        Teacher -->|Generates High-Quality Synthetic Targets| Engine[Distillation Training Engine]
+
+        Engine -->|Knowledge Transfer| Student[Compact Student Model<br/>Up to 75% cheaper per token<br/>Substantially faster inference latency]
+    end
 ```
 
 $$\text{Efficiency Gain} \approx 75\% \text{ Cost Reduction} + \text{Lower Latency} \quad (\text{with minor accuracy trade-off})$$
@@ -139,18 +118,11 @@ $$\text{Efficiency Gain} \approx 75\% \text{ Cost Reduction} + \text{Lower Laten
 
 Running customized models requires choosing between two hosting structures:
 
-```
-+-------------------------------------------------------------------------+
-| CUSTOM MODEL INFERENCE OPTIONS                                          |
-+------------------------------------+------------------------------------+
-| On-Demand Pricing                  | Provisioned Throughput             |
-+------------------------------------+------------------------------------+
-| Pay per input and output token.    | Reserve dedicated Model Units (MU) |
-| Ideal for variable, sporadic, or   | on 1-month or 6-month commitments. |
-| development workloads.             | Required for guaranteed throughput |
-|                                    | and sustained production scale.    |
-+------------------------------------+------------------------------------+
-```
+### Custom Model Inference Options
+
+| On-Demand Pricing | Provisioned Throughput |
+| :--- | :--- |
+| Pay per input and output token. Ideal for variable, sporadic, or development workloads. | Reserve dedicated Model Units (MU) on 1-month or 6-month commitments. Required for guaranteed throughput and sustained production scale. |
 
 ---
 

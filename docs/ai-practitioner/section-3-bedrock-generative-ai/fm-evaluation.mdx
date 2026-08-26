@@ -14,24 +14,15 @@ import humanEvaluation from "./img/human-evaluation.png";
 
 Model selection isn't just about picking the biggest LLM; it requires empirical benchmarking against quality, safety, and operational criteria. Amazon Bedrock provides built-in **Automatic Evaluation** (via curated datasets and judge models) and **Human Evaluation** (via internal teams or subject matter experts) to grade candidate models objectively before deploying them into production.
 
-```
-[ Benchmark Questions + Reference Answers ]
-                 |
-                 v
-   +---------------------------+
-   |   Model Under Evaluation  | ---> Generates Model Responses
-   +---------------------------+                |
-                 |                              v
-                 +-------------------> [ Evaluation Engine ]
-                                                |
-                         +----------------------+----------------------+
-                         |                                             |
-                         v                                             v
-           [ Automatic Evaluation ]                          [ Human Evaluation ]
-        (LLM-as-a-Judge / Algo Scoring)               (SMEs / Thumbs Up / Likert Scales)
-        * ROUGE (Summarization n-grams)               * Coherence & Fluency
-        * BLEU (Translation Precision)                * Tone, Empathy, Brand Alignment
-        * BERTScore (Semantic Embeddings)             * Custom Domain Rubrics
+```mermaid
+graph TD
+    Benchmark[Benchmark Questions + Reference Answers] --> Model[Model Under Evaluation]
+    Model --> Responses[Generates Model Responses]
+    Model --> Engine[Evaluation Engine]
+    Responses --> Engine
+
+    Engine --> Auto[Automatic Evaluation<br/>LLM-as-a-Judge / Algo Scoring<br/>ROUGE Summarization n-grams<br/>BLEU Translation Precision<br/>BERTScore Semantic Embeddings]
+    Engine --> Human[Human Evaluation<br/>SMEs / Thumbs Up / Likert Scales<br/>Coherence & Fluency<br/>Tone, Empathy, Brand Alignment<br/>Custom Domain Rubrics]
 ```
 
 Evaluating models with standard benchmark metrics—such as **ROUGE**, **BLEU**, **BERTScore**, and **Perplexity**—enables rapid identification of model bias, hallucination rates, and performance regressions with low administrative overhead.
@@ -44,20 +35,15 @@ Evaluating models with standard benchmark metrics—such as **ROUGE**, **BLEU**,
 
 Amazon Bedrock categorizes model evaluation workflows into two distinct operational paradigms:
 
-```
-+----------------------------------------------------------------------------------------+
-|                          BEDROCK MODEL EVALUATION WORKFLOWS                            |
-+--------------------------+------------------------------+------------------------------+
-| Dimension                | Automatic Evaluation         | Human Evaluation             |
-+--------------------------+------------------------------+------------------------------+
-| Evaluator                | Pre-trained Judge LLM / Code | Internal workforce or SMEs   |
-| Evaluation Tasks         | Summarization, Q&A,          | Custom, open-ended, and      |
-|                          | Classification, Generation   | nuanced qualitative tasks    |
-| Datasets Used            | Built-in curated or custom S3| Custom business prompt sets  |
-| Scoring Mechanism        | ROUGE, BLEU, BERTScore, F1   | Thumbs Up/Down, 1-5 Ranking  |
-| Speed & Cost             | Ultra-fast, highly scalable  | Slower, higher resource cost |
-+--------------------------+------------------------------+------------------------------+
-```
+### Bedrock Model Evaluation Workflows
+
+| Dimension | Automatic Evaluation | Human Evaluation |
+| :--- | :--- | :--- |
+| Evaluator | Pre-trained Judge LLM / Code | Internal workforce or SMEs |
+| Evaluation Tasks | Summarization, Q&A, Classification, Generation | Custom, open-ended, and nuanced qualitative tasks |
+| Datasets Used | Built-in curated or custom S3 | Custom business prompt sets |
+| Scoring Mechanism | ROUGE, BLEU, BERTScore, F1 | Thumbs Up/Down, 1-5 Ranking |
+| Speed & Cost | Ultra-fast, highly scalable | Slower, higher resource cost |
 
 <ImageRow>
   <img src={automaticEvaluation} alt="Automatic Evaluation" />

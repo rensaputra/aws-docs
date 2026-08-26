@@ -10,18 +10,17 @@ sidebar_position: 16
 
 Amazon Bedrock Agents transitions foundation models from passive text generators into **autonomous task-executing agents**. Instead of simply replying to prompts, an Agent reasons through user requests, formulates a multi-step execution plan using **Chain-of-Thought (ReAct logic)**, and takes real actions across enterprise databases and APIs.
 
-```
-[ User Request ] ---> [ Bedrock Agent ] ---> [ FM Reasoning (Chain-of-Thought) ]
-                            |
-           +----------------+----------------+
-           |                                 |
-           v (Execute APIs / Logic)          v (Query Unstructured Data)
-  [ Action Groups + Lambda ]          [ Knowledge Bases (RAG) ]
-           |                                 |
-           +----------------+----------------+
-                            |
-                            v (Synthesize Final Output)
-               [ Final Response to User ]
+```mermaid
+graph TD
+    User[User Request] --> Agent[Bedrock Agent]
+    Agent --> FM[FM Reasoning Chain-of-Thought]
+
+    Agent -->|Execute APIs / Logic| Action[Action Groups + Lambda]
+    Agent -->|Query Unstructured Data| KB[Knowledge Bases RAG]
+
+    Action --> Synth[Synthesize Final Output]
+    KB --> Synth
+    Synth --> Response[Final Response to User]
 ```
 
 Bedrock Agents pairs foundation models with **Action Groups** (defined by **OpenAPI schemas** and executed via **AWS Lambda**) and **Knowledge Bases** (for RAG context), providing full execution visibility via built-in **Tracing**.
@@ -34,56 +33,44 @@ Bedrock Agents pairs foundation models with **Action Groups** (defined by **Open
 
 An Amazon Bedrock Agent orchestrates four foundational components:
 
-```
-+-----------------------------------------------------------------------------------------------------+
-|                               BEDROCK AGENT STRUCTURAL COMPONENTS                                   |
-+--------------------------+--------------------------------------------------------------------------+
-| Component                | Technical Purpose & Operational Scope                                    |
-+--------------------------+--------------------------------------------------------------------------+
-| Foundation Model (FM)    | The cognitive engine that interprets intent, breaks down tasks, and plans|
-| Agent Instructions       | Natural language definition of the agent's persona, scope, and rules     |
-| Action Groups            | Set of actions the agent can take, mapped via OpenAPI Schemas to Lambda  |
-| Knowledge Bases (RAG)    | Unstructured data sources (e.g., return policies, warranty guides) in S3 |
-+--------------------------+--------------------------------------------------------------------------+
-```
+| Component | Technical Purpose & Operational Scope |
+| :--- | :--- |
+| Foundation Model (FM) | The cognitive engine that interprets intent, breaks down tasks, and plans |
+| Agent Instructions | Natural language definition of the agent's persona, scope, and rules |
+| Action Groups | Set of actions the agent can take, mapped via OpenAPI Schemas to Lambda |
+| Knowledge Bases (RAG) | Unstructured data sources (e.g., return policies, warranty guides) in S3 |
 
 ![](./img/agent-architecture.png)
 
-```
-+---------------------------------------------------------------------------------------+
-|                          AMAZON BEDROCK AGENT ARCHITECTURE                            |
-|                                                                                       |
-|  [ User Request: "Check order #104 status and email shipping confirmation" ]          |
-|                                   |                                                   |
-|                                   v                                                   |
-|  +---------------------------------------------------------------------------------+  |
-|  |                             AMAZON BEDROCK AGENT                                |  |
-|  |  +---------------------------------------------------------------------------+  |  |
-|  |  | Foundation Model Reasoning Engine (Chain-of-Thought / ReAct Loop)         |  |  |
-|  |  +---------------------------------------------------------------------------+  |  |
-|  |         |                                               |                       |  |
-|  |         v                                               v                       |  |
-|  |  +-----------------------------+         +-----------------------------------+  |  |
-|  |  |        ACTION GROUPS        |         |          KNOWLEDGE BASES          |  |  |
-|  |  |  (OpenAPI 3.0 + AWS Lambda) |         |     (Managed Vector Search RAG)   |  |  |
-|  |  +-----------------------------+         +-----------------------------------+  |  |
-|  +---------|-----------------------------------------------|-----------------------+  |
-|            |                                               |                          |
-|            v                                               v                          |
-|  +-----------------------------+                 +--------------------+               |
-|  |   AWS Lambda Execution      |                 | Corporate S3 Store |               |
-|  |   - `GET /orders/104`       |                 | - Shipping Policies|               |
-|  |   - `POST /notifications`   |                 | - Return Guidelines|               |
-|  +-----------------------------+                 +--------------------+               |
-|            |                                               |                          |
-|            +-----------------------+-----------------------+                          |
-|                                    |                                                  |
-|                                    v                                                  |
-|                       [ Synthesized Output Payload ]                                  |
-|                                    |                                                  |
-|                                    v                                                  |
-|  [ User: "Order #104 shipped via FedEx; confirmation email has been dispatched." ]    |
-+---------------------------------------------------------------------------------------+
+```mermaid
+graph TD
+    subgraph Architecture[AMAZON BEDROCK AGENT ARCHITECTURE]
+        User[User Request: Check order #104 status and email shipping confirmation]
+
+        subgraph Agent[AMAZON BEDROCK AGENT]
+            FM[Foundation Model Reasoning Engine<br/>Chain-of-Thought / ReAct Loop]
+
+            Action[ACTION GROUPS<br/>OpenAPI 3.0 + AWS Lambda]
+            KB[KNOWLEDGE BASES<br/>Managed Vector Search RAG]
+
+            FM --> Action
+            FM --> KB
+        end
+
+        Lambda[AWS Lambda Execution<br/>GET /orders/104<br/>POST /notifications]
+        S3[Corporate S3 Store<br/>Shipping Policies<br/>Return Guidelines]
+
+        Synth[Synthesized Output Payload]
+        Response[User: Order #104 shipped via FedEx; confirmation email has been dispatched.]
+
+        User --> Agent
+        Action --> Lambda
+        KB --> S3
+
+        Lambda --> Synth
+        S3 --> Synth
+        Synth --> Response
+    end
 ```
 
 ---
@@ -92,24 +79,20 @@ An Amazon Bedrock Agent orchestrates four foundational components:
 
 Action Groups define the external tools and operations the agent is authorized to execute.
 
-```
-+-------------------------------------------------------------------------------+
-| ACTION GROUP EXECUTION PIPELINE                                               |
-|                                                                               |
-|  [ Bedrock Agent ] ---> Identifies required endpoint from OpenAPI Schema      |
-|                               |                                               |
-|                               v                                               |
-|  [ Generates API Payload ] ---> Parameter mapping: `{"orderId": "104"}`       |
-|                               |                                               |
-|                               v                                               |
-|  [ Invokes AWS Lambda ] ------> Executes business logic & updates database    |
-|                               |                                               |
-|                               v                                               |
-|  [ Lambda JSON Response ] ----> Returns status: `{"status": "Shipped"}`       |
-|                               |                                               |
-|                               v                                               |
-|  [ Foundation Model ] --------> Synthesizes response into natural language    |
-+-------------------------------------------------------------------------------+
+```mermaid
+graph TD
+    subgraph Pipeline[ACTION GROUP EXECUTION PIPELINE]
+        Agent[Bedrock Agent<br/>Identifies required endpoint from OpenAPI Schema]
+        Payload[Generates API Payload<br/>Parameter mapping: `orderId: 104`]
+        Lambda[Invokes AWS Lambda<br/>Executes business logic & updates database]
+        Response[Lambda JSON Response<br/>Returns status: `status: Shipped`]
+        FM[Foundation Model<br/>Synthesizes response into natural language]
+
+        Agent --> Payload
+        Payload --> Lambda
+        Lambda --> Response
+        Response --> FM
+    end
 ```
 
 - **OpenAPI 3.0 Schema:** An API specification stored in **Amazon S3** or defined inline. It details available endpoints, HTTP methods (`GET`, `POST`, `PUT`), parameter data types, and human-readable descriptions that guide the FM on _when_ and _how_ to call the API.
@@ -125,19 +108,15 @@ Bedrock Agents relies on the **ReAct (Reason + Act)** prompting pattern to resol
 
 $$\text{Agent Step Loop} = \text{Thought (Reasoning)} \longrightarrow \text{Action (API / RAG Call)} \longrightarrow \text{Observation (Output Payload)} \longrightarrow \text{Next Step / Final Synthesis}$$
 
-```
-+-----------------------------------------------------------------------------------+
-| THE ReAct EXECUTION CYCLE                                                         |
-|                                                                                   |
-|  1. THOUGHT:     "The user wants to order item X. First, I need to check stock."  |
-|  2. ACTION:      Invoke Action Group Lambda `checkInventory(itemId="X")`          |
-|  3. OBSERVATION: Lambda returns `{"inStock": true, "inventory": 15}`              |
-|  4. THOUGHT:     "Item is in stock. Now I must execute `placeOrder`."             |
-|  5. ACTION:      Invoke Action Group Lambda `placeOrder(itemId="X", qty=1)`       |
-|  6. OBSERVATION: Lambda returns `{"orderId": "ORD-9821", "success": true}`        |
-|  7. FINAL REPLY: Synthesize confirmation message with order ID for the user.      |
-+-----------------------------------------------------------------------------------+
-```
+### The ReAct Execution Cycle
+
+1. **THOUGHT:** "The user wants to order item X. First, I need to check stock."
+2. **ACTION:** Invoke Action Group Lambda `checkInventory(itemId="X")`
+3. **OBSERVATION:** Lambda returns `{"inStock": true, "inventory": 15}`
+4. **THOUGHT:** "Item is in stock. Now I must execute `placeOrder`."
+5. **ACTION:** Invoke Action Group Lambda `placeOrder(itemId="X", qty=1)`
+6. **OBSERVATION:** Lambda returns `{"orderId": "ORD-9821", "success": true}`
+7. **FINAL REPLY:** Synthesize confirmation message with order ID for the user.
 
 ---
 

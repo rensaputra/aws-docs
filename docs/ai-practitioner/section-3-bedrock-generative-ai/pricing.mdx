@@ -10,25 +10,18 @@ sidebar_position: 19
 
 Amazon Bedrock provides three core pricing and purchasing options for foundation model inference: **On-Demand** (pay-as-you-go per token/image), **Batch Mode** (asynchronous processing via Amazon S3 with a **50% cost discount**), and **Provisioned Throughput** (reserving dedicated Model Units for consistent throughput).
 
-```
-+---------------------------------------------------------------------------------------+
-|                      AMAZON BEDROCK PRICING & INFERENCE MODES                         |
-+---------------------------------------------------------------------------------------+
-|                                                                                       |
-|   1. ON-DEMAND (Pay-As-You-Go)                                                        |
-|      * Billed per 1,000 / 1,000,000 Input & Output tokens (or per generated image)    |
-|      * Zero upfront commitment; ideal for bursty, unpredictable, or dev workloads     |
-|                                                                                       |
-|   2. BATCH MODE (50% Cost Savings)                                                    |
-|      * Asynchronous bulk processing: S3 Input File ---> Bedrock ---> S3 Output File   |
-|      * 50% discount vs. on-demand; ideal for non-real-time offline jobs               |
-|                                                                                       |
-|   3. PROVISIONED THROUGHPUT (Reserved Capacity)                                       |
-|      * Purchases dedicated Model Units (MUs) on 1-month or 6-month commitments        |
-|      * Guarantees max tokens/min throughput and zero throttling                       |
-|      * MANDATORY requirement to run Custom / Fine-Tuned / Imported Models             |
-+---------------------------------------------------------------------------------------+
-```
+### Amazon Bedrock Pricing & Inference Modes
+
+1. **ON-DEMAND (Pay-As-You-Go)**
+   - Billed per 1,000 / 1,000,000 Input & Output tokens (or per generated image)
+   - Zero upfront commitment; ideal for bursty, unpredictable, or dev workloads
+2. **BATCH MODE (50% Cost Savings)**
+   - Asynchronous bulk processing: S3 Input File ---> Bedrock ---> S3 Output File
+   - 50% discount vs. on-demand; ideal for non-real-time offline jobs
+3. **PROVISIONED THROUGHPUT (Reserved Capacity)**
+   - Purchases dedicated Model Units (MUs) on 1-month or 6-month commitments
+   - Guarantees max tokens/min throughput and zero throttling
+   - **MANDATORY** requirement to run Custom / Fine-Tuned / Imported Models
 
 When optimizing costs, note that **inference parameters like Temperature, Top-K, and Top-P do not affect pricing**—the primary cost driver is **total input and output token volume**.
 

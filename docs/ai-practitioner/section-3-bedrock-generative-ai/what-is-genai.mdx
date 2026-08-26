@@ -10,13 +10,15 @@ sidebar_position: 2
 
 Generative AI (GenAI) is a specialized subset of **Deep Learning** designed to create new, original unstructured artifacts—such as text, code, images, audio, and video—by learning patterns from massive pre-training datasets.
 
-```
-[ Unlabeled Internet Data ] ---> ( Massive Pre-Training ) ---> [ Foundation Model (FM) ]
-                                                                      |
-      +---------------------+-------------------+---------------------+--------------------+
-      |                     |                   |                     |                    |
-      v                     v                   v                     v                    v
- [ Text Summarization ] [ Chatbot UI ] [ Code Generation ] [ Image Synthesis ] [ Task Extraction ]
+```mermaid
+graph TD
+    Data[Unlabeled Internet Data] -->|Massive Pre-Training| FM[Foundation Model FM]
+
+    FM --> Text[Text Summarization]
+    FM --> Chat[Chatbot UI]
+    FM --> Code[Code Generation]
+    FM --> Image[Image Synthesis]
+    FM --> Task[Task Extraction]
 ```
 
 Large Language Models (LLMs) and Diffusion Models power this space. Because LLMs operate probabilistically by predicting the next most likely token, their default behavior is **non-deterministic** (identical prompts can produce different completions).
