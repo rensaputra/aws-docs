@@ -22,35 +22,21 @@ Instead of hardcoding every rule, data scientists train models to plot, categori
 
 Modern AI separates the system lifecycle into two distinct phases: **Training** (backend preparation) and **Inference** (user execution).
 
-```
-   +-----------------------------------------------------------+
-   |                     TRAINING PHASE                        |
-   |                                                           |
-   |  +------------------+     +----------------------------+  |
-   |  |  Training Data   | --> | Data Scientist / Algorithm |  |
-   |  | (Labeled/Unseen) |     |     (Statistical Math)   |  |
-   |  +------------------+     +----------------------------+  |
-   |                                         |                 |
-   |                                         v                 |
-   |                               +-------------------+       |
-   |                               |  Trained Model    |       |
-   |                               +-------------------+       |
-   +-----------------------------------------|-----------------+
-                                             |
-                                             v
-   +-----------------------------------------------------------+
-   |                     INFERENCE PHASE                       |
-   |                                                           |
-   |  +------------------+     +----------------------------+  |
-   |  |  New User Data   | --> |       Trained Model        |  |
-   |  | (Unseen Sample)  |     |   (Pattern Matching)       |  |
-   |  +------------------+     +----------------------------+  |
-   |                                         |                 |
-   |                                         v                 |
-   |                               +-------------------+       |
-   |                               | Prediction Output |       |
-   |                               +-------------------+       |
-   +-----------------------------------------------------------+
+```mermaid
+flowchart TD
+    subgraph TP [Training Phase]
+        direction LR
+        TD[Training Data<br/>(Labeled/Unseen)] --> DS[Data Scientist / Algorithm<br/>(Statistical Math)]
+        DS --> TM[Trained Model]
+    end
+
+    subgraph IP [Inference Phase]
+        direction LR
+        NUD[New User Data<br/>(Unseen Sample)] --> TM2[Trained Model<br/>(Pattern Matching)]
+        TM2 --> PO[Prediction Output]
+    end
+
+    TP --> IP
 ```
 
 1. **Training Phase:** A large dataset (e.g., millions of fruit images) is processed by statistical code algorithms. The algorithm learns boundary features across multiple dimensional axes (like mapping color, shape, or weight).
@@ -62,21 +48,15 @@ AI taxonomy forms a nested hierarchy where each inner subfield leverages more sp
 
 $$\text{AI} \supset \text{Machine Learning (ML)} \supset \text{Deep Learning (DL)} \supset \text{Generative AI (GenAI)}$$
 
-```
-+-------------------------------------------------------------------+
-| Artificial Intelligence (AI)                                      |
-|  +-------------------------------------------------------------+  |
-|  | Machine Learning (ML)                                       |  |
-|  |  +-------------------------------------------------------+  |  |
-|  |  | Deep Learning (DL)                                    |  |  |
-|  |  |  +-------------------------------------------------+  |  |  |
-|  |  |  | Generative AI (GenAI)                           |  |  |  |
-|  |  |  |  (LLMs, Diffusion Models, Image Gen)            |  |  |  |
-|  |  |  +-------------------------------------------------+  |  |  |
-|  |  +-------------------------------------------------------+  |  |
-|  +-------------------------------------------------------------+  |
-+-------------------------------------------------------------------+
-
+```mermaid
+flowchart TD
+    subgraph AI [Artificial Intelligence]
+        subgraph ML [Machine Learning]
+            subgraph DL [Deep Learning]
+                GenAI["Generative AI (GenAI)<br/>(LLMs, Diffusion Models, Image Gen)"]
+            end
+        end
+    end
 ```
 
 - **Artificial Intelligence (AI):** Overarching discipline focusing on machines performing tasks requiring human-like intelligence.
@@ -100,18 +80,15 @@ A key modern enterprise pattern is **Intelligent Document Processing (IDP)**, wh
 
 ![](./img/idp-architecture.png)
 
-```
-[ Invoice PDF / Image ]
-          |
-          +---> Computer Vision (CV) -----> Locates text regions & layout
-          |
-          +---> Deep Learning (DL) --------> Extracts visual features
-          |
-          +---> Natural Language Processing (NLP) --> Parses entity meaning (Seller, Buyer, Total)
-          |
-          v
-[ Structured JSON Data Output ] ---> [ Enterprise Database ]
-
+```mermaid
+flowchart TD
+    Doc["[ Invoice PDF / Image ]"] --> CV["Computer Vision (CV)<br/>Locates text regions & layout"]
+    Doc --> DL["Deep Learning (DL)<br/>Extracts visual features"]
+    Doc --> NLP["Natural Language Processing (NLP)<br/>Parses entity meaning (Seller, Buyer, Total)"]
+    CV --> JSON["[ Structured JSON Data Output ]"]
+    DL --> JSON
+    NLP --> JSON
+    JSON --> DB["[ Enterprise Database ]"]
 ```
 
 ---
