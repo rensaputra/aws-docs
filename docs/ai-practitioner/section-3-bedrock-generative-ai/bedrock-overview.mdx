@@ -10,22 +10,17 @@ sidebar_position: 3
 
 Amazon Bedrock is AWS's fully managed, serverless control plane for generative AI. Instead of deploying custom GPU clusters, maintaining model weights, or building custom inference endpoints, Bedrock lets you access industry-leading Foundation Models (FMs) through a single **Unified API**.
 
-```
-[ Your Application Code ]
-            |
-            v  (Unified API: Converse / InvokeModel)
-  +-----------------------------------------------------------+
-  |                      AMAZON BEDROCK                       |
-  |  +-------------------+  +------------------------------+  |
-  |  |  Multi-Model FMs  |  | Advanced Managed Tooling     |  |
-  |  | (Anthropic, Meta, |  | - Knowledge Bases (RAG)      |  |
-  |  |  Amazon, Mistral, |  | - Bedrock Agents             |  |
-  |  |  DeepSeek, Cohere)|  | - Bedrock Guardrails         |  |
-  |  +-------------------+  +------------------------------+  |
-  +-----------------------------------------------------------+
-            |
-            v
-[ Private Isolated VPC Execution — Zero Model Provider Data Sharing ]
+```mermaid
+graph TD
+    App[Your Application Code] -->|Unified API: Converse / InvokeModel| Bedrock
+
+    subgraph Bedrock[AMAZON BEDROCK]
+        direction LR
+        FMs[Multi-Model FMs<br/>Anthropic, Meta, Amazon<br/>Mistral, DeepSeek, Cohere]
+        Tooling[Advanced Managed Tooling<br/>- Knowledge Bases RAG<br/>- Bedrock Agents<br/>- Bedrock Guardrails]
+    end
+
+    Bedrock --> VPC[Private Isolated VPC Execution<br/>Zero Model Provider Data Sharing]
 ```
 
 Crucially for enterprise security, every model invocation and fine-tuning job creates an isolated instance within your account boundary: **none of your prompt or training data is ever sent to third-party model providers or used to train base foundation models**.
@@ -38,17 +33,14 @@ Crucially for enterprise security, every model invocation and fine-tuning job cr
 
 Amazon Bedrock unifies disparate foundation models under standardized request and response structures. You can swap foundation models by modifying a single parameter in your API call rather than rewriting application logic.
 
-```
-                                 +-------------------------+
-                                 |  Amazon Bedrock Unified |
-                                 |      Inference API      |
-                                 +-------------------------+
-                                              |
-      +-------------------+-------------------+-------------------+-------------------+
-      |                   |                   |                   |                   |
-      v                   v                   v                   v                   v
-[ Anthropic ]         [ Meta ]           [ Amazon ]          [ Mistral AI ]     [ Stability AI ]
-(Claude 3.x / 3.5)   (Llama 3.x / 4)    (Titan / Nova)      (Mistral / Large)  (Stable Diffusion)
+```mermaid
+graph TD
+    API[Amazon Bedrock Unified Inference API]
+    API --> Anthropic[Anthropic<br/>Claude 3.x / 3.5]
+    API --> Meta[Meta<br/>Llama 3.x / 4]
+    API --> Amazon[Amazon<br/>Titan / Nova]
+    API --> Mistral[Mistral AI<br/>Mistral / Large]
+    API --> Stability[Stability AI<br/>Stable Diffusion]
 ```
 
 - **Multi-Provider Roster:** Bedrock partners directly with leading AI organizations (Anthropic, Meta, Mistral AI, Cohere, Moonshot AI, Stability AI) alongside Amazon's native model lines (**Amazon Titan** and **Amazon Nova**).
@@ -60,41 +52,27 @@ Amazon Bedrock unifies disparate foundation models under standardized request an
 
 Bedrock delivers four native architectural components designed to move generative AI from prototype to production:
 
-```
-+---------------------------------------------------------------------------------------+
-| BEDROCK ENTERPRISE TOOLKIT                                                            |
-+--------------------------+------------------------------------------------------------+
-| Component                | Technical Architecture & Mechanics                         |
-+--------------------------+------------------------------------------------------------+
-| Interactive Playgrounds  | Web console for zero-code prompt testing & parameter tuning|
-| Knowledge Bases (RAG)    | Managed Retrieval-Augmented Generation connecting S3 data  |
-| Bedrock Agents           | Autonomous multi-step orchestration using AWS Lambda tools |
-| Model Customization      | Supervised Fine-Tuning & Continued Pre-training on S3 data |
-+--------------------------+------------------------------------------------------------+
-```
+| Component | Technical Architecture & Mechanics |
+| :--- | :--- |
+| Interactive Playgrounds | Web console for zero-code prompt testing & parameter tuning |
+| Knowledge Bases (RAG) | Managed Retrieval-Augmented Generation connecting S3 data |
+| Bedrock Agents | Autonomous multi-step orchestration using AWS Lambda tools |
+| Model Customization | Supervised Fine-Tuning & Continued Pre-training on S3 data |
 
-```
-+-----------------------------------------------------------------------------------+
-|                        AMAZON BEDROCK COMPONENT ARCHITECTURE                      |
-|                                                                                   |
-|  +-----------------------------------+     +-----------------------------------+  |
-|  |     Interactive Playground        |     |       Model Customization         |  |
-|  | (Manual parameter tuning: Temp,   |     | (Fine-Tuning / Continued Pre-     |  |
-|  |  Top-P, System Prompt testing)    |     |  training using private S3 data)  |  |
-|  +-----------------------------------+     +-----------------------------------+  |
-|                   \                                   /                           |
-|                    v                                 v                            |
-|       +-----------------------------------------------------------+               |
-|       |               Core Foundation Models (FMs)                |               |
-|       +-----------------------------------------------------------+               |
-|                    ^                                 ^                            |
-|                   /                                   \                           |
-|  +-----------------------------------+     +-----------------------------------+  |
-|  |      Knowledge Bases (RAG)        |     |         Bedrock Agents            |  |
-|  | (Embeddings + Vector Storage +    |     | (ReAct planning loop + AWS Lambda |  |
-|  |  Context-injected prompt retrieval|     |  API action group execution)      |  |
-|  +-----------------------------------+     +-----------------------------------+  |
-+-----------------------------------------------------------------------------------+
+```mermaid
+graph TD
+    subgraph Architecture[AMAZON BEDROCK COMPONENT ARCHITECTURE]
+        Playground[Interactive Playground<br/>Manual parameter tuning: Temp,<br/>Top-P, System Prompt testing]
+        Customization[Model Customization<br/>Fine-Tuning / Continued Pre-<br/>training using private S3 data]
+        FMs[Core Foundation Models]
+        RAG[Knowledge Bases RAG<br/>Embeddings + Vector Storage +<br/>Context-injected prompt retrieval]
+        Agents[Bedrock Agents<br/>ReAct planning loop + AWS Lambda<br/>API action group execution]
+
+        Playground --> FMs
+        Customization --> FMs
+        RAG --> FMs
+        Agents --> FMs
+    end
 ```
 
 ---

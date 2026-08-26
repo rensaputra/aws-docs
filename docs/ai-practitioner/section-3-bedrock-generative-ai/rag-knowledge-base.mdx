@@ -10,14 +10,14 @@ sidebar_position: 10
 
 Retrieval-Augmented Generation (RAG) lets your Foundation Model (FM) reference dynamic, private, or real-time external data **without altering model weights or paying for expensive fine-tuning**.
 
-```
-[ User Query ] ------------------------+
-      |                                |
-      v                                v
-[ Vector Search (Similarity) ] ---> [ Augmented Prompt ] ---> [ Foundation Model ] ---> [ Grounded Response + Citations ]
-      ^                                (Query + Chunks)
-      |
-[ Knowledge Base / Vector DB ]
+```mermaid
+graph TD
+    Query[User Query] --> Augmented[Augmented Prompt<br/>Query + Chunks]
+    Query --> VectorSearch[Vector Search Similarity]
+    VectorSearch --> Augmented
+    Augmented --> FM[Foundation Model]
+    FM --> Grounded[Grounded Response + Citations]
+    KnowledgeBase[Knowledge Base / Vector DB] --> VectorSearch
 ```
 
 On AWS, **Amazon Bedrock Knowledge Bases** provides a fully managed, end-to-end RAG architecture: it ingests documents from sources like **Amazon S3**, chunks the text, computes vector embeddings via models like **Amazon Titan Embeddings**, indexes them into a **Vector Database** (such as Amazon OpenSearch Serverless, Aurora PostgreSQL, Neptune Analytics, or S3 Vectors), and injects the retrieved context directly into the prompt alongside source citations.
@@ -30,33 +30,33 @@ On AWS, **Amazon Bedrock Knowledge Bases** provides a fully managed, end-to-end 
 
 Amazon Bedrock Knowledge Bases decouples RAG into an **Ingestion Pipeline** (data preparation) and a **Retrieval/Generation Pipeline** (runtime inference).
 
-```
-+---------------------------------------------------------------------------------------+
-| INGESTION PIPELINE (Asynchronous Sync)                                                |
-|                                                                                       |
-|  [ Data Sources ]       [ Document Parsing ]     [ Embeddings Model ]   [ Vector DB ] |
-|  * Amazon S3            * Fixed-size Chunking    * Amazon Titan         * OpenSearch  |
-|  * Confluence     --->  * Semantic Chunking ---> * Cohere Embed    ---> * Aurora pgvec|
-|  * SharePoint           * Metadata Tagging                              * S3 Vectors  |
-|  * Webpages                                                             * Neptune     |
-+---------------------------------------------------------------------------------------+
-                                                                                    |
-                                                                                    v
-+---------------------------------------------------------------------------------------+
-| RUNTIME RETRIEVAL & GENERATION PIPELINE                                               |
-|                                                                                       |
-|  [ User Prompt ]                                                                      |
-|         |                                                                             |
-|         v (Embed query vector)                                                        |
-|  [ Vector DB k-NN Search ] ---> Retrieves Top-k Chunks (e.g., Support Doc #1, #2)     |
-|                                      |                                                |
-|                                      v                                                |
-|  [ Augmented Context Assembly ] = [ Original Query ] + [ Retrieved Source Chunks ]    |
-|                                      |                                                |
-|                                      v                                                |
-|  [ Foundation Model (Bedrock) ] -----------------------------> [ Grounded Answer ]    |
-|                                                                + S3 Source Citations  |
-+---------------------------------------------------------------------------------------+
+```mermaid
+graph TD
+    subgraph Ingestion[INGESTION PIPELINE Asynchronous Sync]
+        Data[Data Sources<br/>Amazon S3<br/>Confluence<br/>SharePoint<br/>Webpages]
+        Parsing[Document Parsing<br/>Fixed-size Chunking<br/>Semantic Chunking<br/>Metadata Tagging]
+        Embed[Embeddings Model<br/>Amazon Titan<br/>Cohere Embed]
+        Vector[Vector DB<br/>OpenSearch<br/>Aurora pgvec<br/>S3 Vectors<br/>Neptune]
+
+        Data --> Parsing
+        Parsing --> Embed
+        Embed --> Vector
+    end
+
+    subgraph Runtime[RUNTIME RETRIEVAL & GENERATION PIPELINE]
+        Prompt[User Prompt]
+        VectorSearch[Vector DB k-NN Search<br/>Retrieves Top-k Chunks e.g., Support Doc #1, #2]
+        Context[Augmented Context Assembly<br/>Original Query + Retrieved Source Chunks]
+        FM[Foundation Model Bedrock]
+        Answer[Grounded Answer<br/>+ S3 Source Citations]
+
+        Prompt -->|Embed query vector| VectorSearch
+        VectorSearch --> Context
+        Context --> FM
+        FM --> Answer
+    end
+
+    Ingestion --> Runtime
 ```
 
 1. **Ingestion & Sync:** Documents are parsed from raw formats (PDFs, Markdown, text, HTML), split into chunks, converted into multi-dimensional numerical representations (**Vector Embeddings**), and stored in an index.  
@@ -80,28 +80,13 @@ $$\text{Augmented Prompt Payload } \mathcal{P}_{\text{final}} = \text{System Pro
 
 Amazon Bedrock Knowledge Bases connects with multiple native and third-party vector store backends depending on workload requirements:
 
-```
-+------------------------------------------------------------------------------------+
-| VECTOR STORE BACKENDS                                                              |
-+--------------------------+--------------------+------------------------------------+
-| Vector Database Engine   | Latency Profile    | Ideal Workload Archetype           |
-+--------------------------+--------------------+------------------------------------+
-| Amazon OpenSearch        | Sub-10ms           | Production RAG default; high QPS,  |
-| Serverless / Managed     |                    | hybrid keyword + k-NN search       |
-+--------------------------+--------------------+------------------------------------+
-| Amazon Aurora PostgreSQL | 10-100ms           | Hybrid SQL relational transactional|
-| (with pgvector extension)|                    | data stored alongside vectors      |
-+--------------------------+--------------------+------------------------------------+
-| Amazon Neptune Analytics | Sub-second         | GraphRAG; relationship traversal & |
-|                          |                    | multi-hop entity reasoning         |
-+--------------------------+--------------------+------------------------------------+
-| Amazon S3 Vectors        | Sub-100ms          | Cost-optimized cold/warm tier;     |
-|                          |                    | zero idle capacity charges         |
-+--------------------------+--------------------+------------------------------------+
-| Third-Party Managed      | Variable           | Multi-cloud ecosystems (Pinecone,  |
-| (Pinecone, Redis, Mongo) |                    | MongoDB Atlas, Redis Enterprise)   |
-+--------------------------+--------------------+------------------------------------+
-```
+| Vector Database Engine | Latency Profile | Ideal Workload Archetype |
+| :--- | :--- | :--- |
+| Amazon OpenSearch Serverless / Managed | Sub-10ms | Production RAG default; high QPS, hybrid keyword + k-NN search |
+| Amazon Aurora PostgreSQL (with pgvector extension) | 10-100ms | Hybrid SQL relational transactional data stored alongside vectors |
+| Amazon Neptune Analytics | Sub-second | GraphRAG; relationship traversal & multi-hop entity reasoning |
+| Amazon S3 Vectors | Sub-100ms | Cost-optimized cold/warm tier; zero idle capacity charges |
+| Third-Party Managed (Pinecone, Redis, Mongo) | Variable | Multi-cloud ecosystems (Pinecone, MongoDB Atlas, Redis Enterprise) |
 
 - **Amazon OpenSearch Serverless:** The default managed vector engine for Bedrock Knowledge Bases. Automatically provisions compute units (OCUs) and indexes high-volume vector embeddings.
 - **Amazon Aurora PostgreSQL (`pgvector`):** Combines standard structured relational queries and ACID transactions with vector similarity searches within the same database engine.
@@ -114,16 +99,13 @@ Amazon Bedrock Knowledge Bases connects with multiple native and third-party vec
 
 Bedrock Knowledge Bases supports direct synchronization from native and enterprise SaaS data sources:
 
-```
-+-------------------------------------------------------------------+
-| SUPPORTED DATA SOURCE CONNECTORS                                  |
-| - Amazon S3 (PDF, CSV, JSON, TXT, DOCX, HTML)                     |
-| - Confluence Cloud                                                |
-| - Microsoft SharePoint Online                                     |
-| - Salesforce CRM Knowledge / Objects                              |
-| - Web Crawlers (Public URLs & Documentation Feeds)                |
-+-------------------------------------------------------------------+
-```
+### Supported Data Source Connectors
+
+- Amazon S3 (PDF, CSV, JSON, TXT, DOCX, HTML)
+- Confluence Cloud
+- Microsoft SharePoint Online
+- Salesforce CRM Knowledge / Objects
+- Web Crawlers (Public URLs & Documentation Feeds)
 
 #### Real-World Implementation Archetypes
 
