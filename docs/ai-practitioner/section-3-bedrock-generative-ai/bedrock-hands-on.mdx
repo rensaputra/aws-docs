@@ -10,14 +10,13 @@ sidebar_position: 4
 
 Amazon Bedrock provides a centralized graphical playground to discover, test, and benchmark foundation models without writing a single line of application code.
 
-```
-[ Bedrock Console ]
-       |
-       +---> Model Catalog (Browse & filter by Provider, Modality, or Use Case)
-       |
-       +---> Chat / Text Playground (Single Prompt vs. Multi-turn Chat, Token Metrics, Latency)
-       |
-       +---> Image & Video Playground (Prompt-to-Image Generation, Size, Palette, Count)
+```mermaid
+graph TD
+    Console[Bedrock Console]
+
+    Console --> Catalog[Model Catalog<br/>Browse & filter by Provider, Modality, or Use Case]
+    Console --> Chat[Chat / Text Playground<br/>Single Prompt vs. Multi-turn Chat, Token Metrics, Latency]
+    Console --> Image[Image & Video Playground<br/>Prompt-to-Image Generation, Size, Palette, Count]
 ```
 
 Through the **Model Catalog**, you can filter across providers (Amazon, Anthropic, DeepSeek,Moonshot AI, Qwen). Inside the **Playgrounds**, Bedrock provides real-time telemetry—**Input Tokens**, **Output Tokens**, and **Latency**—which directly drive pricing and model selection strategy for production workloads.

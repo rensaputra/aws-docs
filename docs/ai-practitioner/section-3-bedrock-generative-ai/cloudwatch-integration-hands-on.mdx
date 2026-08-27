@@ -10,20 +10,13 @@ sidebar_position: 18
 
 Enabling **Model Invocation Logging** in Amazon Bedrock bridges generative AI execution with enterprise monitoring in **Amazon CloudWatch Logs**.
 
-```
-[ Bedrock Console Settings ] ---> ( Create IAM Service Role + CloudWatch Log Group )
-                                                |
-[ Chat Playground / API Query ] ---> [ Bedrock Model Invocation ]
-                                                |
-                                                +---> [ CloudWatch Log Stream (Full Payload JSON) ]
-                                                |       |-- Model ID, Region, Timestamp
-                                                |       |-- User Input Text & Configuration
-                                                |       |-- Assistant Output Message & Tokens
-                                                |       +-- Invocation Latency (ms)
-                                                |
-                                                +---> [ CloudWatch Metrics Dashboard ]
-                                                        |-- `InvocationLatency`
-                                                        +-- `Invocations`
+```mermaid
+graph TD
+    Settings[Bedrock Console Settings] -->|Create IAM Service Role + CloudWatch Log Group| Invocation[Bedrock Model Invocation]
+    Query[Chat Playground / API Query] --> Invocation
+
+    Invocation --> CWLogs[CloudWatch Log Stream Full Payload JSON<br/>Model ID, Region, Timestamp<br/>User Input Text & Configuration<br/>Assistant Output Message & Tokens<br/>Invocation Latency ms]
+    Invocation --> CWMetrics[CloudWatch Metrics Dashboard<br/>InvocationLatency<br/>Invocations]
 ```
 
 Every invocation stream captures rich JSON telemetry: **model IDs**, **user messages**, **assistant completions**, **token counts** (input and output), and exact **latency in milliseconds**. Furthermore, CloudWatch Metrics automatically tracks time-series performance data per model ID, enabling automated alerting when latency exceeds operational thresholds.

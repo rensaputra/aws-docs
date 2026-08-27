@@ -10,18 +10,16 @@ sidebar_position: 17
 
 Amazon CloudWatch provides full-stack observability for Amazon Bedrock through **Model Invocation Logging**, **CloudWatch Metrics**, and **CloudWatch Alarms**. By default, model invocation logging is disabled to protect privacy; enabling it allows you to capture raw inference metadata, input prompts, model completions, images, and embeddings into **CloudWatch Logs** or **Amazon S3**.
 
-```
-[ User Prompt / Application ] ---> [ Amazon Bedrock Inference ] ---> [ Model Response ]
-                                            |
-                         +------------------+------------------+
-                         | (Invocation Logging - Disabled by Default)
-                         v                                     v
-              [ CloudWatch Logs ]                       [ Amazon S3 ]
-         (Real-time queries / Insights)          (Long-term compliance & large payloads)
-                         |
-                         v (Metric Filters & Published Metrics)
-             [ CloudWatch Metrics & Alarms ] ---> [ SNS Alert / Automated Action ]
-             (e.g., ContentFilteredCount > Threshold)
+```mermaid
+graph TD
+    User[User Prompt / Application] --> Bedrock[Amazon Bedrock Inference]
+    Bedrock --> Response[Model Response]
+
+    Bedrock -->|Invocation Logging - Disabled by Default| CWLogs[CloudWatch Logs<br/>Real-time queries / Insights]
+    Bedrock -->|Invocation Logging - Disabled by Default| S3[Amazon S3<br/>Long-term compliance & large payloads]
+
+    CWLogs -->|Metric Filters & Published Metrics| CWMetrics[CloudWatch Metrics & Alarms<br/>e.g., ContentFilteredCount > Threshold]
+    CWMetrics --> SNS[SNS Alert / Automated Action]
 ```
 
 Pairing invocation logs with **CloudWatch Logs Insights** enables real-time querying across prompt histories and token usage, while **CloudWatch Metrics** (such as `ContentFilteredCount`, `InvocationLatency`, and `Invocations`) power automated alerting when guardrails trigger or error thresholds spike.
@@ -34,19 +32,10 @@ Pairing invocation logs with **CloudWatch Logs Insights** enables real-time quer
 
 CloudWatch monitors Amazon Bedrock across two foundational data streams:
 
-```
-+----------------------------------------------------------------------------------------------------+
-|                               BEDROCK OBSERVABILITY DATA STREAMS                                   |
-+--------------------------+-----------------------------------+-------------------------------------+
-| Telemetry Stream         | Destination / Service             | Operational Utility                 |
-+--------------------------+-----------------------------------+-------------------------------------+
-| Model Invocation Logging | CloudWatch Logs / Amazon S3       | Full audit trail: raw prompts,      |
-| (Disabled by default)    | (Configured in Bedrock Settings)  | completions, images, & embeddings   |
-+--------------------------+-----------------------------------+-------------------------------------+
-| Bedrock Runtime Metrics  | Amazon CloudWatch Metrics         | Numerical time-series monitoring:   |
-| (Enabled by default)     | (Namespace: AWS/Bedrock)          | latency, token count, errors, filters|
-+--------------------------+-----------------------------------+-------------------------------------+
-```
+| Telemetry Stream | Destination / Service | Operational Utility |
+| :--- | :--- | :--- |
+| Model Invocation Logging (Disabled by default) | CloudWatch Logs / Amazon S3 (Configured in Bedrock Settings) | Full audit trail: raw prompts, completions, images, & embeddings |
+| Bedrock Runtime Metrics (Enabled by default) | Amazon CloudWatch Metrics (Namespace: AWS/Bedrock) | Numerical time-series monitoring: latency, token count, errors, filters |
 
 ---
 
@@ -58,27 +47,22 @@ $$\text{Logged Invocation Record} = \text{Metadata} + \text{Input Modality (Text
 
 ![](./img/bedrock-invocation-logging.png)
 
-```
-+---------------------------------------------------------------------------------------+
-| MODEL INVOCATION LOGGING FLOW                                                         |
-|                                                                                       |
-|  [ Client Application ] ---> Invokes Foundation Model via `InvokeModel` API           |
-|                                     |                                                 |
-|                                     v                                                 |
-|  +---------------------------------------------------------------------------------+  |
-|  |                            AMAZON BEDROCK ENGINE                                |  |
-|  |  * Evaluates Guardrails                                                         |  |
-|  |  * Generates Completion Tokens                                                  |  |
-|  |  * Dispatches Async Invocation Record (Zero impact on inference latency)        |  |
-|  +---------------------------------------------------------------------------------+  |
-|                                     |                                                 |
-|                     +---------------+---------------+                                 |
-|                     |                               |                                 |
-|                     v                               v                                 |
-|  [ CloudWatch Logs (/aws/bedrock/...) ]      [ Amazon S3 Bucket (s3://...) ]          |
-|  * 7 to 30 day operational retention         * Long-term compliance archive           |
-|  * Interactive CloudWatch Logs Insights      * Large multimodal/image storage payloads|
-+---------------------------------------------------------------------------------------+
+```mermaid
+graph TD
+    subgraph Flow[MODEL INVOCATION LOGGING FLOW]
+        Client[Client Application]
+
+        subgraph Engine[AMAZON BEDROCK ENGINE]
+            Steps[Evaluates Guardrails<br/>Generates Completion Tokens<br/>Dispatches Async Invocation Record Zero impact on inference latency]
+        end
+
+        CWLogs[CloudWatch Logs /aws/bedrock/...<br/>7 to 30 day operational retention<br/>Interactive CloudWatch Logs Insights]
+        S3[Amazon S3 Bucket s3://...<br/>Long-term compliance archive<br/>Large multimodal/image storage payloads]
+
+        Client -->|Invokes Foundation Model via InvokeModel API| Engine
+        Engine --> CWLogs
+        Engine --> S3
+    end
 ```
 
 - **Storage Targets:** You can send logs to **CloudWatch Logs** (for fast interactive querying), **Amazon S3** (for cost-effective, long-term regulatory retention), or both simultaneously.
@@ -91,17 +75,15 @@ $$\text{Logged Invocation Record} = \text{Metadata} + \text{Input Modality (Text
 
 Once invocation logs flow into CloudWatch Logs, you can run structured, SQL-like queries using **CloudWatch Logs Insights** to investigate prompt trends, token consumption, and model latency distributions.
 
-```
-+-------------------------------------------------------------------------------+
-| LOGS INSIGHTS QUERY EXAMPLE: ANALYZING INPUT & OUTPUT TOKEN VOLUMES           |
-+-------------------------------------------------------------------------------+
-| fields @timestamp, modelId, input.inputTokenCount, output.outputTokenCount    |
-| | filter ispresent(input.inputTokenCount)                                     |
-| | stats sum(input.inputTokenCount) as TotalIn,                                |
-|         sum(output.outputTokenCount) as TotalOut,                             |
-|         avg(output.outputTokenCount) as AvgOutTokens by modelId               |
-| | sort TotalOut desc                                                          |
-+-------------------------------------------------------------------------------+
+### Logs Insights Query Example: Analyzing Input & Output Token Volumes
+
+```sql
+fields @timestamp, modelId, input.inputTokenCount, output.outputTokenCount
+| filter ispresent(input.inputTokenCount)
+| stats sum(input.inputTokenCount) as TotalIn,
+        sum(output.outputTokenCount) as TotalOut,
+        avg(output.outputTokenCount) as AvgOutTokens by modelId
+| sort TotalOut desc
 ```
 
 ---
@@ -114,40 +96,37 @@ Amazon Bedrock automatically emits aggregate time-series metrics under the `AWS/
 
 ![](./img/bedrock-metrics.png)
 
-```
-+-----------------------------------------------------------------------------------+
-| CORE AMAZON BEDROCK RUNTIME METRICS                                               |
-+--------------------------+-------------+------------------------------------------+
-| Metric Name              | Unit        | Description & Operational Focus          |
-+--------------------------+-------------+------------------------------------------+
-| `Invocations`            | Count       | Total successful model inference calls   |
-| `InvocationLatency`      | Milliseconds| Turnaround duration to generate response |
-| `InputTokenCount`        | Count       | Volume of prompt tokens ingested         |
-| `OutputTokenCount`       | Count       | Volume of completion tokens returned     |
-| `ContentFilteredCount`   | Count       | Invocations blocked by Bedrock Guardrails|
-| `InvocationClientErrors` | Count       | 4xx caller errors (bad syntax, auth)     |
-| `InvocationServerErrors` | Count       | 5xx AWS service-side infrastructure error|
-| `InvocationThrottles`    | Count       | Invocations rejected due to quota limits |
-+--------------------------+-------------+------------------------------------------+
-```
+### Core Amazon Bedrock Runtime Metrics
+
+| Metric Name | Unit | Description & Operational Focus |
+| :--- | :--- | :--- |
+| `Invocations` | Count | Total successful model inference calls |
+| `InvocationLatency` | Milliseconds | Turnaround duration to generate response |
+| `InputTokenCount` | Count | Volume of prompt tokens ingested |
+| `OutputTokenCount` | Count | Volume of completion tokens returned |
+| `ContentFilteredCount` | Count | Invocations blocked by Bedrock Guardrails |
+| `InvocationClientErrors` | Count | 4xx caller errors (bad syntax, auth) |
+| `InvocationServerErrors` | Count | 5xx AWS service-side infrastructure error |
+| `InvocationThrottles` | Count | Invocations rejected due to quota limits |
 
 $$\text{Alarm Condition: } \text{Metric}(\text{ContentFilteredCount}) \ge \text{Threshold} \xrightarrow{\text{CloudWatch Alarm}} \text{SNS Topic} \longrightarrow \text{Security Operations Email/Pager}$$
 
-```
-+---------------------------------------------------------------------------------+
-| AUTOMATED GUARDRAIL MONITORING & ALERTING                                       |
-|                                                                                 |
-|  [ User Invocations ] ---> [ Amazon Bedrock + Guardrails ]                      |
-|                                     |                                           |
-|                                     v (Emits `ContentFilteredCount`)            |
-|                           [ CloudWatch Metrics ]                                |
-|                                     |                                           |
-|                                     v (Evaluates Metric Threshold)              |
-|                           [ CloudWatch Alarm ]                                  |
-|                                     | (State: ALARM)                            |
-|                                     v                                           |
-|                           [ Amazon SNS Topic ] ---> Security Admin Alert / Pager|
-+---------------------------------------------------------------------------------+
+```mermaid
+graph TD
+    subgraph Monitoring[AUTOMATED GUARDRAIL MONITORING & ALERTING]
+        User[User Invocations]
+        Bedrock[Amazon Bedrock + Guardrails]
+        Metrics[CloudWatch Metrics]
+        Alarm[CloudWatch Alarm]
+        SNS[Amazon SNS Topic]
+        Admin[Security Admin Alert / Pager]
+
+        User --> Bedrock
+        Bedrock -->|Emits ContentFilteredCount| Metrics
+        Metrics -->|Evaluates Metric Threshold| Alarm
+        Alarm -->|State: ALARM| SNS
+        SNS --> Admin
+    end
 ```
 
 ---

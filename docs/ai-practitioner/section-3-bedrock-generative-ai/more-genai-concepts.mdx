@@ -14,11 +14,14 @@ import colorVisualization from "./img/color-visualization.png";
 
 Generative AI models do not read characters, words, or pixels the way humans do. Raw unstructured text must first be split into discrete numerical identifiers (**Tokenization**) and mapped into continuous, multi-hundred-dimensional coordinate spaces (**Vector Embeddings**) where semantic meaning, syntactic grammar, and tone are mathematically encoded.
 
-```
-[ Raw Text Prompt ] ---> [ Tokenizer ] ---> [ Token IDs ] ---> [ Embeddings Model ] ---> [ High-Dimensional Vector ]
-"The cat sat"          ["The", "cat", "sat"]   [865, 236, 912]      (Titan Embeddings)       [0.025, -0.412, ..., 0.891]
-                                                                                                        |
-                                                                                    (Stored in Vector DB for k-NN Search)
+```mermaid
+graph TD
+    Prompt[Raw Text Prompt<br/>The cat sat] --> Tokenizer[Tokenizer<br/>The, cat, sat]
+    Tokenizer --> IDs[Token IDs<br/>865, 236, 912]
+    IDs --> Embeddings[Embeddings Model<br/>Titan Embeddings]
+    Embeddings --> Vector[High-Dimensional Vector<br/>0.025, -0.412, ..., 0.891]
+
+    Vector --> DB[(Stored in Vector DB for k-NN Search)]
 ```
 
 An LLM's **Context Window** defines its working memory limit—the maximum number of input and output tokens it can process in a single generation cycle. In vector search, words and concepts that share semantic meaning cluster closely together in latent space, enabling fast similarity search via nearest neighbor algorithms.
@@ -31,30 +34,21 @@ An LLM's **Context Window** defines its working memory limit—the maximum numbe
 
 Tokenization is the mandatory pre-processing step that converts raw strings into integer arrays ($Token\ IDs$) that neural networks can process.
 
-```
-+---------------------------------------------------------------------------------------+
-| TOKENIZATION STRATEGIES                                                               |
-+--------------------------+------------------------------------------------------------+
-| Tokenization Type        | Operational Mechanism & Characterization                   |
-+--------------------------+------------------------------------------------------------+
-| Word-based Tokenization  | Splits text strictly on whitespace and punctuation.        |
-|                          | Creates huge vocabularies; fails on typos and rare words.  |
-+--------------------------+------------------------------------------------------------+
-| Subword Tokenization     | Splits uncommon or complex words into frequent subword     |
-| (BPE / WordPiece)        | fragments (e.g., "unacceptable" -> "un" + "acceptable").   |
-|                          | Handles prefixes, suffixes, and multilingual stems cleanly.|
-+--------------------------+------------------------------------------------------------+
-```
+### Tokenization Strategies
 
-```
-Sample String: "Wow, learning AWS with Stephane Maarek is immensely fun!"
-                  |
-                  v (Subword Tokenizer Breakdown)
-+------+----+----+----------+-----+-------+----+------+----+-----------+-----+---+
-| Wow  | ,  |    | learning | AWS | with  | R  | endy | is | immensely | fun | ! |
-+------+----+----+----------+-----+-------+----+------+----+-----------+-----+---+
-|  T1  | T2 | T3 |    T4    |  T5 |  T6   | T7 |   T8 |  T |    T10    | T11 |T12|
-+------+----+----+----------+-----+-------+----+------+----+-----------+-----+---+
+| Tokenization Type | Operational Mechanism & Characterization |
+| :--- | :--- |
+| Word-based Tokenization | Splits text strictly on whitespace and punctuation. Creates huge vocabularies; fails on typos and rare words. |
+| Subword Tokenization (BPE / WordPiece) | Splits uncommon or complex words into frequent subword fragments (e.g., "unacceptable" -> "un" + "acceptable"). Handles prefixes, suffixes, and multilingual stems cleanly. |
+
+```mermaid
+graph TD
+    Text["Sample String: 'Wow, learning AWS with Rendy is immensely fun!'"] -->|Subword Tokenizer Breakdown| Tokens
+
+    subgraph Tokens[Tokens]
+        direction LR
+        T1["Wow"] --- T2[","] --- T3[" "] --- T4["learning"] --- T5["AWS"] --- T6["with"] --- T7["R"] --- T8["endy"] --- T9["is"] --- T10["immensely"] --- T11["fun"] --- T12["!"]
+    end
 ```
 
 [Sample OpenAI Tokenizer Output](https://platform.openai.com/tokenizer)
@@ -70,19 +64,15 @@ The **Context Window** sets the ceiling on prompt capacity (instructions, chat h
 
 $$\text{Total Window Utilization} = \text{Input Prompt Tokens} + \text{Generated Output Tokens} \le \text{Model Context Limit}$$
 
-```
-+-------------------------------------------------------------------------------------------+
-| CONTEXT WINDOW SPECTRUM                                                                   |
-+--------------------------+--------------------+-------------------------------------------+
-| Foundation Model         | Window Capacity    | Workload Target                           |
-+--------------------------+--------------------+-------------------------------------------+
-| Meta Llama 2             | 4,096 tokens       | Short conversational turns & Q&A          |
-| Amazon Titan Text        | 8,192 tokens       | Standard enterprise tasks & summarization |
-| OpenAI GPT-4 Turbo       | 128,000 tokens     | Comprehensive multi-page reporting        |
-| Anthropic Claude 3.5     | 200,000 tokens     | Codebase analysis & book-length docs      |
-| Google Gemini 1.5 Pro    | 1,000,000+ tokens  | Multi-hour video, audio, & repos          |
-+--------------------------+--------------------+-------------------------------------------+
-```
+### Context Window Spectrum
+
+| Foundation Model | Window Capacity | Workload Target |
+| :--- | :--- | :--- |
+| Meta Llama 2 | 4,096 tokens | Short conversational turns & Q&A |
+| Amazon Titan Text | 8,192 tokens | Standard enterprise tasks & summarization |
+| OpenAI GPT-4 Turbo | 128,000 tokens | Comprehensive multi-page reporting |
+| Anthropic Claude 3.5 | 200,000 tokens | Codebase analysis & book-length docs |
+| Google Gemini 1.5 Pro | 1,000,000+ tokens | Multi-hour video, audio, & repos |
 
 $$\text{Processing Overhead} \propto \mathcal{O}(N^2) \quad (\text{Standard self-attention compute scales quadratically with sequence length } N)$$
 

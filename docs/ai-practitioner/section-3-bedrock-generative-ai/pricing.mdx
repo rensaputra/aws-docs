@@ -10,25 +10,18 @@ sidebar_position: 19
 
 Amazon Bedrock provides three core pricing and purchasing options for foundation model inference: **On-Demand** (pay-as-you-go per token/image), **Batch Mode** (asynchronous processing via Amazon S3 with a **50% cost discount**), and **Provisioned Throughput** (reserving dedicated Model Units for consistent throughput).
 
-```
-+---------------------------------------------------------------------------------------+
-|                      AMAZON BEDROCK PRICING & INFERENCE MODES                         |
-+---------------------------------------------------------------------------------------+
-|                                                                                       |
-|   1. ON-DEMAND (Pay-As-You-Go)                                                        |
-|      * Billed per 1,000 / 1,000,000 Input & Output tokens (or per generated image)    |
-|      * Zero upfront commitment; ideal for bursty, unpredictable, or dev workloads     |
-|                                                                                       |
-|   2. BATCH MODE (50% Cost Savings)                                                    |
-|      * Asynchronous bulk processing: S3 Input File ---> Bedrock ---> S3 Output File   |
-|      * 50% discount vs. on-demand; ideal for non-real-time offline jobs               |
-|                                                                                       |
-|   3. PROVISIONED THROUGHPUT (Reserved Capacity)                                       |
-|      * Purchases dedicated Model Units (MUs) on 1-month or 6-month commitments        |
-|      * Guarantees max tokens/min throughput and zero throttling                       |
-|      * MANDATORY requirement to run Custom / Fine-Tuned / Imported Models             |
-+---------------------------------------------------------------------------------------+
-```
+### Amazon Bedrock Pricing & Inference Modes
+
+1. **ON-DEMAND (Pay-As-You-Go)**
+   - Billed per 1,000 / 1,000,000 Input & Output tokens (or per generated image)
+   - Zero upfront commitment; ideal for bursty, unpredictable, or dev workloads
+2. **BATCH MODE (50% Cost Savings)**
+   - Asynchronous bulk processing: S3 Input File &rarr; Bedrock &rarr; S3 Output File
+   - 50% discount vs. on-demand; ideal for non-real-time offline jobs
+3. **PROVISIONED THROUGHPUT (Reserved Capacity)**
+   - Purchases dedicated Model Units (MUs) on 1-month or 6-month commitments
+   - Guarantees max tokens/min throughput and zero throttling
+   - **MANDATORY** requirement to run Custom / Fine-Tuned / Imported Models
 
 When optimizing costs, note that **inference parameters like Temperature, Top-K, and Top-P do not affect pricing**—the primary cost driver is **total input and output token volume**.
 
@@ -38,36 +31,20 @@ When optimizing costs, note that **inference parameters like Temperature, Top-K,
 
 ### The Three Bedrock Inference Pricing Modes
 
-```
-+----------------------------------------------------------------------------------------------------+
-|                               INFERENCE PURCHASING OPTIONS MATRIX                                  |
-+--------------------------+-----------------------+--------------------+----------------------------+
-| Inference Mode           | Billing Unit          | Commitment Terms   | Primary Architectural Fit  |
-+--------------------------+-----------------------+--------------------+----------------------------+
-| On-Demand                | Per Input/Output      | None               | Interactive web chatbots,  |
-|                          | Token & Image Gen     | (Pay-as-you-go)    | prototyping, variable load |
-+--------------------------+-----------------------+--------------------+----------------------------+
-| Batch Inference          | 50% of On-Demand      | None (Job-based)   | Offline document analysis, |
-|                          | Token Rates           |                    | nightly report summaries   |
-+--------------------------+-----------------------+--------------------+----------------------------+
-| Provisioned Throughput   | Hourly rate per Model | 1-month or 6-month | Production SLAs, high QPS, |
-|                          | Unit (MU) committed   | (or no-commit 1 MU)| custom/fine-tuned models   |
-+--------------------------+-----------------------+--------------------+----------------------------+
-```
+| Inference Mode | Billing Unit | Commitment Terms | Primary Architectural Fit |
+| :--- | :--- | :--- | :--- |
+| On-Demand | Per Input/Output Token & Image Gen | None (Pay-as-you-go) | Interactive web chatbots, prototyping, variable load |
+| Batch Inference | 50% of On-Demand Token Rates | None (Job-based) | Offline document analysis, nightly report summaries |
+| Provisioned Throughput | Hourly rate per Model Unit (MU) committed | 1-month or 6-month (or no-commit 1 MU) | Production SLAs, high QPS, custom/fine-tuned models |
 
-```
-+-----------------------------------------------------------------------------------+
-| BATCH INFERENCE ASYNCHRONOUS ARCHITECTURE (50% DISCOUNT)                          |
-|                                                                                   |
-|  [ Amazon S3 Input Bucket ] ---> Contains `input_prompts.jsonl`                   |
-|              |                                                                    |
-|              v (Trigger Async Batch Job)                                          |
-|  [ Amazon Bedrock Batch Engine ]                                                  |
-|  * Processes requests asynchronously with 50% discount                            |
-|              |                                                                    |
-|              v (Write Aggregated Completions)                                     |
-|  [ Amazon S3 Output Bucket ] ---> Generates `output_completions.jsonl`            |
-+-----------------------------------------------------------------------------------+
+```mermaid
+graph TD
+    S3In[Amazon S3 Input Bucket<br/>Contains <code>input_prompts.jsonl</code>]
+    Batch[Amazon Bedrock Batch Engine<br/>Processes requests asynchronously with 50% discount]
+    S3Out[Amazon S3 Output Bucket<br/>Generates <code>output_completions.jsonl</code>]
+
+    S3In -->|Trigger Async Batch Job| Batch
+    Batch -->|Write Aggregated Completions| S3Out
 ```
 
 - **On-Demand Pricing:** Billed independently for input tokens and output tokens. Output tokens generally carry a higher price per token due to the computational cost of sequential autoregressive token generation.
@@ -82,18 +59,16 @@ Adapting foundation models to business use cases follows a progressive cost and 
 
 $$\text{Engineering Cost: } \text{Prompt Engineering} \ll \text{RAG} < \text{Instruction Fine-Tuning} \ll \text{Domain Adaptation (Continued Pre-training)}$$
 
-```
-+-----------------------------------------------------------------------------------+
-| MODEL ADAPTATION COST & COMPLEXITY HIERARCHY                                      |
-|                                                                                   |
-|  [ Domain Adaptation / Continued Pre-training ]  $$$$$ (High Compute & Unlabeled) |
-|  ----------------------------------------------                                   |
-|  [ Instruction-Based Supervised Fine-Tuning ]    $$$   (Moderate GPU & Labeled)   |
-|  ----------------------------------------------                                   |
-|  [ Retrieval-Augmented Generation (RAG) ]        $$    (Vector DB & Storage Costs)|
-|  ----------------------------------------------                                   |
-|  [ Prompt Engineering & System Instructions ]    $     (Zero Training Compute)    |
-+-----------------------------------------------------------------------------------+
+```mermaid
+flowchart BT
+    Prompt[Prompt Engineering & System Instructions<br/>$ Zero Training Compute]
+    RAG[Retrieval-Augmented Generation RAG<br/>$$ Vector DB & Storage Costs]
+    FineTune[Instruction-Based Supervised Fine-Tuning<br/>$$$ Moderate GPU & Labeled]
+    Domain[Domain Adaptation / Continued Pre-training<br/>$$$$$ High Compute & Unlabeled]
+
+    Prompt --> RAG
+    RAG --> FineTune
+    FineTune --> Domain
 ```
 
 - **Prompt Engineering ($):** Zero additional model training, storage, or infrastructure overhead. You pay only standard inference token charges for prompt optimization.
@@ -105,25 +80,16 @@ $$\text{Engineering Cost: } \text{Prompt Engineering} \ll \text{RAG} < \text{Ins
 
 ### Cost Optimization Levers & Token Management
 
-```
-+-------------------------------------------------------------------------------+
-| BEDROCK COST OPTIMIZATION LEVERS                                              |
-|                                                                               |
-|  1. INPUT TOKEN PRUNING:                                                      |
-|     * Strip redundant boilerplate and irrelevant conversational history       |
-|                                                                               |
-|  2. OUTPUT LENGTH CONSTRAINTS (`max_tokens`):                                 |
-|     * Cap maximum completion tokens and enforce concise generation formats    |
-|                                                                               |
-|  3. RIGHT-SIZING FOUNDATION MODELS:                                           |
-|     * Route short NLP/classification tasks to lightweight models (e.g., Nova  |
-|       Micro/Lite or Titan Text) instead of expensive flagship reasoning models|
-|                                                                               |
-|  4. LEVERAGING BATCH MODE:                                                    |
-|     * Shift non-urgent, offline bulk jobs to batch inference for 50% savings  |
-+-------------------------------------------------------------------------------+
+### Bedrock Cost Optimization Levers
 
-```
+1. **INPUT TOKEN PRUNING:**
+   - Strip redundant boilerplate and irrelevant conversational history
+2. **OUTPUT LENGTH CONSTRAINTS (`max_tokens`):**
+   - Cap maximum completion tokens and enforce concise generation formats
+3. **RIGHT-SIZING FOUNDATION MODELS:**
+   - Route short NLP/classification tasks to lightweight models (e.g., Nova Micro/Lite or Titan Text) instead of expensive flagship reasoning models
+4. **LEVERAGING BATCH MODE:**
+   - Shift non-urgent, offline bulk jobs to batch inference for 50% savings
 
 - **Inference Parameters vs. Cost:** Adjusting **Temperature**, **Top-P**, or **Top-K** alters model creativity and token selection distributions, but has **zero direct impact on pricing**.
 - **Token Volume is the Pricing Driver:** The most effective lever for reducing Bedrock expenses is minimizing unnecessary input prompt tokens and capping generated output tokens.

@@ -10,12 +10,16 @@ sidebar_position: 11
 
 Amazon Bedrock provides a easy-setup testing playground within Knowledge Bases. This allows you to evaluate Retrieval-Augmented Generation (RAG) mechanics immediately without spending a lot of time pre-provisioning vector stores, chunking strategies, or ingestion pipelines.
 
-```
-[ Upload Document to S3 ] ---> ( [ Vector Embeddings ] + [ Vector Database / OpenSearch Serverless ] )
-                                                                            |
-[ User Query ] ---> [ Search & Retrieve Relevant Chunks ] ---> [ Grounded Prompt Assembly ] ---> [ Foundation Model ]
-                                                                                                        |
-                                                                                [ In-Context Answer + Source Citations ]
+```mermaid
+graph TD
+    Upload[Upload Document to S3] --> Embed[Vector Embeddings]
+    Embed --> DB[Vector Database / OpenSearch Serverless]
+
+    Query[User Query] --> Search[Search & Retrieve Relevant Chunks]
+    DB --> Search
+    Search --> Assembly[Grounded Prompt Assembly]
+    Assembly --> FM[Foundation Model]
+    FM --> Answer[In-Context Answer + Source Citations]
 ```
 
 The underlying mechanism uses a structured **system prompt template** instructing the model to rely _only_ on retrieved search chunks. If a question falls outside the document's scope (e.g., asking for a guacamole recipe from an internet history document), the model strictly refuses to answer rather than hallucinating.

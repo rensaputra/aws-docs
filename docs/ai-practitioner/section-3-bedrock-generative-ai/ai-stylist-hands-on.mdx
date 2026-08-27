@@ -22,18 +22,14 @@ The system combines **Multimodal Image Generation** (visualizing outfits), **RAG
 
 The AI Stylist partitions enterprise knowledge into distinct Knowledge Bases stored across private Amazon S3 buckets and public feeds:
 
-```
-+----------------------------------------------------------------------------------------------------+
-|                               AI STYLIST KNOWLEDGE BASE LANDSCAPE                                  |
-+--------------------------+--------------------+----------------------------------------------------+
-| Knowledge Base           | Data Access Level  | Role in Generative Pipeline                        |
-+--------------------------+--------------------+----------------------------------------------------+
-| Product Catalog          | Private Enterprise | SKU matching, apparel dimensions, stock inventory  |
-| Fashion Trends           | Public Industry    | Style alignment (Business Formal vs. Casual)       |
-| Customer Reviews         | Private Enterprise | Summarizing feedback (fabric, comfort, fit)        |
-| Customer Order History   | Private Enterprise | Personalized size recommendations (e.g., Size M)   |
-+--------------------------+--------------------+----------------------------------------------------+
-```
+### AI Stylist Knowledge Base Landscape
+
+| Knowledge Base | Data Access Level | Role in Generative Pipeline |
+| :--- | :--- | :--- |
+| Product Catalog | Private Enterprise | SKU matching, apparel dimensions, stock inventory |
+| Fashion Trends | Public Industry | Style alignment (Business Formal vs. Casual) |
+| Customer Reviews | Private Enterprise | Summarizing feedback (fabric, comfort, fit) |
+| Customer Order History | Private Enterprise | Personalized size recommendations (e.g., Size M) |
 
 $$\text{Style Recommendation Context} = \text{User Prompt} + \text{Catalog Embeddings} + \text{Trend Vectors} + \text{Past Order History}$$
 
@@ -41,33 +37,25 @@ $$\text{Style Recommendation Context} = \text{User Prompt} + \text{Catalog Embed
 
 ### Step-by-Step Production Interaction Pipeline
 
-```
-+---------------------------------------------------------------------------------------+
-| END-TO-END WORKFLOW: PROMPT TO CHECKOUT                                               |
-|                                                                                       |
-|  1. INTENT & STYLE SYNTHESIS:                                                         |
-|     * User Prompt: "Consultant traveling to NY next week... outfit for first day"     |
-|     * Agent queries Product Catalog & Fashion Trends via RAG                          |
-|     * Invokes Image Generation FM to synthesize visual looks (Formal vs. Casual)       |
-|                                                                                       |
-|  2. REVIEW ANALYSIS & GROUNDED Q&A:                                                   |
-|     * User queries customer feedback on business formal jackets                       |
-|     * Agent retrieves 325 review chunks from Customer Review Knowledge Base           |
-|     * Text LLM generates a concise synthesis: "High quality, color, and fabric"       |
-|                                                                                       |
-|  3. PERSONALIZED SIZING & INFERENCE:                                                  |
-|     * User asks: "What size should I wear?"                                           |
-|     * Agent queries Customer Order History and recommends Size M based on past fit    |
-|                                                                                       |
-|  4. ACTION GROUP INVOCATION & API EXECUTION:                                          |
-|     * User requests: "Please add it to my cart"                                       |
-|     * Agent triggers Action Group (AWS Lambda) to update the backend shopping cart    |
-|                                                                                       |
-|  5. CROSS-SELLING & ORDER FINALIZATION:                                               |
-|     * External Weather API data triggers accessory suggestions for New York           |
-|     * Agent executes checkout and order confirmation via backend ERP APIs             |
-+---------------------------------------------------------------------------------------+
-```
+### End-to-End Workflow: Prompt to Checkout
+
+1. **INTENT & STYLE SYNTHESIS:**
+   - User Prompt: "Consultant traveling to NY next week... outfit for first day"
+   - Agent queries Product Catalog & Fashion Trends via RAG
+   - Invokes Image Generation FM to synthesize visual looks (Formal vs. Casual)
+2. **REVIEW ANALYSIS & GROUNDED Q&A:**
+   - User queries customer feedback on business formal jackets
+   - Agent retrieves 325 review chunks from Customer Review Knowledge Base
+   - Text LLM generates a concise synthesis: "High quality, color, and fabric"
+3. **PERSONALIZED SIZING & INFERENCE:**
+   - User asks: "What size should I wear?"
+   - Agent queries Customer Order History and recommends Size M based on past fit
+4. **ACTION GROUP INVOCATION & API EXECUTION:**
+   - User requests: "Please add it to my cart"
+   - Agent triggers Action Group (AWS Lambda) to update the backend shopping cart
+5. **CROSS-SELLING & ORDER FINALIZATION:**
+   - External Weather API data triggers accessory suggestions for New York
+   - Agent executes checkout and order confirmation via backend ERP APIs
 
 ---
 
@@ -75,19 +63,14 @@ $$\text{Style Recommendation Context} = \text{User Prompt} + \text{Catalog Embed
 
 In enterprise production architectures, developers do not use the AWS Management Console; they integrate via AWS SDKs (e.g., `boto3`, Node.js SDK, LangChain):
 
-```
-+-------------------------------------------------------------------------+
-| CONSOLE PLAYGROUND VS. PRODUCTION APPLICATION ARCHITECTURE              |
-+------------------------------------+------------------------------------+
-| Console Playgrounds (Prototype)    | Production Applications (Bedrock)  |
-+------------------------------------+------------------------------------+
-| Manual prompt entry via UI         | Automated SDK/API calls (`boto3`)  |
-| Static single-turn evaluations     | Stateful multi-turn agent sessions |
-| Manual model parameter tweaks      | Dynamic programmatic tuning        |
-| Isolated test documents            | Automated S3 sync & Vector DB RAG  |
-+------------------------------------+------------------------------------+
+### Console Playground vs. Production Application Architecture
 
-```
+| Console Playgrounds (Prototype) | Production Applications (Bedrock) |
+| :--- | :--- |
+| Manual prompt entry via UI | Automated SDK/API calls (`boto3`) |
+| Static single-turn evaluations | Stateful multi-turn agent sessions |
+| Manual model parameter tweaks | Dynamic programmatic tuning |
+| Isolated test documents | Automated S3 sync & Vector DB RAG |
 
 ---
 

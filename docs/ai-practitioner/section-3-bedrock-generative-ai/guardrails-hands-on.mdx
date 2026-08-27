@@ -10,10 +10,15 @@ sidebar_position: 15
 
 Amazon Bedrock Guardrails provides a unified safety, privacy, and compliance layer that intercepts both **User Prompts** (input) and **Foundation Model Completions** (output).
 
-```
-[ User Input ] ---> [ Guardrail Input Filters ] ---> [ Foundation Model ] ---> [ Guardrail Output Filters ] ---> [ Sanitized Output ]
-                          |                                                           |
-                          +---> Blocked (Topic / Toxic / PII)                         +---> Masked (PII) / Blocked
+```mermaid
+graph LR
+    User[User Input] --> InFilter[Guardrail Input Filters]
+    InFilter -->|Passes| FM[Foundation Model]
+    FM --> OutFilter[Guardrail Output Filters]
+    OutFilter -->|Passes| Sanitized[Sanitized Output]
+
+    InFilter -->|Blocked Topic / Toxic / PII| Blocked1[Blocked]
+    OutFilter -->|Masked PII / Blocked| Blocked2[Masked / Blocked]
 ```
 
 Guardrails lets you enforce custom fallback messages, filter harmful content categories (Hate, Insults, Sexual, Violence, Misconduct), establish **Denied Topics** using natural language definitions, mask sensitive **Personally Identifiable Information (PII)** like email addresses, and apply multiple stacked guardrails directly within the Bedrock Playgrounds at zero idle cost.
