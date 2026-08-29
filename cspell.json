@@ -78,7 +78,8 @@
     "unscored",
     "unvetted",
     "viseme",
-    "voiceovers"
+    "voiceovers",
+    "xlarge"
   ],
   "ignorePaths": [
     "node_modules/**",
