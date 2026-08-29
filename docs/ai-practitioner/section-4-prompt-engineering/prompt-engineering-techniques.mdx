@@ -10,16 +10,13 @@ sidebar_position: 6
 
 Prompt engineering strategies provide explicit scaffolding to guide Foundation Models toward accurate, structured, and factually grounded completions. Rather than treating an LLM as a black box, selecting the appropriate prompting pattern controls both reasoning depth and output formatting:
 
-```
-[ Prompting Strategy Spectrum ]
-       |
-       +---> Zero-Shot Prompting (Direct instruction; zero examples; relies on pre-trained parametric memory)
-       |
-       +---> One-Shot / Few-Shot Prompting (Provides 1 to 5 demonstration pairs: Input -> Ground Truth Output)
-       |
-       +---> Chain-of-Thought (CoT) Prompting (Deconstructs complex reasoning via intermediate steps: "Think step-by-step")
-       |
-       +---> Retrieval-Augmented Generation (RAG) (Injects non-parametric dynamic context from external vector stores)
+```mermaid
+flowchart TD
+    A["[ Prompting Strategy Spectrum ]"]
+    A --> B["Zero-Shot Prompting<br>(Direct instruction; zero examples; relies on pre-trained parametric memory)"]
+    A --> C["One-Shot / Few-Shot Prompting<br>(Provides 1 to 5 demonstration pairs: Input -> Ground Truth Output)"]
+    A --> D["Chain-of-Thought (CoT) Prompting<br>(Deconstructs complex reasoning via intermediate steps: 'Think step-by-step')"]
+    A --> E["Retrieval-Augmented Generation (RAG)<br>(Injects non-parametric dynamic context from external vector stores)"]
 ```
 
 Combining these techniques (such as **Few-Shot CoT** or **RAG with Step-by-Step reasoning**) allows models to solve multi-step analytical problems while eliminating formatting errors and hallucinations.
@@ -30,25 +27,12 @@ Combining these techniques (such as **Few-Shot CoT** or **RAG with Step-by-Step 
 
 ### The Strategic Prompting Taxonomy
 
-```
-+----------------------------------------------------------------------------------------------------+
-|                               STRATEGIC PROMPTING METHOD MATRIX                                    |
-+--------------------------+-----------------------+--------------------+----------------------------+
-| Prompting Strategy       | In-Context Examples   | Core Mechanism     | Primary Architectural Fit  |
-+--------------------------+-----------------------+--------------------+----------------------------+
-| Zero-Shot Prompting      | 0 Examples            | Direct task        | Simple Q&A, sentiment      |
-|                          |                       | instruction        | classification, drafts     |
-+--------------------------+-----------------------+--------------------+----------------------------+
-| One-Shot / Few-Shot      | 1 to 5 Input-Output   | In-context pattern | Precise JSON/XML schemas,  |
-| Prompting                | demonstrations        | matching           | domain-specific formatting |
-+--------------------------+-----------------------+--------------------+----------------------------+
-| Chain-of-Thought (CoT)   | Step-by-step breakdown| Sequential latent  | Multi-step logic, math,    |
-| Prompting                | instructions          | reasoning steps    | planning, complex Q&A      |
-+--------------------------+-----------------------+--------------------+----------------------------+
-| Retrieval-Augmented      | External dynamic      | Non-parametric     | Dynamic enterprise facts,  |
-| Generation (RAG)         | document chunks       | context injection  | citation-backed research   |
-+--------------------------+-----------------------+--------------------+----------------------------+
-```
+| Prompting Strategy | In-Context Examples | Core Mechanism | Primary Architectural Fit |
+| :--- | :--- | :--- | :--- |
+| **Zero-Shot Prompting** | 0 Examples | Direct task instruction | Simple Q&A, sentiment classification, drafts |
+| **One-Shot / Few-Shot Prompting** | 1 to 5 Input-Output demonstrations | In-context pattern matching | Precise JSON/XML schemas, domain-specific formatting |
+| **Chain-of-Thought (CoT) Prompting** | Step-by-step breakdown instructions | Sequential latent reasoning steps | Multi-step logic, math, planning, complex Q&A |
+| **Retrieval-Augmented Generation (RAG)** | External dynamic document chunks | Non-parametric context injection | Dynamic enterprise facts, citation-backed research |
 
 ---
 
@@ -58,35 +42,25 @@ Combining these techniques (such as **Few-Shot CoT** or **RAG with Step-by-Step 
 
 Submits a direct natural language instruction without providing demonstration pairs. The model relies entirely on weights learned during pre-training and reinforcement learning (RLHF).
 
-```
-+-------------------------------------------------------------------------------+
-| ZERO-SHOT PROMPT ARCHITECTURE                                                 |
-|                                                                               |
-|  [ Prompt ] ---> "Classify the sentiment of this review: 'Battery life is OK'|
-|  [ Output ] <--- "Neutral"                                                    |
-+-------------------------------------------------------------------------------+
+```mermaid
+flowchart LR
+    A["[ Prompt ]<br>Classify the sentiment of this review: 'Battery life is OK'"] --> B["[ Output ]<br>Neutral"]
 ```
 
 #### 2. Few-Shot (In-Context Learning) Prompting
 
 Injects 1 to 5 input-output demonstration pairs inside the prompt payload. This teaches the model the exact stylistic pattern, tone, and syntactic structure expected without running model fine-tuning jobs.
 
-```
-+-------------------------------------------------------------------------------+
-| FEW-SHOT PROMPT ARCHITECTURE (Pattern Anchoring)                              |
-|                                                                               |
-|  [ In-Context Demonstration 1 ]                                               |
-|  Input: "The engine runs smoothly and delivers great power."                  |
-|  Output: {"sentiment": "POSITIVE", "confidence": 0.95, "domain": "automotive"}|
-|                                                                               |
-|  [ In-Context Demonstration 2 ]                                               |
-|  Input: "Delivery took two weeks longer than promised."                       |
-|  Output: {"sentiment": "NEGATIVE", "confidence": 0.98, "domain": "logistics"} |
-|                                                                               |
-|  [ Target Query ]                                                             |
-|  Input: "The screen colors are bright but battery drains fast."               |
-|  Output: ---> Model automatically produces identical JSON structure           |
-+-------------------------------------------------------------------------------+
+```mermaid
+flowchart TD
+    subgraph Few-Shot Prompt Payload
+    A["[ In-Context Demonstration 1 ]<br>Input: 'The engine runs smoothly and delivers great power.'<br>Output: {'sentiment': 'POSITIVE', 'confidence': 0.95, 'domain': 'automotive'}"]
+    B["[ In-Context Demonstration 2 ]<br>Input: 'Delivery took two weeks longer than promised.'<br>Output: {'sentiment': 'NEGATIVE', 'confidence': 0.98, 'domain': 'logistics'}"]
+    C["[ Target Query ]<br>Input: 'The screen colors are bright but battery drains fast.'"]
+    A --- B
+    B --- C
+    end
+    C --> D["[ Output ]<br>Model automatically produces identical JSON structure"]
 ```
 
 $$\text{Few-Shot Prompt Payload} = \sum_{i=1}^{k} \left( \text{Example Input}_i + \text{Example Output}_i \right) + \text{Target Input}$$
@@ -99,26 +73,10 @@ Standard autoregressive generation can produce logic errors on complex math, pla
 
 $$\text{Standard Prompt: } P(\text{Answer} \mid \text{Question}) \quad \Big\vert{} \quad \text{CoT Prompt: } P(\text{Steps} \mid \text{Question}) \times P(\text{Answer} \mid \text{Steps}, \text{Question})$$
 
-```
-+-----------------------------------------------------------------------------------+
-| CHAIN-OF-THOUGHT (CoT) REASONING WORKFLOW                                         |
-|                                                                                   |
-|  User Request: "Write a short story about a dog solving a mystery."               |
-|                               |                                                   |
-|                               v (CoT Explicit Instruction)                        |
-|  "Break down your thought process step by step:                                   |
-|   1. Establish the setting and introduce the detective dog.                       |
-|   2. Introduce the missing neighborhood item.                                     |
-|   3. Trace the physical clue discovery using scent tracking.                      |
-|   4. Conclude with the item recovery and case resolution."                        |
-|                               |                                                   |
-|                               v                                                   |
-|  [ Foundation Model Trajectory ]                                                  |
-|  * Step 1: Max the Golden Retriever sits on the front porch in Willow Creek...    |
-|  * Step 2: The baker's prized silver whisk has disappeared from the kitchen...    |
-|  * Step 3: Max detects a faint scent of vanilla leading to the treehouse...       |
-|  * Step 4: Max recovers the whisk and returns it to the grateful baker.           |
-+-----------------------------------------------------------------------------------+
+```mermaid
+flowchart TD
+    A["User Request: 'Write a short story about a dog solving a mystery.'"] -->|CoT Explicit Instruction| B["'Break down your thought process step by step:<br>1. Establish the setting and introduce the detective dog.<br>2. Introduce the missing neighborhood item.<br>3. Trace the physical clue discovery using scent tracking.<br>4. Conclude with the item recovery and case resolution.'"]
+    B --> C["[ Foundation Model Trajectory ]<br>* Step 1: Max the Golden Retriever sits on the front porch in Willow Creek...<br>* Step 2: The baker's prized silver whisk has disappeared from the kitchen...<br>* Step 3: Max detects a faint scent of vanilla leading to the treehouse...<br>* Step 4: Max recovers the whisk and returns it to the grateful baker."]
 ```
 
 - **Trigger Phrases:** Adding explicit steering phrases such as _"Let's think step by step"_ or providing explicit numbered milestones prevents the model from generating premature or disjointed conclusions.
@@ -131,22 +89,14 @@ RAG enriches the prompt by injecting external, non-parametric knowledge retrieve
 
 ![](./img/rag-architecture.png)
 
-```
-+-----------------------------------------------------------------------------------+
-| RAG AUGMENTED PROMPT PAYLOAD                                                      |
-|                                                                                   |
-|  +-----------------------------------------------------------------------------+  |
-|  | [ RETRIEVED ENTERPRISE CONTEXT (Amazon S3 / Vector DB) ]                    |  |
-|  | Document Chunk 1: "Canine olfactory tracking can follow scents >24h old."   |  |
-|  | Document Chunk 2: "Residential theft cases commonly involve garage tools."  |  |
-|  +-----------------------------------------------------------------------------+  |
-|  | [ USER INSTRUCTION ]                                                        |  |
-|  | Write a story about a canine tracking case using strictly the facts above.  |  |
-|  +-----------------------------------------------------------------------------+  |
-|                                        |                                          |
-|                                        v                                          |
-|  [ Grounded Output: Factual canine tracking story with accurate scent timelines ] |
-+-----------------------------------------------------------------------------------+
+```mermaid
+flowchart TD
+    subgraph RAG Augmented Prompt Payload
+        A["[ RETRIEVED ENTERPRISE CONTEXT (Amazon S3 / Vector DB) ]<br>Document Chunk 1: 'Canine olfactory tracking can follow scents >24h old.'<br>Document Chunk 2: 'Residential theft cases commonly involve garage tools.'"]
+        B["[ USER INSTRUCTION ]<br>Write a story about a canine tracking case using strictly the facts above."]
+        A --- B
+    end
+    B --> C["[ Grounded Output: Factual canine tracking story with accurate scent timelines ]"]
 ```
 
 ---

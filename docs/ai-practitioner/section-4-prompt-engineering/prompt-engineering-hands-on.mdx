@@ -10,23 +10,15 @@ sidebar_position: 3
 
 Naive prompts (e.g., _"Write me a travel itinerary"_) leave generation open to wide model interpretation, often resulting in generic or misaligned completions. High-precision outputs require applying the **Structured Prompting Framework**:
 
-```
-+---------------------------------------------------------------------------------------+
-|                       THE STRUCTURED PROMPTING FRAMEWORK                              |
-+---------------------------------------------------------------------------------------+
-|  1. INSTRUCTIONS     ---> Task goals (e.g., 3-day balanced itinerary with meals)      |
-|  2. CONTEXT          ---> User background (e.g., first-time visitor, hidden gems)     |
-|  3. INPUT DATA       ---> Scope parameters (e.g., Lombok destination, news articles)  |
-|  4. OUTPUT INDICATOR ---> Structural schema (e.g., timestamps, restaurant names)      |
-+---------------------------------------------------------------------------------------+
-                                           |
-                                           v
-+---------------------------------------------------------------------------------------+
-| NEGATIVE PROMPTING (Exclusion Rules):                                                 |
-| * "Do not include non-kids/family-friendly activities."                               |
-| * "Avoid overly touristy restaurants."                                                |
-| * "Do not recommend more than 3 activities per day."                                  |
-+---------------------------------------------------------------------------------------+
+```mermaid
+flowchart TD
+    subgraph The Structured Prompting Framework
+        A["1. INSTRUCTIONS<br>Task goals (e.g., 3-day balanced itinerary with meals)"]
+        B["2. CONTEXT<br>User background (e.g., first-time visitor, hidden gems)"]
+        C["3. INPUT DATA<br>Scope parameters (e.g., Lombok destination, news articles)"]
+        D["4. OUTPUT INDICATOR<br>Structural schema (e.g., timestamps, restaurant names)"]
+    end
+    The_Structured_Prompting_Framework --> E["NEGATIVE PROMPTING (Exclusion Rules):<br>* 'Do not include non-kids/family-friendly activities.'<br>* 'Avoid overly touristy restaurants.'<br>* 'Do not recommend more than 3 activities per day.'"]
 ```
 
 Layering **Negative Constraints** directly suppresses unwanted tokens and bounds day-to-day activity density without modifying model parameters or incurring retraining costs.
