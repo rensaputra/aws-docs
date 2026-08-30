@@ -6,9 +6,22 @@ interface ImageProps {
   [key: string]: unknown;
 }
 
-export default function ImageRow({ children }: { children: ReactNode }) {
+interface ImageRowProps {
+  children: ReactNode;
+  className?: string;
+  [key: string]: unknown;
+}
+
+export default function ImageRow({
+  children,
+  className = "",
+  ...rest
+}: ImageRowProps) {
+  const baseClasses = "flex justify-center gap-4 flex-wrap";
+  const combinedClasses = `${baseClasses}${className ? ` ${className}` : ""}`;
+
   return (
-    <div className="flex justify-center gap-4 flex-wrap">
+    <div className={combinedClasses} {...rest}>
       {React.Children.map(children, (child) => {
         if (!isValidElement<ImageProps>(child)) return null;
 
