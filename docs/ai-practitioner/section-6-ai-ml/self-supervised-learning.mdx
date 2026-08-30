@@ -72,7 +72,7 @@ flowchart LR
 While both paradigms handle unlabeled datasets to avoid manual annotation bottlenecks, their training mechanics differ:
 
 ```mermaid
-flowchart TD
+flowchart LR
     subgraph SemiSupervised [Semi-Supervised Learning]
         SS_Data[Requires Small Seed Labeled Dataset] --> SS_Model[Train Baseline Model]
         SS_Model --> SS_Pseudo[Generate Pseudo-Labels on Unlabeled Pool]
@@ -84,6 +84,8 @@ flowchart TD
         SSL_Task --> SSL_Base[Foundational Feature Representation]
         SSL_Base --> SSL_Down[Fine-Tune for Target Downstream Task]
     end
+
+    SemiSupervised ~~~ SelfSupervised
 
 ```
 

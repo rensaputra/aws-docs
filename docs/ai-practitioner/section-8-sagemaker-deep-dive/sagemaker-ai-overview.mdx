@@ -1,0 +1,229 @@
+---
+sidebar_position: 2
+title: Amazon SageMaker AI - Overview
+description: This document provides an overview of Amazon SageMaker AI, including its machine learning lifecycle, built-in algorithms, automatic model tuning, and inference deployment options.
+keywords:
+  [
+    Amazon SageMaker,
+    AIF-C01,
+    AI Practitioner,
+    ML Lifecycle,
+    Built-In Algorithms,
+    Automatic Model Tuning,
+    Inference Deployment Options,
+  ]
+---
+
+import ImageRow from "@site/src/components/ImageRow";
+import RealTimeInference from "./img/real-time-inference.png";
+import ServerlessInference from "./img/serverless-inference.png";
+import AsynchronousInference from "./img/async-inference.png";
+import BatchTransform from "./img/batch-transform.png";
+
+# Amazon SageMaker AI Overview: ML Lifecycle, Algorithms, Automatic Model Tuning & Inference Options
+
+---
+
+## Key Takeaways
+
+**Amazon SageMaker AI** is a fully managed cloud platform that simplifies and accelerates every stage of the machine learning lifecycle for developers and data scientists: preparing data, training models, tuning hyperparameters, deploying endpoints, and monitoring predictions.
+
+```mermaid
+flowchart LR
+    subgraph DataPrep [1. Data Preparation & Ingestion]
+        direction LR
+        Data["Historical Data: Features (IT Exp, AWS Exp, Course Hours) + Target Label (Exam Score)"]
+    end
+
+    subgraph SageMakerCore [2. Amazon SageMaker AI Core Engine]
+        direction LR
+        Studio["Amazon SageMaker Studio: Unified web IDE for ML development"]
+        Algorithms["Built-In Algorithms: Supervised (Linear Regression, KNN), Unsupervised (PCA, K-Means, Anomaly Detection), Text & Vision"]
+        AMT["Automatic Model Tuning (AMT): Bayesian/Hyperparameter Optimization with Early Stopping"]
+    end
+
+    subgraph DeploymentEngine [3. Managed Deployment Options]
+        direction LR
+        RT["Real-Time Inference: Persistent instances, <60s processing, up to 6 MB payload"]
+        Serverless["Serverless Inference: Automatic scale-to-zero, cold starts possible"]
+        Async["Asynchronous Inference: S3 staging, up to 1 GB payload, max 1 hr processing"]
+        Batch["Batch Transform: Offline bulk processing on datasets, concurrent mini-batches"]
+    end
+
+    DataPrep --> Studio --> Algorithms --> AMT --> DeploymentEngine
+```
+
+SageMaker eliminates the heavy lifting of provisioning and scaling underlying server infrastructure. It provides built-in machine learning algorithms, automated hyperparameter optimization (**Automatic Model Tuning / AMT**), and four distinct deployment options (**Real-Time**, **Serverless**, **Asynchronous**, and **Batch Transform**) to match latency, cost, and payload requirements.
+
+---
+
+## Main Discussion
+
+### The End-to-End Machine Learning Workflow
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor DataScientist as Data Scientist / Developer
+    participant S3 as Amazon S3 (Data Lake)
+    participant SM_Train as SageMaker AI Training & AMT
+    participant SM_Endpoint as SageMaker Inference Endpoint
+    actor ClientApp as Client Application / Student
+
+    DataScientist->>S3: Upload historical training data (Features + Target Labels)
+    DataScientist->>SM_Train: Launch Training Job & Automatic Model Tuning
+    SM_Train->>SM_Train: Provision compute, evaluate objective metric, optimize hyperparameters
+    SM_Train-->>SM_Endpoint: Deploy trained model artifact to endpoint (1-click deployment)
+    ClientApp->>SM_Endpoint: Send new feature vector (3 yrs IT, 1 yr AWS, 10 hrs study)
+    SM_Endpoint-->>ClientApp: Return inference result (Predicted Exam Score: 906)
+```
+
+<div className="flex flex-col md:flex-row">
+  <div className="md:w-3/4 md:pr-3">
+    ![](./img/predicting-aws-exam-score.png)
+  </div>
+  <div className="md:w-1/4 md:pl-3">
+    ![](./img/sagemaker-end-to-end-ml-service.png)
+  </div>
+</div>
+
+1. **Collect & Prepare Data:** Clean, structure, and label tabular, text, or visual datasets.
+2. **Train & Tune:** Provision ephemeral compute clusters to run training algorithms and search hyperparameter ranges.
+3. **Deploy:** Host models behind managed endpoints with automatic scaling and load balancing.
+4. **Monitor & Feedback:** Continuously track prediction performance and data drift to trigger automated retraining.
+
+---
+
+### Built-in Algorithm Overview
+
+Amazon SageMaker AI includes optimized containerized algorithms ready to run without writing custom framework code:
+
+```mermaid
+mindmap
+  root((SageMaker Built-In Algorithms))
+    Supervised Learning
+      Linear Regression / Classification (Linear Learner)
+      K-Nearest Neighbors (KNN)
+      XGBoost / Random Forests
+    Unsupervised Learning
+      Principal Component Analysis (PCA: Dimensionality Reduction)
+      K-Means Clustering (Customer Grouping)
+      Random Cut Forest (Anomaly Detection / Fraud)
+    NLP & Text Processing
+      BlazingText / Text Summarization
+      Sequence-to-Sequence (Translation)
+    Computer Vision
+      Image Classification
+      Object Detection & Semantic Segmentation
+```
+
+- **Supervised Learning:** Linear Learner (regressions and classifications), K-Nearest Neighbors (KNN), XGBoost.
+- **Unsupervised Learning:** Principal Component Analysis (PCA) for feature dimensionality reduction, K-Means for cluster grouping, Random Cut Forest (RCF) for anomaly and fraud detection.
+- **Text & Vision:** Pre-packaged natural language processing (NLP), text summarization, image classification, and object detection.
+
+---
+
+### Automatic Model Tuning (AMT)
+
+**Automatic Model Tuning (AMT)**, also known as Hyperparameter Optimization (HPO), automates the process of finding the optimal hyperparameter values for a machine learning model:
+
+```mermaid
+flowchart LR
+    Objective["Define Objective Metric (e.g., maximize Validation Accuracy / minimize Loss)"] --> SearchRange["Define Hyperparameter Ranges (e.g., Learning Rate: 0.001 - 0.1)"]
+    SearchRange --> AMTStrategy["Tuning Strategy: Bayesian Optimization vs. Random/Grid Search"]
+    AMTStrategy --> EarlyStop["Early Stopping: Terminates poorly performing trials early to save compute costs"]
+```
+
+- **Objective Metric:** You specify the target metric to optimize (e.g., maximize validation accuracy, minimize mean squared error).
+- **Hyperparameter Ranges:** You define search boundaries for parameters like learning rate, batch size, or tree depth.
+- **Early Stopping:** Automatically stops underperforming training trials before they finish, saving compute time and budget.
+
+![](./img/sagemaker-automatic-model-tuning.png)
+
+---
+
+### Inference & Deployment Options Comparison
+
+```mermaid
+flowchart TD
+    Requirement{What are the latency, payload, and traffic patterns?}
+
+    Requirement -->|Real-time, persistent, high-frequency, <6MB| RT["Real-Time Inference: Managed instances with auto-scaling"]
+    Requirement -->|Real-time, intermittent/bursty traffic, scale-to-zero| SL["Serverless Inference: Pay per millisecond, cold-start latency"]
+    Requirement -->|Near-real-time, large payloads up to 1GB, max 1hr| Async["Asynchronous Inference: S3 request/response queues"]
+    Requirement -->|Offline batch processing, whole datasets, no live endpoint| BT["Batch Transform: High-throughput mini-batches on S3"]
+```
+
+| Deployment Mode            | Latency Characteristic                            | Max Payload Size           | Max Execution Timeout       | Typical Workload & Architecture                                                                                        |
+| -------------------------- | ------------------------------------------------- | -------------------------- | --------------------------- | ---------------------------------------------------------------------------------------------------------------------- |
+| **Real-Time Inference**    | **Low latency** (milliseconds)                    | **6 MB**                   | **60 seconds**              | High-traffic applications, interactive customer apps requiring immediate synchronous responses on dedicated instances. |
+| **Serverless Inference**   | **Low latency** (with occasional **cold starts**) | **6 MB**                   | **60 seconds**              | Intermittent or unpredictable traffic with periods of idle time; automatically scales to zero when not in use.         |
+| **Asynchronous Inference** | **Near-real-time** (seconds to minutes)           | **1 GB**                   | **1 hour (3,600s)**         | Large payload inputs (medical images, high-res audio, large PDFs) queued and processed via S3 staging buckets.         |
+| **Batch Transform**        | **High latency** (offline processing)             | **100 MB+** per mini-batch | **1 hour** per record/batch | Offline predictions over entire historical datasets stored in S3 without deploying a persistent endpoint.              |
+
+<ImageRow>
+  <img src={RealTimeInference} alt="Real-Time Inference Architecture" />
+  <img src={ServerlessInference} alt="Serverless Inference Architecture" />
+</ImageRow>
+
+<ImageRow>
+  <img src={AsynchronousInference} alt="Asynchronous Inference Architecture" />
+  <img src={BatchTransform} alt="Batch Transform Architecture" />
+</ImageRow>
+
+---
+
+## Exam Guide
+
+### Exam Tips
+
+- **Core Platform Identity:** **Amazon SageMaker AI** is the primary end-to-end managed platform for building, training, tuning, and hosting custom machine learning models on AWS.
+- **Automatic Model Tuning (AMT):** Uses hyperparameter ranges, search strategies (like Bayesian optimization), and **early stopping** to identify the best model parameters while preventing wasted compute spend.
+- **Inference Option Selection Rules:**
+  - **Real-Time Inference:** Continuous, steady traffic requiring sub-second response times on dedicated instances.
+  - **Serverless Inference:** Intermittent, bursty traffic where you want automatic scale-to-zero and pay-per-use, accepting potential cold starts.
+  - **Asynchronous Inference:** Large input payloads (up to 1 GB), long processing times (up to 1 hour), and near-real-time responses backed by S3 queues.
+  - **Batch Transform:** Bulk offline predictions on entire datasets stored in Amazon S3 without maintaining an active HTTP endpoint.
+- **SageMaker Studio:** The centralized, web-based integrated development environment (IDE) for managing the complete ML workflow.
+
+---
+
+### Practice Test
+
+#### Question 1
+
+A media company needs to run machine learning inference on high-resolution 4K video files, where individual input files can be up to 800 MB in size and take up to 20 minutes to process. The application does not require sub-second latency, but must queue requests and write results to Amazon S3. Which Amazon SageMaker inference option should the engineering team select?
+
+- [ ] A. SageMaker Real-Time Inference
+- [ ] B. SageMaker Serverless Inference
+- [ ] C. SageMaker Asynchronous Inference
+- [ ] D. SageMaker JumpStart One-Click Endpoint
+
+<details>
+<summary>Correct Answer</summary>
+
+- [x] C. SageMaker Asynchronous Inference
+  - **Explanation:** **SageMaker Asynchronous Inference** is designed for workloads with large input payloads (up to 1 GB) and long processing durations (up to 1 hour). It stages incoming requests and outgoing responses via Amazon S3 using internal queues.
+
+</details>
+
+---
+
+#### Question 2
+
+A developer is configuring a SageMaker training pipeline and wants the platform to automatically evaluate different combinations of learning rates and regularization parameters to minimize validation error. The developer also wants underperforming training runs to terminate automatically to avoid unnecessary compute charges. Which SageMaker capability satisfies these requirements?
+
+- [ ] A. Amazon SageMaker Automatic Model Tuning (AMT) with Early Stopping
+- [ ] B. Amazon SageMaker Data Wrangler
+- [ ] C. Amazon SageMaker Feature Store
+- [ ] D. Amazon SageMaker Ground Truth Active Learning
+
+<details>
+<summary>Correct Answer</summary>
+
+- [x] A. Amazon SageMaker Automatic Model Tuning (AMT) with Early Stopping
+  - **Explanation:** **Amazon SageMaker Automatic Model Tuning (AMT)** automatically searches through hyperparameter ranges to optimize the specified objective metric, while its **Early Stopping** feature terminates poorly performing trials early to save compute time and cost.
+
+</details>
+
+---
