@@ -1,0 +1,209 @@
+---
+sidebar_position: 6
+title: Governance
+description: "Amazon SageMaker AI: Model Governance, Monitoring, Registry & MLOps Pipelines"
+keywords:
+  [
+    governance,
+    model governance,
+    model monitoring,
+    model registry,
+    MLOps pipelines,
+    model cards,
+    model dashboard,
+    role manager,
+    model monitor,
+    model registry,
+    SageMaker pipelines,
+  ]
+---
+
+import ImageRow from "@site/src/components/ImageRow";
+import ModelCard from "./img/model-card.png";
+import ModelDashboard from "./img/model-dashboard.png";
+
+# Amazon SageMaker AI: Model Governance, Monitoring, Registry & MLOps Pipelines
+
+---
+
+## Key Takeaways
+
+Robust machine learning governance, monitoring, and MLOps automation ensure that production models remain accurate, compliant, secure, and auditable throughout their operational lifecycles.
+
+```mermaid
+flowchart TD
+    subgraph GovernanceSuite [Amazon SageMaker AI Governance & MLOps Suite]
+        direction TB
+
+        subgraph DocumentationAndVisibility [Documentation & Visibility]
+            MC["SageMaker Model Cards: Standardized metadata, intended uses & risk ratings"]
+            Dash["SageMaker Model Dashboard: Centralized dashboard tracking active endpoints & metrics"]
+            RM["SageMaker Role Manager: Persona-based access control (Data Scientists vs. MLOps)"]
+        end
+
+        subgraph MonitoringAndRegistry [Monitoring & Registry Lifecycle]
+            Monitor["SageMaker Model Monitor: Continuous tracking for data drift & quality decay"]
+            Registry["SageMaker Model Registry: Version control, model lineage & approval status workflows"]
+        end
+
+        subgraph OrchestrationAutomation [Orchestration & CI/CD]
+            Pipelines["SageMaker Pipelines: Automated CI/CD workflows (Processing -> Training -> Checks -> Deploy)"]
+        end
+    end
+
+    GovernanceSuite --> EnterpriseMLOps["Secure, Repeatable & Audit-Ready MLOps"]
+```
+
+Amazon SageMaker provides comprehensive tools for enterprise governance: **Model Cards** for standardized documentation, **Model Dashboard** for global visibility, **Role Manager** for permission scoping, **Model Monitor** for catching data and concept drift, **Model Registry** for versioning and governance approvals, and **SageMaker Pipelines** for automated MLOps CI/CD.
+
+---
+
+## Main Discussion
+
+### Model Governance & Visibility Core Tools
+
+```mermaid
+flowchart LR
+    subgraph GovernanceTools [Core Governance & Persona Tools]
+        direction TB
+        T1["Model Cards: Centralized factsheets capturing intended use, training setup, and risk ratings"]
+        T2["Model Dashboard: Centralized operational inventory showing deployed endpoints and health alerts"]
+        T3["Role Manager: Streamlined least-privilege permission scoping mapped to team personas"]
+    end
+```
+
+| Governance Feature            | Primary Function                                                                                                                                       | Business & Compliance Value                                                                                                 |
+| ----------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------- |
+| **SageMaker Model Cards**     | Centralized, customizable factsheets documenting model metadata, training configuration, evaluation metrics, and risk ratings.                         | Establishes a single source of truth for regulatory compliance, auditing, and cross-functional transparency.                |
+| **SageMaker Model Dashboard** | A centralized portal that aggregates all models, tracking which versions are serving live endpoints.                                                   | Provides instant operational visibility and surfaces compliance alerts when models violate performance or drift thresholds. |
+| **SageMaker Role Manager**    | Defines granular permissions and security roles tailored to specific organizational personas (e.g., Data Scientists, MLOps Engineers, Data Engineers). | Enforces least-privilege access control across multi-user enterprise environments.                                          |
+
+<ImageRow>
+  <img src={ModelCard} alt="SageMaker Model Card" />
+  <img src={ModelDashboard} alt="SageMaker Model Dashboard" />
+</ImageRow>
+
+---
+
+### Post-Deployment Monitoring: SageMaker Model Monitor
+
+```mermaid
+flowchart TD
+    subgraph ModelMonitorPipeline [SageMaker Model Monitor Architecture]
+        ProdEndpoint[Production Inference Endpoint] --> CaptureLogs[(Capture Request & Response Payload Logs in S3)]
+        Baseline[Baseline Training Dataset] --> MonitorJob[Model Monitor Scheduled / Continuous Job]
+        CaptureLogs --> MonitorJob
+
+        MonitorJob --> DriftCheck{Compare Live Data vs Baseline}
+        DriftCheck -->|Data Drift / Concept Drift Detected| Alert[Trigger CloudWatch Alarm / Notification]
+        Alert --> Action[Retrain Model or Fix Data Pipeline]
+    end
+```
+
+- **Continuous or Scheduled Monitoring:** Automatically analyzes production data payloads captured in Amazon S3 against established baseline statistics.
+- **Catching Drift:** Detects **data drift** (changes in input feature distributions over time, such as applicants' credit scores shifting) and **model quality degradation** before failures impact users.
+- **Automated Remediation:** Triggers Amazon CloudWatch alerts, enabling MLOps teams to retrain models or recalibrate upstream pipelines.
+
+![](./img/model-monitor.png)
+
+---
+
+### Model Versioning & Approval: SageMaker Model Registry
+
+```mermaid
+flowchart TD
+    subgraph RegistryFlow [SageMaker Model Registry & Approval Workflow]
+        Training[SageMaker Training Job / Pipeline] --> Register["Register Model Version (Model Package)"]
+        Register --> Status{Approval Status Check}
+
+        Status -->|PendingManualApproval| Review[Governance Steward Review & Validation]
+        Review -->|Approved| Deploy[Trigger Automated CI/CD Deployment to Production]
+        Review -->|Rejected| Archive[Block Deployment & Archive Version]
+    end
+```
+
+- **Centralized Repository:** Catalogs, version-controls, and manages machine learning models across organizational groups.
+- **Approval Workflows:** Implements rigorous governance gates by requiring explicit approval status (`Pending`, `Approved`, `Rejected`) before a model can be deployed to production endpoints.
+- **Model Card Integration:** Model versions registered in the Model Registry can directly link to their corresponding Model Cards to ensure complete lineage and compliance.
+
+![](./img/model-registry.png)
+
+---
+
+### Automated MLOps: SageMaker Pipelines & Step Types
+
+```mermaid
+flowchart LR
+    subgraph PipelineSteps [SageMaker Pipelines Standard Step Sequence]
+        S1[Processing: Data Prep & Feature Engineering] --> S2[Training: Run Algorithm on Compute Cluster]
+        S2 --> S3[Tuning: Hyperparameter Optimization]
+        S3 --> S4[Model: Register Model in Registry]
+        S4 --> S5[ClarifyCheck: Evaluate Bias & Explainability]
+        S5 --> S6[QualityCheck: Validate Against Baselines]
+    end
+```
+
+- **CI/CD for Machine Learning:** Automates the end-to-end orchestration of building, training, evaluating, testing, and deploying models.
+- **Standard Pipeline Step Types:**
+  - **Processing:** Executes data cleaning and feature engineering.
+  - **Training & Tuning:** Trains models and optimizes hyperparameters.
+  - **Model:** Registers finalized artifacts into the Model Registry.
+  - **ClarifyCheck & QualityCheck:** Automatically validates models against data bias, drift, and quality thresholds before promotion.
+
+![](./img/sagemaker-pipelines-view.png)
+
+---
+
+## Exam Guide
+
+### Exam Tips
+
+- **Governance Artifact Disambiguation:**
+  - To document model design, training details, intended use, and risk ratings $\rightarrow$ Use **SageMaker Model Cards**.
+  - To maintain version control, lineage tracking, and explicit approval statuses before deployment $\rightarrow$ Use **SageMaker Model Registry**.
+  - To view a centralized operational dashboard of all deployed endpoints and risk metrics $\rightarrow$ Use **SageMaker Model Dashboard**.
+- **Monitoring Drift:** If a question asks how to detect data drift or model quality degradation after deployment, choose **SageMaker Model Monitor**.
+- **MLOps Automation:** When an exam scenario describes automating the end-to-end building, training, testing, and deployment of models in a repeatable workflow, select **SageMaker Pipelines**.
+- **Approval Gates:** In enterprise MLOps workflows, models must be explicitly marked as `Approved` in the Model Registry before automated CI/CD pipelines promote them to production endpoints.
+
+---
+
+### Practice Test
+
+#### Question 1
+
+An enterprise machine learning team needs to establish a centralized repository to catalog model iterations, track model lineage, and enforce strict governance policies requiring a lead data scientist to explicitly approve a model version before it can be promoted to a production endpoint. Which Amazon SageMaker feature fulfills this requirement?
+
+- [ ] A. Amazon SageMaker Model Monitor
+- [ ] B. Amazon SageMaker Model Registry
+- [ ] C. Amazon SageMaker Feature Store
+- [ ] D. Amazon SageMaker Data Wrangler
+
+<details>
+<summary>Correct Answer</summary>
+
+- [x] B. Amazon SageMaker Model Registry
+  - **Explanation:** **Amazon SageMaker Model Registry** provides centralized versioning, cataloging, lineage tracking, and structured approval workflows (`Pending`, `Approved`, `Rejected`) to govern model promotion to production.
+
+</details>
+
+---
+
+#### Question 2
+
+Six months after deploying a customer churn prediction model to production, the MLOps team notices that customer demographics have shifted, causing a degradation in prediction accuracy. Which SageMaker feature should be configured to continuously evaluate production inference payloads against baseline training data and trigger alerts when data drift occurs?
+
+- [ ] A. SageMaker Model Monitor
+- [ ] B. SageMaker Role Manager
+- [ ] C. SageMaker JumpStart
+- [ ] D. SageMaker Clarify Bias Detection
+
+<details>
+<summary>Correct Answer</summary>
+
+- [x] A. SageMaker Model Monitor
+  - **Explanation:** **Amazon SageMaker Model Monitor** tracks production endpoints continuously or on schedule to detect data drift, concept drift, and model quality deviation against established baseline metrics.
+
+</details>
+
+---
