@@ -1,0 +1,203 @@
+---
+sidebar_position: 2
+title: "IAM Introduction: Users, Groups, Policies"
+---
+
+# AWS Identity and Access Management (IAM): Users, Groups, Policies & Least Privilege
+
+---
+
+## Key Takeaways
+
+**AWS Identity and Access Management (IAM)** is a foundational, **global service** that manages authentication and authorization across your entire AWS environment. It controls who can sign in and what actions they are permitted or denied from executing on AWS resources.
+
+```mermaid
+flowchart TD
+    subgraph RootLevel [Account Boundary & Root Security]
+        Root["Root User: Created by default; full unrestricted access. Setup only — lock away credentials!"]
+    end
+
+    subgraph IAMEntities [IAM Identity & Structure]
+        direction TB
+        Users["IAM Users: Represent individual people or systems (Alice, Bob, Charles)"]
+        Groups["IAM Groups: Collections of users (Developers, Operations, Audit)"]
+
+        Users -->|Belong to 0, 1, or multiple| Groups
+        Rule1["Constraint: Groups contain ONLY users (no nested groups!)"]
+    end
+
+    subgraph PolicyEngine [Authorization & Permissions Engine]
+        JSON["IAM Policies (JSON Documents): Define Effect (Allow/Deny), Action, Resource"]
+        LeastPriv["Principle of Least Privilege: Grant ONLY minimum necessary permissions"]
+    end
+
+    RootLevel -.->|Best Practice: Delegate to| IAMEntities
+    IAMEntities --> PolicyEngine
+```
+
+- **Global Scope:** IAM operates globally across all regions without needing per-region deployment.
+- **Root Account Protection:** The root user is created automatically with full, unrestricted access to all resources and billing. Best practice mandates using the root user only for initial account bootstrapping, locking it down with MFA, and never sharing or using it for daily operational or AI tasks.
+- **Users vs. Groups:** Users represent individual people. Groups are logical collections of users. **Groups can only contain users—groups cannot be nested inside other groups.**
+- **IAM Policies (JSON):** Declarative JSON documents assigned to users or groups that define permissions (`Effect`, `Action`, `Resource`).
+- **Principle of Least Privilege:** Users and services receive only the minimum permissions required to perform their jobs, preventing security breaches, accidental deletions, and unexpected cloud spend.
+
+---
+
+## Main Discussion
+
+### IAM Identity Hierarchy & Group Rules
+
+```mermaid
+flowchart TD
+    subgraph Organization [Organization Staff Hierarchy]
+        U1[Alice]
+        U2[Bob]
+        U3[Charles]
+        U4[David]
+        U5[Edward]
+        U6[Fred]
+    end
+
+    subgraph IAMGroups [IAM Groups]
+        G_Dev["Group: Developers"]
+        G_Ops["Group: Operations"]
+        G_Audit["Group: Audit Team"]
+    end
+
+    U1 --> G_Dev
+    U2 --> G_Dev
+    U3 --> G_Dev
+
+    U4 --> G_Ops
+    U5 --> G_Ops
+
+    U3 --> G_Audit
+    U4 --> G_Audit
+
+    U6 -.->|Standalone User: No Group Assigned| OrgNotice["Fred: Valid in AWS, but anti-pattern!"]
+```
+
+#### Core Rules of IAM Groups
+
+1. **Users can belong to multiple groups:** As illustrated above, _Charles_ and _David_ simultaneously belong to their functional teams (_Developers_ and _Operations_) and cross-functional teams (_Audit Team_).
+2. **Groups cannot be nested:** An IAM group cannot belong to another IAM group. All group members must be individual IAM users.
+3. **Users do not strictly have to belong to a group:** A standalone user (like _Fred_) can exist and have policies attached directly, though assigning permissions via groups is the recommended administrative best practice.
+
+---
+
+### Anatomy of an IAM Policy (JSON)
+
+An IAM policy is a JSON document that explicitly grants or denies access to AWS actions and resources:
+
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "AllowMonitoringAndComputeRead",
+      "Effect": "Allow",
+      "Action": [
+        "ec2:Describe*",
+        "elasticloadbalancing:Describe*",
+        "cloudwatch:ListMetrics",
+        "cloudwatch:GetMetricData"
+      ],
+      "Resource": "*"
+    }
+  ]
+}
+```
+
+```mermaid
+flowchart LR
+    subgraph PolicyElements [Core Policy Statement Elements]
+        direction TB
+        E["Effect: 'Allow' or 'Deny'"]
+        A["Action: API calls permitted (e.g. s3:GetObject, sagemaker:CreateTrainingJob)"]
+        R["Resource: Target ARNs or '*' (All Resources)"]
+        C["Condition (Optional): IP ranges, MFA required, date/time boundaries"]
+    end
+
+```
+
+- **Explicit Deny Precedence:** In AWS IAM, if an action is not explicitly allowed, it is denied by default. If an action is explicitly denied in any applicable policy, the **explicit Deny always overrides any Allow**.
+- **Policy Inheritance:** When an IAM policy is attached to an IAM Group, every user currently in or added to that group immediately inherits those permissions.
+
+---
+
+### The Principle of Least Privilege in AI Workloads
+
+```mermaid
+flowchart LR
+    subgraph BadPractice [Anti-Pattern: Excessive Permissions]
+        User1[Junior Data Scientist] -->|AdminAccess / All Actions| AWS1[(Entire AWS Account / S3 / EC2 / Billing)]
+    end
+
+    subgraph GoodPractice [Best Practice: Principle of Least Privilege]
+        User2[Junior Data Scientist] -->|Scoped IAM Policy| Allowed[(Read S3 Training Bucket / Run SageMaker Notebook)]
+        User2 -.->|Blocked / Denied| Restricted[(Delete S3 Buckets / View Billing / Modify IAM)]
+    end
+```
+
+Granting full administrative access to practitioners increases risk:
+
+- A team member could accidentally delete critical historical datasets in Amazon S3.
+- Unchecked permissions could lead to accidentally provisioning massive, costly GPU clusters (e.g., `p5.48xlarge`) without organizational approval.
+- Least privilege ensures users and automated pipelines can only access the exact training data and specific AI services needed for their role.
+
+---
+
+## Exam Guide
+
+### Exam Tips
+
+- **Global Service:** IAM is a **global service**. You do not select an AWS Region when creating IAM users, groups, or policies.
+- **Root Account Best Practice:** The root user has complete access to everything. **Never use the root user for everyday tasks or training jobs.** Create dedicated IAM users/roles and secure the root credentials with Multi-Factor Authentication (MFA).
+- **Group Rules for the Exam:**
+  - Groups contain **users only**.
+  - Groups **cannot contain other groups** (no nested groups).
+  - A user **can belong to multiple groups**.
+- **Principle of Least Privilege:** Always choose the answer that grants the **minimum permissions necessary** to accomplish the task (e.g., granting read-only access to an S3 training bucket rather than `s3:*` or `AdministratorAccess`).
+- **IAM Policy Format:** Policies are written in **JSON** and define permissions via `Effect`, `Action`, and `Resource`.
+
+---
+
+### Practice Test
+
+#### Question 1
+
+A newly hired machine learning developer needs access to view active Amazon SageMaker training jobs and monitor model metrics in Amazon CloudWatch. The developer does not require permissions to launch new compute instances or delete S3 data. According to AWS best practices, how should the cloud administrator configure access?
+
+- [ ] A. Share the AWS account root user credentials with the developer
+- [ ] B. Create an IAM user for the developer and attach an IAM policy granting only read and describe permissions for SageMaker and CloudWatch
+- [ ] C. Attach the `AdministratorAccess` AWS managed policy directly to the developer's user profile
+- [ ] D. Create an IAM group that contains the root user and add the developer to that group
+
+<details>
+<summary>Correct Answer</summary>
+
+- [x] B. Create an IAM user for the developer and attach an IAM policy granting only read and describe permissions for SageMaker and CloudWatch
+  - **Explanation:** In accordance with the **principle of least privilege**, the administrator should create an individual IAM user and assign an IAM policy with only the specific read and describe permissions needed for SageMaker and CloudWatch, avoiding broad administrative access.
+
+</details>
+
+---
+
+#### Question 2
+
+An AWS administrator is configuring IAM for a data science department. Which of the following statements regarding IAM groups is correct?
+
+- [ ] A. An IAM group can be placed inside another IAM group to inherit parent permissions
+- [ ] B. An IAM group can contain both IAM users and other nested IAM groups
+- [ ] C. An IAM user can belong to multiple IAM groups simultaneously, but an IAM group can only contain users
+- [ ] D. IAM policies can only be attached to IAM users and cannot be attached to IAM groups
+
+<details>
+<summary>Correct Answer</summary>
+
+- [x] C. An IAM user can belong to multiple IAM groups simultaneously, but an IAM group can only contain users
+  - **Explanation:** In AWS IAM, an IAM user can be a member of multiple IAM groups (e.g., Developers and Audit), but **IAM groups cannot be nested**—a group can only contain IAM users, never other groups.
+
+</details>
+
+---
