@@ -1,0 +1,227 @@
+---
+sidebar_position: 10
+title: Amazon S3 - Storage Classes
+description: Overview of Amazon S3 Storage Classes, including durability vs. availability, Glacier tiers, and S3 Intelligent-Tiering.
+keywords:
+  [
+    "Amazon S3",
+    "Storage Classes",
+    "Durability",
+    "Availability",
+    "Glacier Tiers",
+    "Intelligent-Tiering",
+  ]
+---
+
+# Amazon S3 Storage Classes: Durability vs. Availability, Glacier Tiers & Intelligent-Tiering
+
+---
+
+## Key Takeaways
+
+Amazon S3 offers a tiered portfolio of storage classes tailored to different access patterns, latency requirements, and cost profiles. Objects can be assigned to a specific storage class upon creation, transitioned manually, or transitioned automatically via **S3 Lifecycle Rules**.
+
+```mermaid
+flowchart TD
+    subgraph S3ClassTaxonomy [Amazon S3 Storage Classes Spectrum]
+        direction LR
+
+        subgraph ActiveTier [Frequent & Active]
+            direction LR
+            S3Std["S3 Standard<br>(Frequent Access, ms Latency)"]
+        end
+
+        subgraph InfrequentTier [Infrequent Access]
+            direction LR
+            S3IA["S3 Standard-IA<br>(Multi-AZ, ms Latency)"]
+            S3OneZone["S3 One Zone-IA<br>(Single AZ, Recreatable Data)"]
+        end
+
+        subgraph GlacierTier [Archive & Cold Storage]
+            direction LR
+            G_Inst["Glacier Instant<br>(ms Latency, 90-day min)"]
+            G_Flex["Glacier Flexible<br>(min to hrs, 90-day min)"]
+            G_Deep["Glacier Deep Archive<br>(12-48 hrs, 180-day min)"]
+        end
+    end
+
+    subgraph AutoTier [S3 Intelligent-Tiering]
+        direction LR
+        S3Intell["S3 Intelligent-Tiering<br>(Auto-Moves Across Tiers, No Retrieval Fees)"]
+    end
+
+    ActiveTier --> InfrequentTier --> GlacierTier
+    AutoTier --> |Automates transitions across| S3ClassTaxonomy
+```
+
+Key takeaways for the exam:
+
+- **Durability vs. Availability:**
+  - **Durability (11 9s / 99.999999999%):** The probability that an object is never lost. All S3 storage classes share the exact same 11 9s of durability (except One Zone-IA only achieves this within a single physical Availability Zone).
+  - **Availability:** How readily an object can be accessed without temporary downtime or errors (ranges from 99.99% for Standard down to 99.5% for One Zone-IA).
+- **Glacier Tiers & Retrieval Speeds:**
+  - **Glacier Instant Retrieval:** Millisecond access for cold data accessed ~once per quarter.
+  - **Glacier Flexible Retrieval:** Expedited (1–5 min), Standard (3–5 hours), and Bulk (5–12 hours).
+  - **Glacier Deep Archive:** Lowest cost in AWS; Standard (12 hours) and Bulk (48 hours).
+- **S3 Intelligent-Tiering:** Purpose-built for data with unknown, changing, or unpredictable access patterns. Moves objects automatically between frequent, infrequent, and archive access tiers for a small monthly monitoring fee with **zero retrieval charges**.
+
+---
+
+## Main Discussion
+
+### Durability vs. Availability
+
+```mermaid
+flowchart LR
+    subgraph DurabilityDef ["Durability: 99.999999999% (11 9s)"]
+        D1["Loss prevention over time"]
+        D2["Store 10M objects -> Expect to lose 1 object every 10,000 years"]
+        D3["Identical across multi-AZ classes"]
+    end
+
+    subgraph AvailabilityDef [Availability: 99.5% - 99.99%]
+        A1["Uptime & API accessibility"]
+        A2["S3 Standard (99.99%): ~53 minutes expected downtime/year"]
+        A3["S3 One Zone-IA (99.5%): Higher downtime tolerance"]
+    end
+```
+
+- **Durability:** Measures resistance to permanent data loss or disk corruption. S3 redundantly stores objects across multiple independent geographic facilities (Availability Zones) within a region to sustain concurrent facility failures.
+- **Availability:** Measures the percentage of time S3 API endpoints successfully respond to retrieval requests. Decreases slightly as you transition to lower-cost, infrequent tiers.
+
+---
+
+### Comparison Matrix: Amazon S3 Storage Classes
+
+```mermaid
+mindmap
+  root((S3 Storage Classes))
+    S3 Standard
+      Frequent access
+      Low latency & high throughput
+      Big data, web assets, active ML training data
+    S3 Standard-IA
+      Infrequently accessed
+      Millisecond access
+      Retrieval fee per GB
+      Disaster recovery & backups
+    S3 One Zone-IA
+      Single Availability Zone
+      20% cheaper than Standard-IA
+      No multi-AZ resilience
+      Recreatable AI cache or secondary backups
+    Glacier Instant
+      Archive with millisecond retrieval
+      Minimum 90 days storage
+      Medical records, quarterly compliance reports
+    Glacier Flexible
+      Archive with async retrieval (1 min - 12 hrs)
+      Expedited, Standard, Bulk
+      Minimum 90 days storage
+    Glacier Deep Archive
+      Lowest storage cost across AWS
+      Retrieval: 12 - 48 hours
+      Minimum 180 days storage
+      7-10+ year regulatory retention
+    S3 Intelligent-Tiering
+      Unpredictable access patterns
+      Small monthly monitoring fee
+      NO retrieval fees
+```
+
+| Storage Class                     | Availability SLA | Min Storage Duration | Retrieval Fee? | Latency                          | Primary AI / Cloud Use Case                                                                                                                 |
+| --------------------------------- | ---------------- | -------------------- | -------------- | -------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| **S3 Standard**                   | 99.99%           | None                 | None           | Milliseconds                     | Active datasets, live ML feature repositories, frequently queried files, web backbones.                                                     |
+| **S3 Standard-IA**                | 99.9%            | 30 days              | Yes (per GB)   | Milliseconds                     | Disaster recovery copies, secondary backups, audit logs queried infrequently.                                                               |
+| **S3 One Zone-IA**                | 99.5%            | 30 days              | Yes (per GB)   | Milliseconds                     | Secondary backups, easily re-generated ML training data, pre-rendered thumbnail caches.                                                     |
+| **S3 Glacier Instant Retrieval**  | 99.9%            | 90 days              | Yes (per GB)   | Milliseconds                     | Compliance documents, raw medical scans, or archives accessed roughly once per quarter that require instant viewing.                        |
+| **S3 Glacier Flexible Retrieval** | 99.9%            | 90 days              | Yes (per GB)   | Minutes to Hours                 | Offline model checkpoints, tape replacement, data archives where retrieval wait times (1–5 min expedited, 3–5 hrs standard) are acceptable. |
+| **S3 Glacier Deep Archive**       | 99.9%            | 180 days             | Yes (per GB)   | Hours (12–48 hrs)                | Long-term digital preservation, regulatory financial compliance (e.g., NASDAQ 7-year retention), lowest AWS cost tier.                      |
+| **S3 Intelligent-Tiering**        | 99.9%            | None (in base tiers) | **None**       | Milliseconds (for default tiers) | Workloads with unknown, varying, or unpredictable access patterns.                                                                          |
+
+---
+
+### Deep Dive: S3 Intelligent-Tiering Automation
+
+S3 Intelligent-Tiering is the only cloud storage class that delivers automatic cost savings by moving data between access tiers based on frequency of use without performance impact or operational overhead.
+
+```mermaid
+flowchart TD
+    subgraph IntelligentTieringTiers [S3 Intelligent-Tiering Dynamic Lifecycle]
+        direction TB
+        FA["Frequent Access Tier (Default on upload / millisecond latency)"]
+        IA["Infrequent Access Tier (Auto-moved after 30 consecutive days of no access)"]
+        AIA["Archive Instant Access Tier (Auto-moved after 90 consecutive days of no access)"]
+        AA["Archive Access Tier (Optional: Configurable 90 to 730+ days / 3-5 hr async retrieval)"]
+        DAA["Deep Archive Access Tier (Optional: Configurable 180 to 730+ days / 12-48 hr async retrieval)"]
+
+        FA -->|No access for 30 days| IA
+        IA -->|No access for 60 more days| AIA
+        AIA -.->|Optional Opt-In Rule| AA
+        AA -.->|Optional Opt-In Rule| DAA
+
+        IA -->|Accessed / Read| FA
+        AIA -->|Accessed / Read| FA
+        AA -->|Accessed / Read| FA
+        DAA -->|Accessed / Read| FA
+    end
+```
+
+- **No Retrieval Charges:** Unlike Standard-IA and Glacier classes, there are **no data retrieval fees** when an object in Intelligent-Tiering is read or moved back to the Frequent Access tier.
+- **Monitoring Fee:** A small, flat monthly monitoring and automation fee is charged per 1,000 objects.
+- **Automatic Tiers:** Frequent Access, Infrequent Access (after 30 days of inactivity), and Archive Instant Access (after 90 days of inactivity) require zero configuration.
+- **Asynchronous Tiers (Opt-In):** Archive Access and Deep Archive Access can be enabled for objects where asynchronous retrieval times (hours) are acceptable.
+
+---
+
+## Exam Guide
+
+### Exam Tips
+
+- **Unpredictable / Changing Access Pattern $\rightarrow$ S3 Intelligent-Tiering:** Whenever an exam question mentions _unpredictable access patterns_, _unknown data access frequency_, or _wants cost savings without paying retrieval fees_, **S3 Intelligent-Tiering** is almost always the correct answer.
+- **Millisecond Archive $\rightarrow$ Glacier Instant Retrieval:** If an archive scenario requires **immediate, millisecond access** (such as medical imaging or quarterly financial reporting), choose **Glacier Instant Retrieval**, not Flexible Retrieval or Deep Archive.
+- **Recreatable Data / Cost-Sensitive $\rightarrow$ S3 One Zone-IA:** If an application stores data that can be re-generated or has a secondary on-premises copy and cost must be minimized, choose **S3 One Zone-IA**. Remember: _data will be lost if the single Availability Zone suffers a catastrophic disaster_.
+- **Lowest Cost Across AWS $\rightarrow$ S3 Glacier Deep Archive:** If long-term compliance retention (e.g., 7–10 years) is required and retrieval delays of 12 to 48 hours are acceptable, **S3 Glacier Deep Archive** provides the absolute lowest cost per GB.
+- **Durability Constant:** Every tier provides **11 9s (99.999999999%)** of durability. Do not let exam distractors convince you that Glacier or IA tiers have lower durability than S3 Standard.
+
+---
+
+### Practice Test
+
+#### Question 1
+
+A media technology company processes thousands of audio and video clips used to train multimodal AI models. After initial model training is complete, the data access frequency becomes highly unpredictable—some datasets are queried repeatedly by research teams for several weeks, while others remain unaccessed for months. The company needs to optimize storage costs automatically without paying retrieval charges or impacting application performance. Which S3 storage class should they use?
+
+- [ ] A. S3 Standard-Infrequent Access (S3 Standard-IA)
+- [ ] B. S3 Intelligent-Tiering
+- [ ] C. S3 Glacier Flexible Retrieval
+- [ ] D. S3 One Zone-Infrequent Access (S3 One Zone-IA)
+
+<details>
+<summary>Correct Answer</summary>
+
+- [x] B. S3 Intelligent-Tiering
+  - **Explanation:** S3 Intelligent-Tiering is purpose-built for data with unknown, changing, or unpredictable access patterns. It automatically moves objects between frequent, infrequent, and archive instant access tiers without performance degradation and imposes **no data retrieval fees**.
+
+</details>
+
+---
+
+#### Question 2
+
+A healthcare analytics platform stores historical patient diagnostic records in Amazon S3 for long-term compliance audits. The records are accessed infrequently (less than once per quarter), but when requested by an auditor or physician, the application must display the records within milliseconds. Which Amazon S3 storage class provides the most cost-effective solution while meeting the latency requirement?
+
+- [ ] A. S3 Glacier Flexible Retrieval
+- [ ] B. S3 Glacier Deep Archive
+- [ ] C. S3 Glacier Instant Retrieval
+- [ ] D. S3 Standard-IA
+
+<details>
+<summary>Correct Answer</summary>
+
+- [x] C. S3 Glacier Instant Retrieval
+  - **Explanation:** **S3 Glacier Instant Retrieval** is designed for archive data that is rarely accessed (e.g., once a quarter) but requires **millisecond retrieval** when requested. S3 Glacier Flexible Retrieval and Deep Archive require minutes to hours for retrieval and cannot provide millisecond response times.
+
+</details>
+
+---
