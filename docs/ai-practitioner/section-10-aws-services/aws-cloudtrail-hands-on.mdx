@@ -1,0 +1,213 @@
+---
+sidebar_position: 20
+title: AWS CloudTrails - Hands On
+description: Hands-on lab for AWS CloudTrail Event History, API Interception & Operational Auditing
+keywords:
+  [
+    "AWS CloudTrail",
+    "Event History",
+    "API Interception",
+    "Operational Auditing",
+    "AWS Security",
+    "AWS Management Console",
+    "AWS CLI",
+    "AWS SDK",
+  ]
+---
+
+# Module 107: Hands-On Lab: AWS CloudTrail Event History, API Interception & Operational Auditing
+
+---
+
+## Key Takeaways
+
+This hands-on walkthrough demonstrates the practical side of **AWS CloudTrail Event History**: tracking state mutations across services by auditing underlying API requests.
+
+```mermaid
+flowchart TD
+    subgraph ActionExecution [1. Mutation Action in Target Service]
+        Admin["User / Administrator"] -->|Terminate Instance| EC2Console["Amazon EC2 Console"]
+        EC2Console -->|API Request Issued| TermAPI["ec2:TerminateInstances"]
+    end
+
+    subgraph EventInterception [2. CloudTrail Ingestion & Indexing]
+        direction TB
+        Intercept["CloudTrail Engine intercepts API Call"]
+        Propagate["Event ingestion & indexing window (typically ~5–15 minutes)"]
+        EventHistory["CloudTrail Event History (Default 90-Day Rolling Window)"]
+
+        Intercept --> Propagate --> EventHistory
+    end
+
+    subgraph AuditInspection [3. Audit Record Verification]
+        direction TB
+        EventName["Event Name: TerminateInstances"]
+        EventSource["Event Source: ec2.amazonaws.com"]
+        CallerData["Caller Details: User Identity, Access Key, Source IP, Region"]
+        FullRecord["Full JSON Event Payload"]
+
+        EventName & EventSource & CallerData --> FullRecord
+    end
+
+    ActionExecution --> EventInterception --> AuditInspection
+```
+
+Key principles to remember:
+
+- **Automatic Event Ingestion:** You do not need to configure anything to track basic administrative events; **Event History** is active out-of-the-box and catalogs management events across your account for **90 days**.
+- **API-to-Action Mapping:** UI actions in the AWS Management Console directly map to explicit API calls. Clicking "Terminate" on an EC2 instance invokes the `TerminateInstances` API on the `ec2.amazonaws.com` service endpoint.
+- **Delivery Latency Window:** CloudTrail events typically populate in Event History within **5 to 15 minutes** of the API call completing.
+- **Traceability Metadata:** Every captured record includes the operational footprint: `EventName`, `EventSource`, AWS Region, `sourceIPAddress`, `userIdentity`, and the specific credentials or access keys used.
+
+---
+
+## Hands-On Workflow: End-to-End Walkthrough
+
+1. **Inspect the CloudTrail Event History Console:**
+   - Open the AWS Management Console and search for **CloudTrail**.
+   - In the left navigation panel, click **Event history**.
+   - Observe the default dashboard: a chronological list of recent management events (`Get*`, `Describe*`, `List*`, `Create*`, etc.) executed by users, roles, or internal services over the past 90 days.
+   - Notice that filtering is supported by attributes such as **Event name**, **User name**, **Resource name**, or **Event source**.
+2. **Perform a Mutating Action in Another Service:**
+   - Navigate to the **EC2 Console** in a separate tab:
+   - Select a running or stopped test instance.
+   - Click **Instance state** $\rightarrow$ **Terminate instance**.
+   - Confirm the termination prompt. The instance status changes to `Shutting-down` and then `Terminated`.
+   - Under the hood, this action triggers the `ec2:TerminateInstances` API call.
+3. **Locate and Correlate the Ingested Event in CloudTrail:**
+   - Return to the **CloudTrail Event history** tab:
+   - Allow approximately 5 to 10 minutes for the event to be indexed and processed.
+   - Refresh the table.
+   - To locate the event quickly, use the lookup filter dropdown:
+   - Select **Event name** and enter `TerminateInstances`.
+   - The corresponding event appears in the list with its execution timestamp.
+4. **Inspect the Event Metadata & JSON Record:**
+   - Click on the `TerminateInstances` event row to expand its details:
+   - **Event name:** `TerminateInstances`
+   - **Event source:** `ec2.amazonaws.com`
+   - **AWS Region:** The region where the instance was terminated (e.g., `eu-west-1`, `us-east-1`).
+   - **User name / Identity:** Displays the IAM user or assumed role (or root account) that executed the call.
+   - **Access key:** The access key ID utilized for authentication.
+   - Scroll down and click **View event** to inspect the raw JSON structure, which contains the target instance ID under `requestParameters.instancesSet.items` and the previous/current instance state under `responseElements`.
+
+---
+
+## Deep Dive: Anatomy of a TerminateInstances Event Record
+
+The JSON record captures the exact parameters of the API request:
+
+```json
+{
+  "eventVersion": "1.09",
+  "userIdentity": {
+    "type": "IAMUser",
+    "principalId": "AIDAEXAMPLEUSERID",
+    "arn": "arn:aws:iam::123456789012:user/admin-engineer",
+    "accountId": "123456789012",
+    "accessKeyId": "AKIAIOSFODNN7EXAMPLE",
+    "userName": "admin-engineer"
+  },
+  "eventTime": "2026-09-04T03:30:15Z",
+  "eventSource": "ec2.amazonaws.com",
+  "eventName": "TerminateInstances",
+  "awsRegion": "ap-southeast-2",
+  "sourceIPAddress": "198.51.100.24",
+  "userAgent": "console.ec2.amazonaws.com",
+  "requestParameters": {
+    "instancesSet": {
+      "items": [
+        {
+          "instanceId": "i-0abcd1234ef56789a"
+        }
+      ]
+    }
+  },
+  "responseElements": {
+    "requestId": "59dbff89-35b1-4e4a-b8d7-d1d4dEXAMPLE",
+    "instancesSet": {
+      "items": [
+        {
+          "instanceId": "i-0abcd1234ef56789a",
+          "currentState": {
+            "code": 32,
+            "name": "shutting-down"
+          },
+          "previousState": {
+            "code": 16,
+            "name": "running"
+          }
+        }
+      ]
+    }
+  }
+}
+```
+
+```mermaid
+flowchart LR
+    subgraph AuditChecklist [Audit Verification Checklist]
+        direction TB
+        Q1["Who triggered it? -> userIdentity.userName ('admin-engineer')"]
+        Q2["What API ran? -> eventName ('TerminateInstances')"]
+        Q3["Which resource was impacted? -> requestParameters.instancesSet ('i-0abcd1234ef56789a')"]
+        Q4["Where did it originate? -> sourceIPAddress ('198.51.100.24')"]
+    end
+```
+
+---
+
+## Exam Guide
+
+### Exam Tips
+
+- **Event History Limitations:** The built-in **Event History** in the CloudTrail console records only **Management Events** for the last **90 days** and cannot be deleted or customized. To store events past 90 days or to log **Data Events** (such as S3 `GetObject` or Lambda `Invoke`), you must configure a dedicated **CloudTrail Trail**.
+- **Delivery Latency:** CloudTrail does not promise microsecond delivery. In practice and exam scenarios, API event records typically take between **5 and 15 minutes** to populate in the Event History.
+- **Auditing Unexpected Resource Deletions:** If a question describes a sudden disruption (e.g., an S3 bucket deleted, an EC2 instance terminated, or an Amazon Bedrock model customization job aborted) and asks how to discover who was responsible, look for **CloudTrail Event History** or **CloudTrail logs**.
+- **Filter Capabilities:** In the Event History console, you can filter by:
+  - Event name
+  - User name
+  - Resource name / Resource type
+  - Event source
+  - Access key ID
+
+---
+
+### Practice Test
+
+#### Question 1
+
+An administrator discovers that an Amazon SageMaker notebook instance used for model development was unexpectedly stopped earlier in the day. The administrator needs to identify which team member stopped the notebook instance without deploying any new infrastructure or incurring additional costs. Which approach should the administrator take?
+
+- [ ] A. Query Amazon CloudWatch Logs Insights for the `/aws/sagemaker/notebooks` log group
+- [ ] B. Navigate to CloudTrail Event History and filter by the Event name `StopNotebookInstance`
+- [ ] C. Inspect AWS Config resource inventory and initiate an SSM Automation document
+- [ ] D. Check the Amazon Inspector dashboard for unauthorized access findings
+
+<details>
+<summary>Correct Answer</summary>
+
+- [x] B. Navigate to CloudTrail Event History and filter by the Event name `StopNotebookInstance`
+  - **Explanation:** **Explanation:** **CloudTrail Event History** automatically tracks management API calls for 90 days at no extra cost. Filtering by the event name `StopNotebookInstance` directly reveals the caller's identity (`userIdentity`), timestamp, and source IP address.
+
+</details>
+
+---
+
+#### Question 2
+
+A cloud security engineer needs to review API calls made in an AWS account over the past 48 hours to confirm whether any IAM access keys were used from unauthorized IP addresses. Which feature of AWS CloudTrail enables this review immediately without prior configuration?
+
+- [ ] A. CloudTrail Lake
+- [ ] B. CloudTrail Event History
+- [ ] C. CloudTrail Insights
+- [ ] D. AWS Systems Manager Change Manager
+
+<details>
+<summary>Correct Answer</summary>
+
+- [x] B. CloudTrail Event History
+  - **Explanation:** **CloudTrail Event History** is enabled by default in all AWS accounts and provides a rolling 90-day search and lookup capability for management events across console, CLI, and SDK interactions, requiring zero advance configuration.
+
+</details>
+
+---

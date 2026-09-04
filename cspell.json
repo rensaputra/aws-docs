@@ -13,6 +13,7 @@
     "npm"
   ],
   "words": [
+    "Addendums",
     "Agentic",
     "Algs",
     "architecting",
@@ -51,6 +52,7 @@
     "Omnichannel",
     "Overfit",
     "overfitting",
+    "overutilized",
     "Paystub",
     "paystubs",
     "Pempek",
@@ -71,6 +73,7 @@
     "SERDEPROPERTIES",
     "serverlessly",
     "shoutout",
+    "SIEM",
     "signups",
     "SSML",
     "standups",
@@ -95,6 +98,7 @@
   ],
   "ignoreWords": [
     "ABAC",
+    "AIDAEXAMPLEUSERID",
     "AKIA",
     "AKIAI",
     "AKIAIOSFODNN",
