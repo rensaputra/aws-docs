@@ -1,0 +1,215 @@
+---
+sidebar_position: 14
+title: AWS Lambda
+description: Overview of AWS Lambda serverless compute service, its core mechanics, and its role in AI/ML workflows.
+keywords:
+  [
+    "AWS",
+    "Lambda",
+    "Serverless",
+    "FaaS",
+    "Event-Driven",
+    "Generative AI",
+    "Machine Learning",
+    "Bedrock",
+    "Rekognition",
+    "Comprehend",
+    "Transcribe",
+    "Textract",
+  ]
+---
+
+# AWS Lambda: Serverless Architecture, Core Mechanics & AI/ML Workflows
+
+---
+
+## Key Takeaways
+
+**AWS Lambda** is a serverless compute service that runs code in response to events and automatically manages the underlying compute resources. It eliminates the operational overhead of provisioning, scaling, patching, and maintaining virtual machines or container infrastructure.
+
+```mermaid
+flowchart TD
+    subgraph ServerlessParadigm [The Serverless Compute Model]
+        direction TB
+        NoServers["Zero Server Management: No OS maintenance, updates, or capacity provisioning"]
+        AutoScaling["Seamless Elastic Scaling: Automatically scales horizontally from 0 to thousands of instances"]
+        PayPerUse["Pay-for-Value Billing: Charged strictly per invocation and compute duration in milliseconds"]
+        EventDriven["Native Event-Driven Architecture: Reacts to triggers across 200+ AWS services"]
+    end
+
+    subgraph CoreLimits [Key Architectural Boundaries]
+        direction LR
+        MaxTimeout["Max Timeout: 15 minutes (900s)"]
+        MemRange["Memory: 128 MB – 10,240 MB (10 GB)"]
+        DiskTmp["Ephemeral Storage (/tmp): Up to 10 GB"]
+        PkgSize["Deployment: 250 MB (Zip) / 10 GB (Container Image)"]
+    end
+
+    ServerlessParadigm --> CoreLimits
+
+```
+
+Key takeaways for the exam:
+
+- **Serverless Compute:** You focus exclusively on your business logic. AWS provisions execution environments, runs the code, scales capacity to meet incoming demand, and tears down idle resources.
+- **Cost Efficiency:** Billed on request count and execution duration rounded to the nearest millisecond, scaled by allocated memory. When idle, compute cost is exactly zero.
+- **Architectural Boundaries:**
+  - **Timeout:** Configurable from 1 second up to a hard maximum of **15 minutes (900 seconds)**.
+  - **Memory:** Configurable from 128 MB to 10,240 MB (10 GB). Allocating more memory automatically allocates proportional vCPU compute power.
+- **AI/ML Position:** Lambda acts as the operational orchestrator and "glue" for AI pipelines—handling real-time prompt preprocessing, input validation, invoking foundation models via **Amazon Bedrock**, or triggering **Amazon Rekognition** and **Amazon Comprehend** upon file uploads.
+
+---
+
+## Main Discussion
+
+### Serverless vs. Traditional Compute (EC2 vs. Lambda)
+
+```mermaid
+flowchart LR
+    subgraph EC2Model ["Amazon EC2: Virtual Servers (IaaS)"]
+        direction TB
+        E_OS["Manage OS, Patching & Security"]
+        E_Cap["Pre-provision Capacity (Fixed Sizing)"]
+        E_Cost["Billed Continuously (Running state)"]
+        E_Dur["Indefinite Long-Running Processes"]
+    end
+
+    subgraph LambdaModel ["AWS Lambda: Serverless Functions (FaaS)"]
+        direction TB
+        L_OS["Zero OS Management (AWS Handled)"]
+        L_Cap["Auto-scales per Event Payload"]
+        L_Cost["Billed per Millisecond of Execution"]
+        L_Dur["Short-Lived (Max 15 Minutes)"]
+    end
+```
+
+| Architectural Dimension | Amazon EC2 (IaaS)                                                                            | AWS Lambda (Serverless / FaaS)                                                                        |
+| ----------------------- | -------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------- |
+| **Administration**      | Full control over the guest OS, kernel modules, drivers, and runtime libraries.              | Managed entirely by AWS; you upload code or container images.                                         |
+| **Scaling**             | Configured manually or via Auto Scaling Groups (takes minutes to spin up instances).         | Instantaneous, automated horizontal concurrency per incoming request.                                 |
+| **Cost Model**          | Billed per second for running instances, regardless of whether workloads are active or idle. | Billed strictly per request and duration of execution; zero cost when no events trigger the function. |
+| **Execution Duration**  | Unconstrained; instances can run continuously for years.                                     | Strictly bound by a 15-minute maximum execution timeout per invocation.                               |
+| **Primary AI Use Case** | Large-scale model training, distributed clusters, heavy GPU/Trainium hardware jobs.          | Event triggers, prompt sanitization, RAG pre/post-processing, serverless model API invocation.        |
+
+---
+
+### Lambda Execution Lifecycle & Cold Starts
+
+Understanding the execution lifecycle helps optimize performance in latency-sensitive applications (such as real-time GenAI chatbots):
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor Caller as Event Source (e.g. API Gateway / S3)
+    participant Lambda as AWS Lambda Service
+    participant Env as Execution Environment (MicroVM)
+    participant Code as Handler Function
+
+    Note over Lambda,Env: Cold Start (New container required)
+    Caller->>Lambda: Send Invoke Request
+    Lambda->>Env: Download code/image & bootstrap runtime
+    Lambda->>Code: Execute static initialization code (imports, model weights)
+    Note over Lambda,Code: Warm Execution
+    Lambda->>Code: Invoke handler(event, context)
+    Code-->>Caller: Return response payload
+
+    Note over Lambda,Env: Subsequent Invocation (Warm Start)
+    Caller->>Lambda: Send Second Request
+    Note over Env,Code: Container reused, skips bootstrap and static init
+    Lambda->>Code: Invoke handler(event, context) directly
+    Code-->>Caller: Fast response
+```
+
+- **Cold Start:** Occurs when a function is invoked for the first time or after scaling up. AWS provisions a secure microVM, downloads your code, and runs initialization code (such as importing libraries like `boto3` or loading lightweight models into memory).
+- **Warm Start:** If subsequent requests arrive while an execution container remains warm, Lambda reuses the existing container, skipping initialization and executing the handler immediately.
+- **Optimization Pattern:** Place persistent database connections, AWS SDK client instantiations (e.g., `bedrock_client = boto3.client('bedrock-runtime')`), and static assets outside the main handler function so they persist across warm invocations.
+
+---
+
+### AWS Lambda in Generative AI & Machine Learning Architectures
+
+Lambda functions frequently serve as the glue in modern cloud-native AI architectures:
+
+```mermaid
+flowchart TD
+    subgraph Pattern1 [Pattern 1: Serverless GenAI API Orchestration]
+        direction LR
+        User[Web / Mobile Client] -->|HTTP POST| APIGW[Amazon API Gateway]
+        APIGW -->|JSON Event| LambdaOrch[AWS Lambda Function]
+        LambdaOrch -->|1. Sanitize Prompt & Check IAM| Guard[Bedrock Guardrails]
+        LambdaOrch -->|2. Query Embeddings / Context| Vector[(Amazon OpenSearch Serverless)]
+        LambdaOrch -->|3. Invoke Foundation Model| Bedrock[Amazon Bedrock API]
+        Bedrock --> LambdaOrch
+        LambdaOrch -->|4. Format JSON Response| APIGW --> User
+    end
+
+    subgraph Pattern2 [Pattern 2: Asynchronous AI Pipeline Processing]
+        direction LR
+        S3In[(Amazon S3: Raw Audio/Text)] -->|s3:ObjectCreated| LambdaEvent[AWS Lambda Trigger]
+        LambdaEvent -->|Call Async Transcription| Transcribe[Amazon Transcribe / Comprehend]
+        Transcribe -->|Store Curated Insights| Dynamo[(Amazon DynamoDB)]
+    end
+
+    Pattern1 ~~~ Pattern2
+```
+
+1. **RAG & Prompt Orchestration:** An API Gateway endpoint invokes a Lambda function that coordinates a Retrieval Augmented Generation (RAG) query—retrieving matching documents from a vector database and submitting the enriched prompt to an **Amazon Bedrock** model.
+2. **Event-Driven Data Extraction:** Uploading documents, audio, or images to an **Amazon S3** bucket triggers a Lambda function to call managed AI services like **Amazon Textract**, **Amazon Transcribe**, or **Amazon Rekognition** without maintaining dedicated polling servers.  
+   ![](./img/lambda-event-driven-architecture.png)
+3. **Guardrail Pre-Validation:** Inspecting and sanitizing user inputs before passing payloads into expensive foundation model endpoints to reduce costs and intercept prompt injection attempts early.
+
+---
+
+## Exam Guide
+
+### Exam Tips
+
+- **Serverless Compute Identity:** AWS Lambda is the core **Serverless Functions-as-a-Service (FaaS)** platform on AWS.
+- **The 15-Minute Rule (Crucial Exam Distractor):**
+  - Maximum timeout is **15 minutes**.
+  - Any workload described as taking hours (e.g., distributed training of deep neural networks) **cannot run on Lambda**. The correct answer will involve **Amazon SageMaker Training Jobs**, **AWS Batch**, or **Amazon EC2**.
+- **Billing Dimensions:** Billed on total request count and duration measured in **milliseconds**, scaled by configured memory.
+- **IAM Execution Roles:** Lambda functions must assume an IAM role with a trust policy for `lambda.amazonaws.com`. To write telemetry and logs, the role must include permissions for **Amazon CloudWatch Logs** (typically via the managed policy `AWSLambdaBasicExecutionRole`).
+- **Container Support:** Lambda functions can be packaged as container images up to **10 GB** in size, which is useful when bundling large Python libraries (such as NumPy, PyTorch, or tokenizers) that exceed standard 250 MB uncompressed zip limits.
+
+---
+
+### Practice Test
+
+#### Question 1
+
+A startup wants to build a lightweight API endpoint that takes a customer query, adds internal product metadata, and passes the augmented prompt to an Amazon Bedrock foundation model. The application experiences sporadic traffic with long periods of zero activity. The solutions architect wants to minimize operational maintenance and eliminate infrastructure costs during idle periods. Which service should host this integration logic?
+
+- [ ] A. Amazon EC2 using On-Demand instances
+- [ ] B. AWS Lambda
+- [ ] C. Amazon EMR cluster
+- [ ] D. Amazon SageMaker Notebook Instance
+
+<details>
+<summary>Correct Answer</summary>
+
+- [x] B. AWS Lambda
+  - **Explanation:** **AWS Lambda** is a serverless compute service that automatically executes code in response to API events and scales to zero when no traffic is present, eliminating costs when idle and removing the need to manage underlying servers.
+
+</details>
+
+---
+
+#### Question 2
+
+An engineer is designing an automated workflow to process incoming invoices. When a PDF invoice is saved to an Amazon S3 bucket, it needs to be processed by Amazon Textract to extract line items, and the extracted data must be saved to Amazon DynamoDB. The processing time for each invoice averages 30 seconds. Which architecture provides the most cost-effective and operationally simple solution?
+
+- [ ] A. An Amazon EC2 instance that continuously polls the S3 bucket every 10 seconds
+- [ ] B. An S3 Event Notification configured to invoke an AWS Lambda function that calls Amazon Textract and writes results to DynamoDB
+- [ ] C. A persistent Amazon EMR cluster running an Apache Spark job
+- [ ] D. An AWS Glue ETL streaming job running 24/7
+
+<details>
+<summary>Correct Answer</summary>
+
+- [x] B. An S3 Event Notification configured to invoke an AWS Lambda function that calls Amazon Textract and writes results to DynamoDB
+  - **Explanation:** An **S3 Event Notification triggering an AWS Lambda function** is the standard event-driven serverless pattern on AWS. It executes only when a file arrives, runs well within the 15-minute Lambda execution limit (taking only 30 seconds), calls Amazon Textract, and requires zero ongoing server administration.
+
+</details>
+
+---
