@@ -71,6 +71,7 @@
     "SERDEPROPERTIES",
     "serverlessly",
     "shoutout",
+    "SIEM",
     "signups",
     "SSML",
     "standups",
@@ -95,6 +96,7 @@
   ],
   "ignoreWords": [
     "ABAC",
+    "AIDAEXAMPLEUSERID",
     "AKIA",
     "AKIAI",
     "AKIAIOSFODNN",
