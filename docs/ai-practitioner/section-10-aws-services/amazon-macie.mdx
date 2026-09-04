@@ -1,6 +1,18 @@
 ---
 sidebar_position: 16
 title: Amazon Macie
+description: Amazon Macie is a fully managed data security and data privacy service that uses machine learning and pattern matching to discover, classify, and protect sensitive data stored in Amazon S3.
+keywords:
+  [
+    "Amazon Macie",
+    "PII Detection",
+    "Data Governance",
+    "Sensitive Data Discovery",
+    "Amazon S3",
+    "Machine Learning",
+    "Pattern Matching",
+    "AWS Security",
+  ]
 ---
 
 # Amazon Macie: Sensitive Data Discovery, PII Detection & Data Governance for AI/ML Pipelines
@@ -40,6 +52,8 @@ flowchart TD
     DataDiscoverySource -->|Scanned by| MacieEngine
     MacieEngine --> Findings
 ```
+
+![](./img/amazon-macie-flow.png)
 
 - **Core Purpose:** Detects sensitive data, specifically **Personally Identifiable Information (PII)** and Protected Health Information (PHI), within Amazon S3 buckets.
 - **Underlying Mechanism:** Combines pre-trained **machine learning models** with regular-expression pattern matching (Managed Data Identifiers).
