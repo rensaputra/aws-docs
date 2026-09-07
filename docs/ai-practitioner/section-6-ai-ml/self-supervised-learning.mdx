@@ -149,3 +149,26 @@ In the context of foundation model development, what is the primary relationship
 </details>
 
 ---
+
+### Question 3
+
+A healthcare analytics company is exploring the use of Foundation Models to automate the process of labeling vast amounts of medical data, such as patient records and clinical notes, to enhance its machine learning models for diagnosis and treatment recommendations. The company wants to understand the specific techniques that Foundation Models use to generate labels from raw input data, helping streamline the data annotation process without requiring extensive manual effort.
+Which of the following techniques is used by Foundation Models to create labels from input data?
+
+- [ ] A. Supervised learning
+- [ ] B. Unsupervised learning
+- [ ] C. Reinforcement learning
+- [ ] D. Self-supervised learning
+
+<details>
+<summary>Correct Answer</summary>
+
+- [x] D. Self-supervised learning
+  - **Explanation:** Foundation models (FMs) generate their own supervisory signals directly from raw data without human annotation:
+    - **Mechanism**: The model masks, hides, or shifts portions of the input data and trains itself to predict the missing pieces.
+    - **Label Generation**: The "label" is derived automatically from the raw input itself (e.g., predicting the masked word in a sentence or predicting the next token in clinical notes).
+    - **AWS Exam Context**: Whenever an exam item refers to foundation models learning from massive unlabelled corpora by automatically deriving labels or targets from the input sequences, AWS maps this explicitly to self-supervised learning.
+
+</details>
+
+---
