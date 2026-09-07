@@ -93,3 +93,7 @@ jobs:
         uses: JamieMagee/wayback@v2
         with:
           url: 'https://res.id.au'
+          saveOutlinks: true
+          saveScreenshot: true
+          skipFirstArchive: true
+          ifNotArchivedWithin: '1d'
