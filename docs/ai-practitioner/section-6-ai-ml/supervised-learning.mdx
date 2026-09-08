@@ -227,3 +227,44 @@ References:
 </details>
 
 ---
+
+#### Question 4
+
+A retail company is developing a machine learning model to predict customer churn and is in the process of preparing its dataset. The data science team plans to divide the data into a training set, validation set, and test set to ensure the model performs well across different stages of development and evaluation. To proceed effectively, the team needs to fully understand the roles of each of these sets and how they contribute to building a robust model.
+
+Which of the following is correct regarding the training set, validation set, and test set used in the context of machine learning? (Select two)
+
+- [ ] A. Validation sets are optional
+- [ ] B. Validation set is used to determine how well the model generalizes
+- [ ] C. Test set is used for hyperparameter tuning
+- [ ] D. Test set is used to determine how well the model generalizes
+- [ ] E. Test sets are optional
+
+<details>
+<summary>Correct Answers:</summary>
+
+Data used for ML is typically split into the following datasets:
+The training set is used to train the model, the validation set is used for tuning hyperparameters and selecting the best model during the training process, and the test set is used for evaluating the final performance of the model on unseen data.
+
+- [x] A. Validation sets are optional
+  - **Explanation:** The validation set introduces new data to the trained model. You can use a validation set to periodically measure model performance as training is happening and also tune any hyperparameters of the model. However, validation datasets are optional.
+- [x] D. Test set is used to determine how well the model generalizes
+  - **Explanation:** The test set is used on the final trained model to assess its performance on unseen data. This helps determine how well the model generalizes.
+
+<details>
+<summary>Incorrect Answers:</summary>
+- [ ] B. Validation set is used to determine how well the model generalizes
+  - **Explanation:** Only the test set is used to determine how well the model generalizes.
+- [ ] C. Test set is used for hyperparameter tuning
+  - **Explanation:** The test set is used for evaluating the final performance of the model on unseen data.
+- [ ] E. Test sets are optional
+  - **Explanation:** Only validation sets are optional.
+
+</details>
+Reference:
+
+- https://aws.amazon.com/blogs/machine-learning/create-train-test-and-validation-splits-on-your-data-for-machine-learning-with-amazon-sagemaker-data-wrangler/
+
+</details>
+
+---

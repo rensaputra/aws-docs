@@ -244,42 +244,45 @@ References:
 
 #### Question 4
 
-A healthcare analytics company aims to enhance its AI capabilities by fine-tuning a foundation model (FM) in Amazon Bedrock to specialize in medical text analysis. To achieve this, the company plans to use its own task-specific labeled dataset, consisting of annotated clinical notes and medical records, to fine-tune the model for greater accuracy in extracting relevant information.
+A financial services company is exploring Amazon Bedrock to streamline its AI development for use cases such as fraud detection, personalized customer service, and automated reporting. The company is particularly interested in understanding the key features and benefits of Amazon Bedrock, including its ability to simplify access to powerful foundation models, support customizations, and integrate with existing AWS services.
 
-Given these requirements, which approach would be most suitable?
+To make an informed decision, the company needs to identify which of the following accurately applies to Amazon Bedrock and its capabilities? (Select two)
 
-- [ ] A. The company should use On-Demand mode, which provides flexibility by charging only for the resources consumed
-- [ ] B. The company should leverage batch inference to facilitate fine-tuning of the model
-- [ ] C. The company should leverage Amazon Bedrock playground to facilitate fine-tuning of the model
-- [ ] D. The company should use Provisioned Throughput mode, which allows the company to reserve a specific amount of capacity in advance
+- [ ] A. You can use the On-Demand mode only with time-based term commitments
+- [ ] B. You can use a customized model only in the Provisioned Throughput mode
+- [ ] C. Larger models are cheaper to use than smaller models
+- [ ] D. Smaller models are cheaper to use than larger models
+- [ ] E. You can use a customized model in the Provisioned Throughput or On-Demand mode
 
 <details>
-<summary>Correct Answer</summary>
+<summary>Correct Answers</summary>
 
-- [x] D. The company should use Provisioned Throughput mode, which allows the company to reserve a specific amount of capacity in advance
-  - **Explanation:** With fine-tuning, you can increase model accuracy by providing your own task-specific labeled training dataset and further specialize your FMs. With continued pre-training, you can train models using your own unlabeled data in a secure and managed environment with customer managed keys. Continued pre-training helps models become more domain-specific by accumulating more robust knowledge and adaptability—beyond their original training.
+With Amazon Bedrock, you are charged for model inference and customization. You have a choice of pricing plans for inference:
 
-    Once the fine-tuning job is complete, you receive a unique model ID for your custom model. Your fine-tuned model is stored securely by Amazon Bedrock. To test and deploy your model, you need to purchase Provisioned Throughput. This mode is designed for situations where there is a predictable, continuous workload, such as the intensive compute required during the fine-tuning phase.  
-     ![](./img/custom-models.png)
-    :::warning
-    **Exam Alert:** For testing and deploy customized models for Amazon Bedrock (via fine-tuning or continued pre-training), it is mandatory to use Provisioned Throughput.
-    :::
+1. **On-Demand and Batch:** Allows you to use foundation models on a pay-as-you-go basis without making time-based term commitments.
+2. **Provisioned Throughput:** Allows you to provision dedicated throughput to meet performance requirements in exchange for a time-based term commitment (or no commitment depending on duration).
+
+- [x] D. Smaller models are cheaper to use than larger models
+  - **Explanation:** The cost of generative AI models varies largely by parameter size and compute requirements. While larger models tend to offer higher capability and accuracy, they carry significantly higher compute costs and token pricing. Smaller models provide lower latency, lower pricing per token, and more cost-effective deployment options.
+- [x] E. You can use a customized model in the Provisioned Throughput or On-Demand mode
+  - **Explanation:** Amazon Bedrock supports the use of customized models through Provisioned Throughput or On-Demand mode. To use a custom model with dedicated capacity, you can purchase Provisioned Throughput. You can also deploy a custom model for on-demand inference, and after the deployment becomes active, use the deployment ARN as the `modelId` for inference requests.  
+    ![](./img/bedrock-inference-options.png)
 
 <details>
 <summary>Incorrect Answers</summary>
-- [ ] A. The company should use On-Demand mode, which provides flexibility by charging only for the resources consumed
-  - **Explanation:** While On-Demand mode offers flexibility and scalability by charging based on actual usage, it does not support model customization for Amazon Bedrock via fine-tuning or continued pre-training.
-- [ ] B. The company should leverage batch inference to facilitate fine-tuning of the model
-  - **Explanation:**  With batch inference, you can run multiple inference requests asynchronously to process a large number of requests efficiently by running inference on data that is stored in an S3 bucket. You can use batch inference to improve the performance of model inference on large datasets. You cannot use batch inference to facilitate fine-tuning of the model. This option acts as a distractor.
-- [ ] C. The company should leverage Amazon Bedrock playground to facilitate fine-tuning of the model
-  - **Explanation:** The Amazon Bedrock playgrounds provide you a console environment to experiment with running inference on different models and with different configurations, before deciding to use them in an application. There are playgrounds for text, chat, and image models. Within each playground you can enter prompts and experiment with inference parameters. Prompts are usually one or more sentences of text that set up a scenario, question, or task for a model. You cannot use Amazon Bedrock playground to facilitate fine-tuning of the model. This option acts as a distractor.
+
+- [ ] A. You can use the On-Demand mode only with time-based term commitments
+  - **Explanation:** On-Demand mode is strictly pay-as-you-go based on the number of tokens processed, requiring no time-based term commitments. Time-based term commitments are associated with Provisioned Throughput.
+- [ ] B. You can use a customized model only in the Provisioned Throughput mode
+  - **Explanation:** Amazon Bedrock supports inference for customized models via both Provisioned Throughput and On-Demand deployment.
+- [ ] C. Larger models are cheaper to use than smaller models
+  - **Explanation:** Larger foundation models require substantially more compute and memory to run inference, making them more expensive per token or compute unit than smaller models.
 
 </details>
 
-References:
+Reference:
 
-- https://aws.amazon.com/blogs/aws/customize-models-in-amazon-bedrock-with-your-own-data-using-fine-tuning-and-continued-pre-training/
-- https://docs.aws.amazon.com/bedrock/latest/userguide/batch-inference.html
+- https://docs.aws.amazon.com/bedrock/latest/userguide/model-customization-use.html
 
 </details>
 

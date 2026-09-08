@@ -211,3 +211,39 @@ References:
 </details>
 
 ---
+
+#### Question 4
+
+A company is using Amazon Bedrock and it wants to set an upper limit on the number of tokens returned in the model's response.
+
+Which of the following inference parameters would you recommend for the given use case?
+
+- [ ] A. Response length
+- [ ] B. Stop sequence
+- [ ] C. Top P
+- [ ] D. Top K
+
+<details>
+<summary>Correct Answer</summary>
+
+- [x] A. Response length
+  - **Explanation:** Response length represents the minimum or maximum number of tokens to return in the generated response. Setting this parameter configures the upper limit on tokens returned.  
+    ![](./img/response-length.png)
+
+<details>
+<summary>Incorrect Answers</summary>
+- [ ] B. Stop sequence
+  - **Explanation:** Stop sequences specify the sequences of characters that stop the model from generating further tokens once encountered, rather than setting a strict numeric upper limit on tokens.
+- [ ] C. Top P
+  - **Explanation:** Top P controls output diversity by representing the cumulative percentage cutoff of the most likely candidates the model considers for the next token (nucleus sampling).
+- [ ] D. Top K
+  - **Explanation:** Top K limits pool selection to a specific count of the most likely candidates the model considers for the next token.
+
+</details>
+
+Reference:
+
+- https://docs.aws.amazon.com/bedrock/latest/userguide/inference-parameters.html
+- https://docs.aws.amazon.com/bedrock/latest/userguide/general-guidelines-for-bedrock-users.html
+
+</details>
