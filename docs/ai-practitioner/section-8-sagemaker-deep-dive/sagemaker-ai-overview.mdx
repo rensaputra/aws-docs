@@ -19,6 +19,7 @@ import RealTimeInference from "./img/real-time-inference.png";
 import ServerlessInference from "./img/serverless-inference.png";
 import AsynchronousInference from "./img/async-inference.png";
 import BatchTransform from "./img/batch-transform.png";
+import AsynchronousInferenceDocs from "./img/asynchronous-inference.png";
 
 # Amazon SageMaker AI Overview: ML Lifecycle, Algorithms, Automatic Model Tuning & Inference Options
 
@@ -223,6 +224,48 @@ A developer is configuring a SageMaker training pipeline and wants the platform 
 
 - [x] A. Amazon SageMaker Automatic Model Tuning (AMT) with Early Stopping
   - **Explanation:** **Amazon SageMaker Automatic Model Tuning (AMT)** automatically searches through hyperparameter ranges to optimize the specified objective metric, while its **Early Stopping** feature terminates poorly performing trials early to save compute time and cost.
+
+</details>
+
+---
+
+#### Question 3
+
+A retail company is using an Amazon SageMaker machine learning model to analyze customer purchasing patterns and predict future buying behavior. The data scientists at the company regularly need to process datasets of less than 1 GB, such as daily sales records and customer interaction logs. The company does not require immediate responses and can afford some delay in receiving the analysis results, as the insights are primarily used for weekly strategy meetings.
+
+Which inference method would be the most suitable for the company in this scenario?
+
+- [ ] A. Serverless inference
+- [ ] B. Asynchronous inference
+- [ ] C. Real-time inference
+- [ ] D. Batch inference
+
+<details>
+<summary>Correct Answer</summary>
+
+- [x] B. Asynchronous inference
+  - **Explanation:** Asynchronous inference is the most suitable choice for this scenario. It allows the company to process smaller payloads without requiring real-time responses by queuing the requests and handling them in the background. This method is cost-effective and efficient when some delay is acceptable, as it frees up resources and optimizes compute usage. Asynchronous inference is ideal for scenarios where the payload size is less than 1 GB and immediate results are not critical.
+    <ImageRow>
+      <img src={AsynchronousInferenceDocs} alt="Asynchronous Inference" />
+    </ImageRow>
+
+<details>
+<summary>Incorrect Answers</summary>
+
+- [ ] A. Serverless inference
+  - **Explanation:** Serverless inference is a good choice for workloads with unpredictable traffic or sporadic requests, as it scales automatically based on demand. However, it may not be as cost-effective for scenarios where workloads are predictable, and some waiting time is acceptable. Asynchronous inference provides a more targeted solution for handling delayed responses at a lower cost.
+- [ ] C. Real-time inference
+  - **Explanation:** Real-time inference is optimized for scenarios where low latency is essential, and responses are needed immediately. It is not suitable for cases where the system can afford to wait for responses, as it might lead to higher costs and resource consumption without providing any additional benefit for this particular use case.
+- [ ] D. Batch inference
+  - **Explanation:** Batch inference is generally used for processing large datasets all at once. While it does not require immediate responses, it is typically more efficient for handling larger payloads (several gigabytes or more). For smaller payloads of less than 1 GB, batch inference might be overkill and less cost-efficient compared to asynchronous inference.
+
+</details>
+
+References:
+
+- https://docs.aws.amazon.com/sagemaker/latest/dg/how-it-works-deployment.html
+- https://repost.aws/questions/QUlefH1ni4QOaulUT4870D5g/sagemaker-batch-transform
+- https://docs.aws.amazon.com/sagemaker/latest/dg/async-inference.html
 
 </details>
 

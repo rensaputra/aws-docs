@@ -6,6 +6,7 @@ title: Supervised Learning
 import ImageRow from "@site/src/components/ImageRow";
 import RegressionExample from "./img/regression-example.png";
 import ClassificationExample from "./img/classification-example.png";
+import SupervisedLearning from "./img/supervised-learning.png";
 
 # Supervised Learning, Dataset Splitting & Feature Engineering
 
@@ -175,6 +176,53 @@ A data scientist splits a historical customer dataset into three subsets. Subset
 
 - [x] B. Subset A: Training, Subset B: Validation, Subset C: Test
   - **Explanation:** In standard machine learning workflows, **Subset A** is the **Training set** (fits model parameters), **Subset B** is the **Validation set** (tunes hyperparameters and monitors overfitting), and **Subset C** is the held-out **Test set** (provides the final unbiased evaluation).
+
+</details>
+
+---
+
+#### Question 3
+
+A financial services company is building machine learning models to predict customer churn and detect fraudulent transactions. The data science team is exploring different machine learning approaches and needs to understand which methods fall under supervised learning, where the model is trained on labeled data with known outcomes. Identifying the correct supervised learning techniques will help the team select the most appropriate models for their predictive tasks.
+
+Which of the following are examples of supervised learning? **(Select two)**
+
+- [ ] A. Document classification
+- [ ] B. Association rule learning
+- [ ] C. Neural network
+- [ ] D. Linear regression
+- [ ] E. Clustering
+
+<details>
+<summary>Correct Answers:</summary>
+
+Supervised learning algorithms train on sample data that specifies both the algorithm's input and output. For example, the data could be images of handwritten numbers that are annotated to indicate which numbers they represent. Given sufficient labeled data, the supervised learning system would eventually recognize the clusters of pixels and shapes associated with each handwritten number.
+
+<ImageRow>
+  <img src={SupervisedLearning} />
+</ImageRow>
+
+- [x] C. Neural network
+  - **Explanation:** A neural network solution is a more complex supervised learning technique. To produce a given outcome, it takes some given inputs and performs one or more layers of mathematical transformation based on adjusting data weightings. An example of a neural network technique is predicting a digit from a handwritten image.
+- [x] D. Linear regression
+  - **Explanation:** Linear regression refers to supervised learning models that, based on one or more inputs, predict a value from a continuous scale. An example of linear regression is predicting a house price. You could predict a house’s price based on its location, age, and number of rooms after you train a model on a set of historical sales training data with those variables.
+
+<details>
+<summary>Incorrect Answers:</summary>
+
+- [ ] A. Document classification
+  - **Explanation:** This is an example of semi-supervised learning. Semi-supervised learning is when you apply both supervised and unsupervised learning techniques to a common problem. This technique relies on using a small amount of labeled data and a large amount of unlabeled data to train systems. When applying categories to a large document base, there may be too many documents to physically label. For example, these could be countless reports, transcripts, or specifications. Training on the unlabeled data helps identify similar documents for labeling.
+- [ ] B. Association rule learning
+  - **Explanation:** This is an example of unsupervised learning. Association rule learning techniques uncover rule-based relationships between inputs in a dataset. For example, the Apriori algorithm conducts market basket analysis to identify rules like coffee and milk often being purchased together.
+- [ ] E. Clustering
+  - **Explanation:** Clustering is an unsupervised learning technique that groups certain data inputs, so they may be categorized as a whole. There are various types of clustering algorithms depending on the input data. An example of clustering is identifying different types of network traffic to predict potential security incidents.
+
+</details>
+
+References:
+
+- https://aws.amazon.com/what-is/machine-learning/
+- https://aws.amazon.com/compare/the-difference-between-machine-learning-supervised-and-unsupervised/
 
 </details>
 

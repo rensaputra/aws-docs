@@ -2,6 +2,9 @@
 sidebar_position: 4
 ---
 
+import ImageRow from "@site/src/components/ImageRow";
+import RandomnessDiversity from "./img/randomness-diversity.png";
+
 # Prompt Performance Optimization
 
 ---
@@ -164,6 +167,46 @@ An AI engineer wants to reduce the response latency of an interactive customer s
 
 - [x] C. Switching from a heavy reasoning foundation model to Amazon Nova Micro and capping the maximum output token length
   - **Explanation:** Inference latency is directly driven by the **model architecture/size** and the **number of generated output tokens**. Switching to a lightweight model like **Amazon Nova Micro** and capping generation length significantly reduces response times. Adjusting Temperature or Top-P changes probability distributions but has no impact on processing latency.
+
+</details>
+
+---
+
+#### Question 3
+
+A financial services company is leveraging Amazon Bedrock to generate AI-driven insights and recommendations for its clients. The development team is fine-tuning the model's behavior to produce more accurate and relevant responses. As part of this process, they are experimenting with various inference parameters, including `Top P`, to control how the model generates text. The team needs to understand how adjusting the `Top P` parameter can influence the diversity and quality of the model's responses during inference.
+
+How does the inference parameter `Top P` influence the model response for Amazon Bedrock?
+
+- [ ] A. Specifies the sequences of characters that stop the model from generating further tokens
+- [ ] B. Influences the likelihood of the model selecting lower-probability outputs, thereby impacting the creativity of the model’s output
+- [ ] C. Influences the percentage of most-likely candidates that the model considers for the next token
+- [ ] D. Influences the number of most-likely candidates that the model considers for the next token
+
+<details>
+<summary>Correct Answer</summary>
+
+- [x] C. Influences the percentage of most-likely candidates that the model considers for the next token
+  - **Explanation:** `Top P` represents the percentage of most likely candidates that the model considers for the next token. Choose a lower value to decrease the size of the pool and limit the options to more likely outputs. Choose a higher value to increase the size of the pool and allow the model to consider less likely outputs.
+    <ImageRow>
+      <img src={RandomnessDiversity} alt="Randomness Diversity" />
+    </ImageRow>
+
+<details>
+<summary>Incorrect Answers</summary>
+- [ ] A. Specifies the sequences of characters that stop the model from generating further tokens
+  - **Explanation:** The inference parameter `Stop sequences` specifies the sequences of characters that stop the model from generating further tokens. If the model generates a stop sequence that you specify, it will stop generating after that sequence.
+- [ ] B. Influences the likelihood of the model selecting lower-probability outputs
+  - **Explanation:**  The inference parameter `Temperature` is a value between 0 and 1, and it regulates the creativity of the model's responses.
+- [ ] D. Influences the number of most-likely candidates that the model considers for the next token
+  - **Explanation:** The inference parameter `Top K` represents the number of most likely candidates that the model considers for the next token.
+
+</details>
+
+References:
+
+- https://docs.aws.amazon.com/bedrock/latest/userguide/inference-parameters.html
+- https://docs.aws.amazon.com/bedrock/latest/userguide/general-guidelines-for-bedrock-users.html
 
 </details>
 
