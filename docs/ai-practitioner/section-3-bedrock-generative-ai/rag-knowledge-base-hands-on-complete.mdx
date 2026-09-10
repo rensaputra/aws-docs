@@ -146,3 +146,44 @@ An AI developer is configuring an Amazon Bedrock Knowledge Base to ingest techni
 </details>
 
 ---
+
+#### Question 3
+
+A tech company is developing an AI-powered customer support solution using Retrieval-Augmented Generation (RAG) with Amazon Bedrock to provide more accurate and context-aware responses. To achieve this, the company needs a database that can handle fast index lookups and similarity searches to quickly retrieve the most relevant documents or information from a large dataset. The ideal database solution should efficiently support search queries and rank results based on their relevance to the input provided by the user.
+
+Given these requirements, which database solution would be most appropriate for the company to use?
+
+- [ ] A. The company should use Amazon OpenSearch Service, which is designed to provide fast search capabilities and supports full-text search, indexing, and similarity scoring
+- [ ] B. The company should use Amazon Aurora, a managed relational database service that is optimized for high-performance transactional workloads that can be useful for search operations
+- [ ] C. The company should use Amazon DocumentDB (with MongoDB compatibility), a managed NoSQL document database service designed for storing semi-structured data to facilitate search capabilities
+- [ ] D. The company should use Amazon DynamoDB, a fully managed NoSQL database service that offers low-latency data retrieval to handle fast index lookups as well as search operations
+
+<details>
+<summary>Correct Answer</summary>
+
+- [x] A. The company should use Amazon OpenSearch Service, which is designed to provide fast search capabilities and supports full-text search, indexing, and similarity scoring.
+  - **Explanation:** Amazon OpenSearch Service is the most suitable choice because it is specifically built to handle search and analytics workloads, including fast index lookups and similarity scoring. OpenSearch supports full-text search, vector search, and advanced data indexing, which are essential for the Retrieval-Augmented Generation (RAG) framework. It enables the chatbot or model to quickly find and rank relevant documents based on their similarity to the query, making it highly effective for applications that require rapid data retrieval and relevance ranking.  
+    ![](./img/retrieval-augmented-generation-with-llms.png)
+    ![](./img/vector-similarity-metrics.png)
+    Knowledge Bases for Amazon Bedrock takes care of the entire ingestion workflow of converting your documents into embeddings (vector) and storing the embeddings in a specialized vector database. Knowledge Bases for Amazon Bedrock supports popular databases for vector storage, including vector engine for Amazon OpenSearch Serverless, Pinecone, Redis Enterprise Cloud, Amazon Aurora (coming soon), and MongoDB (coming soon). If you do not have an existing vector database, Amazon Bedrock creates an OpenSearch Serverless vector store for you.
+
+<details>
+<summary>Incorrect Answers</summary>
+
+- [ ] B. The company should use Amazon Aurora, a managed relational database service that is optimized for high-performance transactional workloads that can be useful for search operations
+  - Amazon Aurora is a high-performance relational database service that is excellent for OLTP (Online Transaction Processing) workloads. While it provides advanced indexing features for relational data, it is not optimized for full-text search, fast similarity lookups, or the types of search capabilities required for RAG applications. Aurora’s primary strengths lie in transactional integrity and scalability for relational datasets, not in search and retrieval tasks.
+- [ ] C. The company should use Amazon DocumentDB (with MongoDB compatibility), a managed NoSQL document database service designed for storing semi-structured data to facilitate search capabilities
+  - Amazon DocumentDB is primarily designed for storing and querying semi-structured JSON data. While it provides scalability and managed support for document-based workloads, it is not optimized for full-text search or similarity searches. DocumentDB lacks the native capabilities for efficient indexing and retrieval needed for RAG, making it a less suitable choice.
+- [ ] D. The company should use Amazon DynamoDB, a fully managed NoSQL database service that offers low-latency data retrieval to handle fast index lookups as well as search operations
+  - Amazon DynamoDB is a key-value and document database designed for fast and predictable performance with low latency, suitable for high-throughput transactional workloads. However, it does not natively support advanced search capabilities or similarity scoring needed for RAG applications. Its primary focus is on rapid data retrieval based on primary keys, not on the complex search and retrieval functions required for this scenario.
+
+</details>
+
+References:
+
+- https://aws.amazon.com/blogs/big-data/amazon-opensearch-services-vector-database-capabilities-explained/
+- https://aws.amazon.com/bedrock/knowledge-bases/
+
+</details>
+
+---

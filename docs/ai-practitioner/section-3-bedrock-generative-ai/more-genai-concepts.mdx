@@ -1,5 +1,20 @@
 ---
 sidebar_position: 13
+title: More GenAI Concepts
+description: Generative AI models do not read characters, words, or pixels the way humans do
+keywords:
+  [
+    "Generative AI",
+    "GenAI",
+    "Foundation Models",
+    "LLMs",
+    "Diffusion Models",
+    "Deep Learning",
+    "AI Hierarchy",
+    "Non-Deterministic",
+    "Next-Token Probability",
+    "Image Synthesis",
+  ]
 ---
 
 import ImageRow from "@site/src/components/ImageRow";
@@ -147,6 +162,44 @@ A developer is designing an internal tool to analyze legal deposition transcript
 
 - [x] A. Switch to a foundation model supporting a 200K+ context window or implement a RAG pipeline to chunk and retrieve relevant sections
   - **Explanation:** The failure is caused by exceeding the model's **Context Window**. The issue can be resolved by selecting a foundation model designed for large contexts (such as Anthropic Claude with 200K tokens) or by using a **RAG pipeline** to chunk the transcript and retrieve only the relevant passages.
+
+</details>
+
+---
+
+#### Question 3
+
+An e-commerce company is developing a chatbot to enhance its user experience by allowing customers to submit queries that include both text descriptions and images, such as product photos or screenshots of issues. The company aims for the chatbot to understand these multi-modal inputs and provide accurate and context-aware responses, seamlessly combining visual and textual information to address customer needs effectively.
+
+Which approach would be the most cost-effective for enabling the chatbot to process such multi-modal queries effectively?
+
+- [ ] A. The company should use a multi-modal generative model, which can generate responses or outputs based on combined inputs from different modalities, such as text and images, enhancing the chatbot’s ability to provide contextually relevant answers
+- [ ] B. The company should use a text-only language model, which is trained exclusively on textual data
+- [ ] C. The company should use a convolutional neural network (CNN), a deep learning model primarily designed for processing image data
+- [ ] D. The company should use a multi-modal embedding model, which is designed to represent and align different types of data (such as text and images) in a shared embedding space, allowing the chatbot to understand and interpret both forms of input simultaneously
+
+<details>
+<summary>Correct Answer</summary>
+
+- [x] D. The company should use a multi-modal embedding model, which is designed to represent and align different types of data (such as text and images) in a shared embedding space, allowing the chatbot to understand and interpret both forms of input simultaneously
+  - **Explanation:** A multi-modal embedding model is the most suitable and cost-effective choice for this task because it enables the integration of multiple types of data, such as text and images, into a unified representation. This allows the chatbot to effectively process and understand queries containing both text and visual content by aligning them in a shared embedding space, facilitating more accurate and context-aware retrieval and recommendations.
+
+<details>
+<summary>Incorrect Answers</summary>
+
+- [ ] A. The company should use a multi-modal generative model, which can generate responses or outputs based on combined inputs from different modalities, such as text and images, enhancing the chatbot’s ability to provide contextually relevant answers
+  - **Explanation:** While a multi-modal generative model can generate outputs based on multiple types of input data, it is more complex and typically used for generating new content rather than interpreting and retrieving query matches. Additionally, building and running inference on a multi-modal generative model is significantly costlier and computationally heavier compared to leveraging embedding-based retrieval.
+- [ ] B. The company should use a text-only language model, which is trained exclusively on textual data
+  - **Explanation:** A text-only language model cannot handle image data because it is designed to process and generate text exclusively. This model lacks the capability to understand or incorporate visual information.
+- [ ] C. The company should use a convolutional neural network (CNN), a deep learning model primarily designed for processing image data
+  - **Explanation:** A CNN is designed specifically for image recognition and processing tasks. It cannot process text-based inputs and therefore cannot fulfill the requirement of handling multi-modal queries that include both text and images without combining additional models, adding unnecessary complexity.
+
+</details>
+
+Reference:
+
+- https://community.aws/content/2Z5Z29gSjBC2kRYeWpAQZzFE3tV/a-new-way-to-implement-product-search-using-titan-multimodal-embeddings-on-amazon-bedrock
+- https://aws.amazon.com/about-aws/whats-new/2023/11/amazon-titan-multimodal-embeddings-model-bedrock/
 
 </details>
 
