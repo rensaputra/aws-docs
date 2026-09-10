@@ -27,12 +27,12 @@ Combining these techniques (such as **Few-Shot CoT** or **RAG with Step-by-Step 
 
 ### The Strategic Prompting Taxonomy
 
-| Prompting Strategy | In-Context Examples | Core Mechanism | Primary Architectural Fit |
-| :--- | :--- | :--- | :--- |
-| **Zero-Shot Prompting** | 0 Examples | Direct task instruction | Simple Q&A, sentiment classification, drafts |
-| **One-Shot / Few-Shot Prompting** | 1 to 5 Input-Output demonstrations | In-context pattern matching | Precise JSON/XML schemas, domain-specific formatting |
-| **Chain-of-Thought (CoT) Prompting** | Step-by-step breakdown instructions | Sequential latent reasoning steps | Multi-step logic, math, planning, complex Q&A |
-| **Retrieval-Augmented Generation (RAG)** | External dynamic document chunks | Non-parametric context injection | Dynamic enterprise facts, citation-backed research |
+| Prompting Strategy                       | In-Context Examples                 | Core Mechanism                    | Primary Architectural Fit                            |
+| :--------------------------------------- | :---------------------------------- | :-------------------------------- | :--------------------------------------------------- |
+| **Zero-Shot Prompting**                  | 0 Examples                          | Direct task instruction           | Simple Q&A, sentiment classification, drafts         |
+| **One-Shot / Few-Shot Prompting**        | 1 to 5 Input-Output demonstrations  | In-context pattern matching       | Precise JSON/XML schemas, domain-specific formatting |
+| **Chain-of-Thought (CoT) Prompting**     | Step-by-step breakdown instructions | Sequential latent reasoning steps | Multi-step logic, math, planning, complex Q&A        |
+| **Retrieval-Augmented Generation (RAG)** | External dynamic document chunks    | Non-parametric context injection  | Dynamic enterprise facts, citation-backed research   |
 
 ---
 
@@ -52,7 +52,7 @@ flowchart LR
 Injects 1 to 5 input-output demonstration pairs inside the prompt payload. This teaches the model the exact stylistic pattern, tone, and syntactic structure expected without running model fine-tuning jobs.
 
 ```mermaid
-flowchart TD
+flowchart LR
     subgraph Few-Shot Prompt Payload
     A["[ In-Context Demonstration 1 ]<br>Input: 'The engine runs smoothly and delivers great power.'<br>Output: {'sentiment': 'POSITIVE', 'confidence': 0.95, 'domain': 'automotive'}"]
     B["[ In-Context Demonstration 2 ]<br>Input: 'Delivery took two weeks longer than promised.'<br>Output: {'sentiment': 'NEGATIVE', 'confidence': 0.98, 'domain': 'logistics'}"]
@@ -74,7 +74,7 @@ Standard autoregressive generation can produce logic errors on complex math, pla
 $$\text{Standard Prompt: } P(\text{Answer} \mid \text{Question}) \quad \Big\vert{} \quad \text{CoT Prompt: } P(\text{Steps} \mid \text{Question}) \times P(\text{Answer} \mid \text{Steps}, \text{Question})$$
 
 ```mermaid
-flowchart TD
+flowchart LR
     A["User Request: 'Write a short story about a dog solving a mystery.'"] -->|CoT Explicit Instruction| B["'Break down your thought process step by step:<br>1. Establish the setting and introduce the detective dog.<br>2. Introduce the missing neighborhood item.<br>3. Trace the physical clue discovery using scent tracking.<br>4. Conclude with the item recovery and case resolution.'"]
     B --> C["[ Foundation Model Trajectory ]<br>* Step 1: Max the Golden Retriever sits on the front porch in Willow Creek...<br>* Step 2: The baker's prized silver whisk has disappeared from the kitchen...<br>* Step 3: Max detects a faint scent of vanilla leading to the treehouse...<br>* Step 4: Max recovers the whisk and returns it to the grateful baker."]
 ```
@@ -90,7 +90,7 @@ RAG enriches the prompt by injecting external, non-parametric knowledge retrieve
 ![](./img/rag-architecture.png)
 
 ```mermaid
-flowchart TD
+flowchart LR
     subgraph RAG Augmented Prompt Payload
         A["[ RETRIEVED ENTERPRISE CONTEXT (Amazon S3 / Vector DB) ]<br>Document Chunk 1: 'Canine olfactory tracking can follow scents >24h old.'<br>Document Chunk 2: 'Residential theft cases commonly involve garage tools.'"]
         B["[ USER INSTRUCTION ]<br>Write a story about a canine tracking case using strictly the facts above."]

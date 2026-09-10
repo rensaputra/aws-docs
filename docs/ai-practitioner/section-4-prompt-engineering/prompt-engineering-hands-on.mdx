@@ -12,13 +12,14 @@ Naive prompts (e.g., _"Write me a travel itinerary"_) leave generation open to w
 
 ```mermaid
 flowchart TD
-    subgraph The Structured Prompting Framework
+    subgraph Prompt[The Structured Prompting Framework]
+      direction TB
         A["1. INSTRUCTIONS<br>Task goals (e.g., 3-day balanced itinerary with meals)"]
         B["2. CONTEXT<br>User background (e.g., first-time visitor, hidden gems)"]
         C["3. INPUT DATA<br>Scope parameters (e.g., Lombok destination, news articles)"]
         D["4. OUTPUT INDICATOR<br>Structural schema (e.g., timestamps, restaurant names)"]
     end
-    The_Structured_Prompting_Framework --> E["NEGATIVE PROMPTING (Exclusion Rules):<br>* 'Do not include non-kids/family-friendly activities.'<br>* 'Avoid overly touristy restaurants.'<br>* 'Do not recommend more than 3 activities per day.'"]
+    Prompt --> E["NEGATIVE PROMPTING (Exclusion Rules):<br>* 'Do not include non-kids/family-friendly activities.'<br>* 'Avoid overly touristy restaurants.'<br>* 'Do not recommend more than 3 activities per day.'"]
 ```
 
 Layering **Negative Constraints** directly suppresses unwanted tokens and bounds day-to-day activity density without modifying model parameters or incurring retraining costs.
