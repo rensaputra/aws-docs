@@ -1,0 +1,144 @@
+---
+sidebar_position: 1
+title: State of Learning Checkpoint
+description: AIF-C01 Exam Blueprint, Domain Weightings & Exam Strategy
+keywords:
+  [
+    "AIF-C01",
+    "AWS Certified AI Practitioner",
+    "Exam Blueprint",
+    "Domain Weightings",
+    "Exam Strategy",
+  ]
+---
+
+# State of Learning Checkpoint: AIF-C01 Blueprint, Domain Weightings & Exam Strategy
+
+---
+
+## Key Takeaways
+
+The **AWS Certified AI Practitioner (AIF-C01)** exam is a foundational credential validating a holistic understanding of artificial intelligence, machine learning, generative AI, responsible AI principles, and security/governance on AWS.
+
+```mermaid
+pie title AIF-C01 Exam Domain Weightings
+    "Domain 1: Fundamentals of AI and ML" : 20
+    "Domain 2: Fundamentals of Generative AI" : 24
+    "Domain 3: Applications of Foundation Models" : 28
+    "Domain 4: Guidelines for Responsible AI" : 14
+    "Domain 5: Security, Compliance & Governance" : 14
+```
+
+- **Core Heavyweights:** Domains 2 and 3 together account for **52% of scored content**. Mastering foundation models, Bedrock capabilities, prompt engineering, and GenAI concepts makes up more than half the exam.
+- **Scoring Structure:**
+  - Total questions: **65 questions** (50 scored, 15 unscored beta questions randomly interspersed).
+  - Scaled scoring: **100 to 1,000**, with a minimum passing score of **700**.
+  - Time limit: **90 minutes**.
+  - **No penalty for guessing:** Unanswered questions are scored incorrect; never leave a question blank.
+- **Question Diversity:** Features modern AWS exam question formats—including multiple-choice, multiple-response, ordering sequences, matching pairs, and scenario-based case studies.
+- **Scope Boundary:** Foundational conceptual knowledge and business use-case mapping are in scope. Low-level model implementation, custom loss function coding, deep hyperparameter tuning math, and complex data pipeline engineering are strictly out of scope.
+
+---
+
+## Deep Dive: The Five Exam Domains & Topic Breakdown
+
+```mermaid
+flowchart LR
+    subgraph D1 ["Domain 1: Fundamentals of AI & ML (20%)"]
+        D1_Topics["ML Paradigms (Supervised, Unsupervised, RL)<br>ML Lifecycle (Problem framing, prep, train, evaluate, deploy)<br>Core Metrics (Accuracy, Precision, Recall, F1, AUC)"]
+    end
+
+    subgraph D2 ["Domain 2: Fundamentals of Generative AI (24%)"]
+        D2_Topics["GenAI vs Traditional ML<br>Transformer Architecture & Attention Mechanisms<br>Tokens, Context Windows & Embeddings<br>Generative Modalities (Text, code, image, multimodal)"]
+    end
+
+    subgraph D3 ["Domain 3: Applications of Foundation Models (28%)"]
+        D3_Topics["Amazon Bedrock (Models, Agents, Knowledge Bases, Guardrails)<br>Adaptation Techniques (Prompt Eng, RAG, Fine-Tuning, Pre-training)<br>Prompt Patterns (Few-shot, CoT, System prompts)<br>Inference Economics & Throughput (On-demand vs Provisioned)"]
+    end
+
+    subgraph D4 ["Domain 4: Guidelines for Responsible AI (14%)"]
+        D4_Topics["Fairness & Bias Mitigation (SageMaker Clarify)<br>Explainability & Interpretability (SHAP, Feature Attribution)<br>Robustness, Hallucination Management & Guardrails<br>Governance & Transparency (AWS AI Service Cards, Model Cards)"]
+    end
+
+    subgraph D5 ["Domain 5: Security, Compliance & Governance (14%)"]
+        D5_Topics["Identity & Access (IAM Roles, Least Privilege, Bedrock policies)<br>Network Isolation (VPC Endpoints, AWS PrivateLink)<br>Data Privacy & Discovery (Amazon Macie, KMS SSE-KMS)<br>Auditing & Regulatory Compliance (CloudTrail, Config, Artifact, Audit Manager)"]
+    end
+
+    D1 --> D2 --> D3 --> D4 --> D5
+```
+
+---
+
+### In-Scope vs. Out-of-Scope Demarcation
+
+| Domain Area            | In-Scope for AIF-C01 (Conceptual & Architectural)                           | Out-of-Scope (Reserved for Associate/Specialty)                                  |
+| ---------------------- | --------------------------------------------------------------------------- | -------------------------------------------------------------------------------- |
+| **Model Training**     | Choosing between pre-training, fine-tuning, RAG, and prompt engineering.    | Writing PyTorch/TensorFlow training loops; writing distributed training scripts. |
+| **Data Engineering**   | Identifying S3 storage classes, selecting vector databases for RAG.         | Building complex Apache Spark jobs in EMR, AWS Glue ETL scripting.               |
+| **MLOps & Metrics**    | Interpreting Precision, Recall, and Confusion Matrices at a business level. | Deriving backpropagation calculus, mathematical optimization algorithms.         |
+| **Security & Network** | PrivateLink for Bedrock, Macie for PII scrubbing, IAM execution roles.      | Complex BGP routing, transit gateway peering topologies, deep kernel security.   |
+
+---
+
+### Question Format Breakdown
+
+```mermaid
+mindmap
+  root((Question Formats))
+    Multiple Choice
+      1 correct option
+      3 distractors
+    Multiple Response
+      Select 2 or 3 correct options
+      Prompt explicitly specifies how many to pick
+    Ordering
+      Place 3 to 5 steps into the correct sequence
+      e.g., RAG pipeline steps or model adaptation workflow
+    Matching
+      Match prompt items to target definitions/services
+      e.g., Match security tools to their primary function
+    Case Study
+      Multi-question scenario sharing a single business narrative
+
+```
+
+---
+
+## Exam Day Execution Strategy
+
+```mermaid
+flowchart LR
+    subgraph Pass1 ["Pass 1: High-Confidence Scan (~45 mins)"]
+    direction LR
+        P1["Answer straightforward questions directly"]
+        P1_Flag["Flag ambiguous / multi-step questions for review"]
+    end
+
+    subgraph Pass2 ["Pass 2: Scenario Analysis (~30 mins)"]
+    direction LR
+        P2["Tackle flagged ordering, matching, and case study items"]
+        P2_Elim["Apply process of elimination using keyword triggers"]
+    end
+
+    subgraph Pass3 ["Pass 3: Final Verification (~15 mins)"]
+    direction LR
+        P3["Ensure zero questions are left unanswered"]
+        P3_Confirm["Verify multiple-response counts match prompts exactly"]
+    end
+
+    Pass1 --> Pass2 --> Pass3
+```
+
+1. **Pacing:** 65 questions across 90 minutes gives you approximately **1.38 minutes (83 seconds) per question**.
+2. **Never Leave Blanks:** Unanswered questions receive zero credit. Because there is no negative marking, submit an educated guess on every question before time expires.
+3. **Keyword Trigger Technique:**
+   - _"Unpredictable data access, no retrieval fees"_ $\rightarrow$ **S3 Intelligent-Tiering**
+   - _"Discover PII in S3 before fine-tuning"_ $\rightarrow$ **Amazon Macie**
+   - _"Scan container images in ECR for CVEs"_ $\rightarrow$ **Amazon Inspector**
+   - _"Audit who executed an API call and from where"_ $\rightarrow$ **AWS CloudTrail**
+   - _"Verify resource compliance rules and track configuration history"_ $\rightarrow$ **AWS Config**
+   - _"Invoke Bedrock privately without traversing the public internet"_ $\rightarrow$ **VPC Interface Endpoint / PrivateLink**
+   - _"Download third-party SOC 2 or ISO compliance reports for AWS"_ $\rightarrow$ **AWS Artifact**
+   - _"Automate evidence collection across workloads for an external audit"_ $\rightarrow$ **AWS Audit Manager**
+
+---

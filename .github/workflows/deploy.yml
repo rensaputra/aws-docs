@@ -88,3 +88,12 @@ jobs:
           sitemap-location: 'https://res.id.au/sitemap.xml'
           key: ${{ secrets.INDEXNOW_KEY }}
           lastmod-required: false
+
+      - name: Archive to Wayback Machine
+        uses: JamieMagee/wayback@v2
+        with:
+          url: 'https://res.id.au'
+          saveOutlinks: true
+          saveScreenshot: true
+          skipFirstArchive: true
+          ifNotArchivedWithin: '1d'

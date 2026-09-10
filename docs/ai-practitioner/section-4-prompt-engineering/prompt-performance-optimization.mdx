@@ -2,6 +2,9 @@
 sidebar_position: 4
 ---
 
+import ImageRow from "@site/src/components/ImageRow";
+import RandomnessDiversity from "./img/randomness-diversity.png";
+
 # Prompt Performance Optimization
 
 ---
@@ -126,3 +129,79 @@ An AI engineer wants to reduce the response latency of an interactive customer s
 </details>
 
 ---
+
+#### Question 3
+
+A financial services company is leveraging Amazon Bedrock to generate AI-driven insights and recommendations for its clients. The development team is fine-tuning the model's behavior to produce more accurate and relevant responses. As part of this process, they are experimenting with various inference parameters, including `Top P`, to control how the model generates text. The team needs to understand how adjusting the `Top P` parameter can influence the diversity and quality of the model's responses during inference.
+
+How does the inference parameter `Top P` influence the model response for Amazon Bedrock?
+
+- [ ] A. Specifies the sequences of characters that stop the model from generating further tokens
+- [ ] B. Influences the likelihood of the model selecting lower-probability outputs, thereby impacting the creativity of the model’s output
+- [ ] C. Influences the percentage of most-likely candidates that the model considers for the next token
+- [ ] D. Influences the number of most-likely candidates that the model considers for the next token
+
+<details>
+<summary>Correct Answer</summary>
+
+- [x] C. Influences the percentage of most-likely candidates that the model considers for the next token
+  - **Explanation:** `Top P` represents the percentage of most likely candidates that the model considers for the next token. Choose a lower value to decrease the size of the pool and limit the options to more likely outputs. Choose a higher value to increase the size of the pool and allow the model to consider less likely outputs.
+    <ImageRow>
+      <img src={RandomnessDiversity} alt="Randomness Diversity" />
+    </ImageRow>
+
+<details>
+<summary>Incorrect Answers</summary>
+- [ ] A. Specifies the sequences of characters that stop the model from generating further tokens
+  - **Explanation:** The inference parameter `Stop sequences` specifies the sequences of characters that stop the model from generating further tokens. If the model generates a stop sequence that you specify, it will stop generating after that sequence.
+- [ ] B. Influences the likelihood of the model selecting lower-probability outputs
+  - **Explanation:**  The inference parameter `Temperature` is a value between 0 and 1, and it regulates the creativity of the model's responses.
+- [ ] D. Influences the number of most-likely candidates that the model considers for the next token
+  - **Explanation:** The inference parameter `Top K` represents the number of most likely candidates that the model considers for the next token.
+
+</details>
+
+References:
+
+- https://docs.aws.amazon.com/bedrock/latest/userguide/inference-parameters.html
+- https://docs.aws.amazon.com/bedrock/latest/userguide/general-guidelines-for-bedrock-users.html
+
+</details>
+
+---
+
+#### Question 4
+
+A company is using Amazon Bedrock and it wants to set an upper limit on the number of tokens returned in the model's response.
+
+Which of the following inference parameters would you recommend for the given use case?
+
+- [ ] A. Response length
+- [ ] B. Stop sequence
+- [ ] C. Top P
+- [ ] D. Top K
+
+<details>
+<summary>Correct Answer</summary>
+
+- [x] A. Response length
+  - **Explanation:** Response length represents the minimum or maximum number of tokens to return in the generated response. Setting this parameter configures the upper limit on tokens returned.  
+    ![](./img/response-length.png)
+
+<details>
+<summary>Incorrect Answers</summary>
+- [ ] B. Stop sequence
+  - **Explanation:** Stop sequences specify the sequences of characters that stop the model from generating further tokens once encountered, rather than setting a strict numeric upper limit on tokens.
+- [ ] C. Top P
+  - **Explanation:** Top P controls output diversity by representing the cumulative percentage cutoff of the most likely candidates the model considers for the next token (nucleus sampling).
+- [ ] D. Top K
+  - **Explanation:** Top K limits pool selection to a specific count of the most likely candidates the model considers for the next token.
+
+</details>
+
+Reference:
+
+- https://docs.aws.amazon.com/bedrock/latest/userguide/inference-parameters.html
+- https://docs.aws.amazon.com/bedrock/latest/userguide/general-guidelines-for-bedrock-users.html
+
+</details>
