@@ -34,31 +34,22 @@ $$\text{Model Suitability Score} = f(\text{Modality}, \text{Context Size}, \frac
 
 ### Architectural Landscape: Bedrock Foundation Model Comparison
 
-```
-+-------------------------------------------------------------------------------+
-|                      AMAZON BEDROCK MODEL CATALOG LANDSCAPE                   |
-|                                                                               |
-|  +---------------------------+       +-------------------------------------+  |
-|  |     Amazon Titan Family   |       |          Anthropic Claude           |  |
-|  | * Text Express / Lite     |       | * Claude 3 / 3.5 / 4.5 Sonnet       |  |
-|  | * Multimodal Embeddings   |       | * 200K Token Context Window         |  |
-|  | * High efficiency, 8K ctx |       | * Complex logic & multi-doc analysis|  |
-|  +---------------------------+       +-------------------------------------+  |
-|               |                                         |                     |
-|               v                                         v                     |
-|       +---------------------------------------------------------+             |
-|       |               Unified Bedrock API Layer                 |             |
-|       |       (Standardized Input/Output Payload Format)        |             |
-|       +---------------------------------------------------------+             |
-|               ^                                         ^                     |
-|               |                                         |                     |
-|  +---------------------------+       +-------------------------------------+  |
-|  |        Meta Llama         |       |      Stability AI / Nova Canvas     |  |
-|  | * Llama 2 / Llama 3       |       | * Stable Diffusion / Nova Canvas    |  |
-|  | * Open-weights dialogue   |       | * Pure image synthesis & editing    |  |
-|  | * General NLP tasks       |       | * Text-to-Image / Inpainting        |  |
-|  +---------------------------+       +-------------------------------------+  |
-+-------------------------------------------------------------------------------+
+```mermaid
+graph TD
+    subgraph Catalog[AMAZON BEDROCK MODEL CATALOG LANDSCAPE]
+        Titan[Amazon Titan Family<br/>Text Express / Lite<br/>Multimodal Embeddings<br/>High efficiency, 8K ctx]
+        Claude[Anthropic Claude<br/>Claude 3 / 3.5 / 4.5 Sonnet<br/>200K Token Context Window<br/>Complex logic & multi-doc analysis]
+
+        API[Unified Bedrock API Layer<br/>Standardized Input/Output Payload Format]
+
+        Llama[Meta Llama<br/>Llama 2 / Llama 3<br/>Open-weights dialogue<br/>General NLP tasks]
+        Stability[Stability AI / Nova Canvas<br/>Stable Diffusion / Nova Canvas<br/>Pure image synthesis & editing<br/>Text-to-Image / Inpainting]
+
+        Titan --> API
+        Claude --> API
+        Llama --> API
+        Stability --> API
+    end
 ```
 
 ### Context Window & Operational Economics
