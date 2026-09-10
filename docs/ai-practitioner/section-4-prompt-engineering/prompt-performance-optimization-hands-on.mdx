@@ -10,22 +10,16 @@ sidebar_position: 5
 
 Adjusting inference decoding hyperparameters in Amazon Bedrock directly reshapes the probability distribution and candidate token pool during text generation.
 
-```
-[ Input Prompt: "Write a short story about a robot cooking" ]
-                               |
-                               v
-+---------------------------------------------------------------------------------------+
-| INFERENCE SAMPLING SPECTRUM                                                           |
-+------------------------------------+--------------------------------------------------+
-| Conservative / Deterministic Setup | Creative / High-Variance Setup                   |
-| (Low Temp + Low Top-P + Low Top-K) | (High Temp + High Top-P + High Top-K)            |
-+------------------------------------+--------------------------------------------------+
-| * Temperature: ~0.0 - 0.2          | * Temperature: ~0.8 - 1.0                        |
-| * Top-P: ~0.2                      | * Top-P: ~0.99                                   |
-| * Top-K: ~10                       | * Top-K: ~500                                    |
-| * Output: Predictable, standard,   | * Output: Rich vocabulary, diverse metaphors,    |
-|   and conservative narrative       |   and novel thematic angles                      |
-+------------------------------------+--------------------------------------------------+
+```mermaid
+flowchart TD
+    A["[ Input Prompt: 'Write a short story about a robot cooking' ]"] --> B
+    subgraph Inference Sampling Spectrum
+        direction LR
+        B["Conservative / Deterministic Setup<br>(Low Temp + Low Top-P + Low Top-K)"]
+        C["Creative / High-Variance Setup<br>(High Temp + High Top-P + High Top-K)"]
+    end
+    B --> D["* Temperature: ~0.0 - 0.2<br>* Top-P: ~0.2<br>* Top-K: ~10<br>* Output: Predictable, standard, and conservative narrative"]
+    C --> E["* Temperature: ~0.8 - 1.0<br>* Top-P: ~0.99<br>* Top-K: ~500<br>* Output: Rich vocabulary, diverse metaphors, and novel thematic angles"]
 ```
 
 Controlling **Max Length** sets a hard upper bound on output token generation, preventing runaways and managing token costs. Modulating **Temperature**, **Top-P**, and **Top-K** alters the qualitative tone and variety of the completion without affecting inference latency or token billing rates.
