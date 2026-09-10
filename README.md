@@ -1,6 +1,6 @@
 # AWS Study Notes
 
-[![CI](https://github.com/rensaputra/aws-docs/actions/workflows/ci.yml/badge.svg)](https://github.com/rensaputra/aws-docs/actions/workflows/ci.yml) [![pages-build-deployment](https://github.com/rensaputra/aws-docs/actions/workflows/pages/pages-build-deployment/badge.svg)](https://github.com/rensaputra/aws-docs/actions/workflows/pages/pages-build-deployment)
+[![CI](https://github.com/rensaputra/res.id.au/actions/workflows/ci.yml/badge.svg)](https://github.com/rensaputra/res.id.au/actions/workflows/ci.yml) [![pages-build-deployment](https://github.com/rensaputra/res.id.au/actions/workflows/pages/pages-build-deployment/badge.svg)](https://github.com/rensaputra/res.id.au/actions/workflows/pages/pages-build-deployment)
 
 This website is a collection of my notes, summaries, and exam tips for the AWS Certified Developer Associate (DVA-C02) exam. The content is intended to be for my personal use, but I hope it can also be a helpful resource for others preparing for the same certification.
 
@@ -9,8 +9,8 @@ This website is a collection of my notes, summaries, and exam tips for the AWS C
 Check out the code and install dependencies:
 
 ```bash
-gh repo clone rensaputra/aws-docs
-cd aws-docs
+gh repo clone rensaputra/res.id.au
+cd res.id.au
 npm install
 ```
 
