@@ -67,6 +67,15 @@ const config: Config = {
   // Future flags, see https://docusaurus.io/docs/api/docusaurus-config#future
   future: {
     v4: true, // Improve compatibility with the upcoming Docusaurus v4
+    faster: {
+      swcJsLoader: true,
+      swcJsMinimizer: true,
+      swcHtmlMinimizer: true,
+      lightningCssMinimizer: true,
+      rspackBundler: false, // disable rspack as it breaks with DefinePlugin in the pan-zoom plugin
+      rspackPersistentCache: false,
+      mdxCrossCompilerCache: true,
+    },
   },
 
   // Set the production url of your site here
@@ -110,6 +119,7 @@ const config: Config = {
   ],
 
   plugins: [
+    "docusaurus-plugin-mermaid-pan-zoom",
     async function myPlugin(context, options) {
       return {
         name: "docusaurus-tailwindcss",
@@ -230,6 +240,10 @@ const config: Config = {
               to: "/docs/intro",
             },
             {
+              label: "AIF-C01 (In Progress)",
+              to: "/docs/ai-practitioner/section-1-ai-course-intro/course-structure",
+            },
+            {
               label: "DVA-C02",
               to: "/docs/developer-associate/section-1-course-introduction/course-introduction",
             },
@@ -249,7 +263,11 @@ const config: Config = {
           ],
         },
       ],
-      copyright: `Deployed by Rendy E. Saputra | AWS_REGION=ap-southeast-2` + (process.env.LAST_BUILD_DATE ? `<br/>Last Updated: ${process.env.LAST_BUILD_DATE}` : ''),
+      copyright:
+        `Deployed by Rendy E. Saputra | AWS_REGION=ap-southeast-2` +
+        (process.env.LAST_BUILD_DATE
+          ? `<br/>Last Updated: ${process.env.LAST_BUILD_DATE}`
+          : ""),
     },
     prism: {
       theme: prismThemes.github,

@@ -1,0 +1,185 @@
+---
+sidebar_position: 5
+title: Amazon Translate
+description: Neural Machine Translation (NMT) & Customization
+keywords:
+  [
+    Amazon Translate,
+    Neural Machine Translation,
+    NMT,
+    Custom Terminology,
+    Active Custom Translation,
+    ACT,
+    Formality Control,
+    Profanity Masking,
+    Real-Time Translation,
+    Batch Translation,
+  ]
+---
+
+# Amazon Translate: Neural Machine Translation (NMT) & Customization
+
+---
+
+## Key Takeaways
+
+**Amazon Translate** is a fully managed, serverless **Neural Machine Translation (NMT)** service that provides fast, natural-sounding, and accurate language translation across dozens of supported languages.
+
+```mermaid
+flowchart TD
+    subgraph Ingestion [Source Input Payload]
+        SrcText["Raw Text (UTF-8) / Documents (DOCX, PPTX, XLSX, HTML, TXT)"]
+    end
+
+    subgraph TranslateEngine [Amazon Translate Engine: Neural Machine Translation]
+        direction TB
+        NMT["Context-Aware Neural Network (Full-sentence context)"]
+
+        subgraph CustomControls [Customization & Tuning]
+            CT["Custom Terminology: Brand names & acronyms (CSV / TMX)"]
+            ACT["Active Custom Translation (ACT): Domain parallel data"]
+            Prof["Profanity Masking & Formality Control (Formal vs. Informal)"]
+        end
+    end
+
+    subgraph TargetOutput [Localized Outputs]
+        OutText["Translated Text & Documents in Target Language (UTF-8)"]
+    end
+
+    Ingestion --> TranslateEngine
+    TranslateEngine --> TargetOutput
+
+```
+
+Unlike legacy statistical or word-by-word translation engines, Amazon Translate evaluates the **full context of an entire sentence** to produce grammatically coherent translations. Beyond out-of-the-box translation, it provides enterprise features including **Automatic Source Language Detection**, **Custom Terminology** (preserving brand names), **Active Custom Translation (ACT)**, and **Formality Customization**.
+
+---
+
+## Main Discussion
+
+### Neural Machine Translation (NMT) vs. Legacy Phrase-Based Translation
+
+<div className="flex flex-col md:flex-row">
+```mermaid
+flowchart LR
+    subgraph Legacy [Traditional Phrase-Based Machine Translation]
+        P1[Word 1] --> P2[Word 2] --> P3[Word 3]
+        P_Note["Translates small adjacent windows without global context -> Stilted output"]
+    end
+```
+
+```mermaid
+flowchart LR
+    subgraph NMT_System [Amazon Translate Neural Engine]
+        FullSentence[Entire Input Sentence Context] --> NeuralModel[Encoder-Decoder Deep Neural Net] --> NaturalOut[Fluent, Context-Aware Target Sentence]
+    end
+```
+
+</div>
+
+- **Full-Sentence Semantic Encoding:** Neural Machine Translation uses deep learning encoder-decoder architectures that analyze the semantic intent and grammar of the entire passage, avoiding awkward literal translations.
+- **Automatic Source Language Detection:** If the source language code is unknown (e.g., user comments on an international forum), Amazon Translate detects the source language automatically before translating into the target language.
+
+---
+
+### Key Customization Features
+
+```mermaid
+flowchart TD
+    subgraph CustomizationSuite [Translation Customization Capabilities]
+        CT[1. Custom Terminology] --> CT_Desc["Ensures brand names, legal terms, or model names are translated consistently (or not translated at all)"]
+
+        ACT[2. Active Custom Translation: ACT] --> ACT_Desc["Ingests parallel translation corpora (CSV/TMX) to adapt tone and domain style without retraining base models"]
+
+        Form[3. Formality Tuning] --> Form_Desc["Adjusts output tone between formal (business/legal) and informal (casual chat)"]
+
+        Prof[4. Profanity Masking] --> Prof_Desc["Replaces recognized offensive or profane terms with standard masks (e.g., '?*#')"]
+    end
+
+```
+
+| Feature                             | Mechanism & Format                                                                                       | Enterprise Use Case                                                                                                            |
+| ----------------------------------- | -------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
+| **Custom Terminology**              | Defined via CSV or TMX (Translation Memory eXchange) files mapping source terms to desired target terms. | Preventing brand or product names (e.g., _"Amazon Aurora"_ or _"Elastic Beanstalk"_) from being translated into generic words. |
+| **Active Custom Translation (ACT)** | Ingests parallel domain data (bilingual sentence pairs) to adapt translations to industry jargon.        | Translating complex medical, financial, or engineering documents in specific institutional styles.                             |
+| **Formality Control**               | Configurable toggle (`FORMAL` vs. `INFORMAL`) for supported language pairs.                              | Delivering polite phrasing for corporate statements and casual phrasing for gaming or social apps.                             |
+| **Profanity Masking**               | Automated regex/token filter integrated into the translation pipeline.                                   | Sanitizing user-generated reviews or public live chat before display.                                                          |
+
+---
+
+### Real-Time vs. Asynchronous Batch Processing Modes
+
+| Mode                                 | API Invocations                      | Supported Formats                               | Typical Workload                                                                       |
+| ------------------------------------ | ------------------------------------ | ----------------------------------------------- | -------------------------------------------------------------------------------------- |
+| **Real-Time Translation**            | `TranslateText`, `TranslateDocument` | Plain text strings, HTML, DOCX                  | Live chat translation in customer support, interactive e-commerce browsing.            |
+| **Batch Translation (Asynchronous)** | `StartTextTranslationJob`            | TXT, HTML, DOCX, PPTX, XLSX stored in Amazon S3 | Localizing large enterprise document repositories, corporate wikis, or legal archives. |
+
+---
+
+### Typical Multi-Service Architecture Pattern
+
+Amazon Translate is frequently chained with other AWS Managed AI services:
+
+```mermaid
+flowchart LR
+    AudioIn[Caller Audio] --> Transcribe[Amazon Transcribe: Speech-to-Text]
+    Transcribe --> Translate[Amazon Translate: Language A -> Language B]
+    Translate --> Comprehend[Amazon Comprehend: Sentiment & PII Analysis]
+    Translate --> Polly[Amazon Polly: Text-to-Speech Voice Response]
+
+```
+
+- **Global Customer Service:** Audio from a non-English speaking customer is transcribed to text via **Amazon Transcribe**, translated into English via **Amazon Translate**, analyzed for sentiment via **Amazon Comprehend**, and translated back into speech via **Amazon Polly**.
+
+---
+
+## Exam Guide
+
+### Exam Tips
+
+- **Primary Trigger:** When an exam scenario describes **multilingual localization**, **real-time chat translation**, or **translating large volumes of office documents (Word, Excel, PPT)** with minimal operational effort, select **Amazon Translate**.
+- **Preserving Brand Names:** If the question specifically asks how to ensure brand names, product SKUs, or trademarked words **remain untranslated or strictly mapped**, choose **Custom Terminology**.
+- **Domain Adaptation without Model Training:** When asked how to tailor translation output to specialized industry jargon (medical, legal) using sample sentence pairs, select **Active Custom Translation (ACT)**.
+- **Input/Output Format:** Amazon Translate operates on UTF-8 encoded text and structured document formats.
+
+---
+
+### Practice Test
+
+#### Question 1
+
+A global software company is expanding its website to French, German, and Japanese markets. The marketing team notices that during automated translation, their proprietary database product name "Amazon Neptune" is being incorrectly translated into literal names of mythical gods in target languages. Which Amazon Translate feature should the team configure to resolve this issue?
+
+- [ ] A. Amazon Translate Active Custom Translation (ACT)
+- [ ] B. Amazon Translate Custom Terminology
+- [ ] C. Amazon Comprehend Custom Entity Recognition
+- [ ] D. Amazon Polly SSML Phrasing
+
+<details>
+<summary>Correct Answer</summary>
+
+- [x] B. Amazon Translate Custom Terminology
+  - **Explanation:** **Custom Terminology** in Amazon Translate allows organizations to define custom term mappings (via CSV or TMX files) to ensure brand names, trademarks, and model codes remain untouched or translate into exact designated terms.
+
+</details>
+
+---
+
+#### Question 2
+
+An international e-commerce application needs to ingest customer reviews written in various unknown foreign languages, detect the language automatically, translate the text into English in real time, and analyze the resulting text for positive or negative sentiment. Which combination of AWS managed services provides this workflow with the least operational overhead?
+
+- [ ] A. Amazon Rekognition and Amazon Lex
+- [ ] B. Amazon Translate and Amazon Comprehend
+- [ ] C. Amazon SageMaker JumpStart and AWS Glue
+- [ ] D. Amazon Transcribe and Amazon Polly
+
+<details>
+<summary>Correct Answer</summary>
+
+- [x] B. Amazon Translate and Amazon Comprehend
+  - **Explanation:** **Amazon Translate** automatically detects the source language and translates foreign customer reviews into English in real time. The translated English text is then passed to **Amazon Comprehend** for automated sentiment analysis.
+
+</details>
+
+---

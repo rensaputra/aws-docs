@@ -1,0 +1,245 @@
+---
+sidebar_position: 7
+title: Security & Privacy for AI
+description: Defense-in-Depth, Shared Responsibility Model & Privacy-Enhancing Technologies
+keywords:
+  [
+    AI,
+    Security,
+    Privacy,
+    Defense-in-Depth,
+    Shared Responsibility Model,
+    Privacy-Enhancing Technologies,
+    PETs,
+    Amazon Macie,
+    Amazon Comprehend,
+    SageMaker Model Monitor,
+  ]
+---
+
+# Security & Privacy for AI: Defense-in-Depth, Shared Responsibility Model & Privacy-Enhancing Technologies
+
+---
+
+## Key Takeaways
+
+Securing artificial intelligence workloads requires applying defense-in-depth principles across data, model execution, infrastructure, and runtime guardrails.
+
+```mermaid
+flowchart TD
+    subgraph SecurityArchitecture [Defense-in-Depth for AI / ML Systems]
+        direction LR
+
+        subgraph Layer1 [1. Threat Detection & Vulnerability Management]
+            direction LR
+            Threat["AI-Based Threat Detection: User behavior, network traffic & anomaly checks"]
+            Vuln["Vulnerability Scanning: Container & library patching (Amazon Inspector)"]
+        end
+
+        subgraph Layer2 [2. Infrastructure & Network Isolation]
+            direction LR
+            NetSec["Network Segmentation: Amazon VPC, PrivateLink endpoints & SageMaker Network Isolation"]
+            IAM_Access["Access Control: Least-privilege IAM roles, SSO, MFA & Role Manager"]
+        end
+
+        subgraph Layer3 [3. Data Protection & Privacy-Enhancing Tech]
+            direction LR
+            Enc["Data Encryption: AWS KMS at rest & TLS in transit"]
+            PETs["Privacy-Enhancing Tech: Data masking, tokenization, PII redaction (Macie / Comprehend)"]
+        end
+
+        subgraph Layer4 [4. Runtime Guardrails & Operational Monitoring]
+            direction LR
+            Guards["Runtime Defenses: Guardrails for Bedrock (Prompt Attack & Content Filters)"]
+            Obs["Model & Infra Observability: SageMaker Model Monitor (Accuracy, F1, Latency, Drift)"]
+        end
+    Layer1 ~~~ Layer2 ~~~ Layer3 ~~~ Layer4
+    end
+
+    SecurityArchitecture --> SharedResp["Governed by the AWS Shared Responsibility Model"]
+
+```
+
+Key security controls include:
+
+- **The AWS Shared Responsibility Model for AI:** AWS manages the security **OF** the cloud (physical data centers, managed compute, base service code), while the customer is responsible for security **IN** the cloud (data classification, IAM access policies, encryption configuration, and application guardrails).
+- **Privacy-Enhancing Technologies (PETs):** Data masking, tokenization, PII discovery and sanitization (**Amazon Macie**, **Amazon Comprehend**), and least-privilege role-based access control (RBAC).
+- **AI Observability:** Tracking both computational metrics (CPU/GPU utilization, latency) and algorithmic health (**Precision**, **Recall**, **F1-Score**, **Data Drift**).
+
+---
+
+## Main Discussion
+
+### The AWS Shared Responsibility Model for AI & GenAI
+
+The operational boundary between AWS and the customer depends on whether you run unmanaged infrastructure (EC2), managed ML platforms (SageMaker), or serverless Generative AI services (Amazon Bedrock).
+
+```mermaid
+flowchart TD
+    subgraph SharedModel [The AWS Shared Responsibility Boundary]
+        direction LR
+
+        subgraph CustomerSide [Customer Responsibility: Security 'IN' the Cloud]
+            direction LR
+            C1["Customer Data Classification, Masking & PII Redaction"]
+            C2["Identity & Access Management (IAM Policies, MFA, Least Privilege)"]
+            C3["Configuring Guardrails, Custom Prompts & Input Validation"]
+            C4["Data Encryption Configuration (AWS KMS Keys at Rest & TLS in Transit)"]
+            C5["Monitoring Model Drift & Algorithmic Performance"]
+        end
+
+        subgraph AWSSide [AWS Responsibility: Security 'OF' the Cloud]
+            direction LR
+            A1["Physical Security of Data Centers & Facilities"]
+            A2["Host Hardware, Hypervisors & Core Network Infrastructure"]
+            A3["Managed Service Software & Patching (Bedrock, SageMaker AI Engines)"]
+            A4["Foundation Model Base Infrastructure & Compliance Accreditations"]
+        end
+    end
+
+    AWSSide --- CustomerSide
+
+```
+
+| Component                       | AWS Responsibility ("OF" the Cloud)                                                                                             | Customer Responsibility ("IN" the Cloud)                                                                                                    |
+| ------------------------------- | ------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Amazon EC2 (Self-Hosted AI)** | Physical hardware, facility security, host virtualization layer.                                                                | Guest OS patching, software updates, firewall rules (Security Groups), CUDA/NVIDIA driver configuration, IAM policies, and data encryption. |
+| **Amazon SageMaker AI**         | Managed compute provisioning, ML execution container infrastructure, underlying OS patching, high availability.                 | Training script logic, notebook access policies, VPC/PrivateLink networking setup, training dataset classification, and Model Cards.        |
+| **Amazon Bedrock (GenAI APIs)** | Foundation model API hosting, base model infrastructure maintenance, serverless scaling, physical isolation.                    | Prompt design, **Bedrock Guardrail** configuration, fine-tuning data preparation, access management, and PII handling.                      |
+| **Shared Controls**             | Patch management (AWS patches cloud services; customers patch OS/applications), Configuration management, Awareness & Training. |                                                                                                                                             |
+
+![](./img/shared-responsibility-model-diagram.png)
+
+---
+
+### Privacy-Enhancing Technologies (PETs) & Data Protection
+
+Protecting sensitive customer data (PII, PHI, financial records) requires combining cryptographic security with automated data sanitization:
+
+```mermaid
+flowchart LR
+    subgraph PETsMethods [Privacy-Enhancing Technologies for AI Pipelines]
+        direction TB
+        M1["Data Masking / Redaction: Replacing PII with generic tokens (e.g., '[REDACTED_SSN]')"]
+        M2["Tokenization: Swapping sensitive values with non-sensitive reference tokens"]
+        M3["Automated Discovery: Scanning S3 buckets with Amazon Macie to detect sensitive data"]
+        M4["KMS Encryption: Enforcing customer-managed keys (CMKs) for data at rest"]
+    end
+```
+
+| Privacy Control                     | Mechanism                                                                                                                                        | Primary AWS Service / Feature                                           |
+| ----------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------- |
+| **Sensitive Data Discovery**        | ML-powered pattern matching to scan Amazon S3 storage buckets for unprotected PII, credit cards, or credentials before model training.           | **Amazon Macie**                                                        |
+| **PII / PHI Redaction**             | Identifying and masking personal entities within text payloads (e.g., names, SSNs, phone numbers) during ingestion or inference.                 | **Amazon Comprehend** / **Comprehend Medical** / **Bedrock Guardrails** |
+| **Data Masking & Obfuscation**      | Irreversibly altering sensitive demographic identifiers in training datasets to protect individual privacy while preserving statistical utility. | **SageMaker Canvas / Glue DataBrew**                                    |
+| **Encryption at Rest & In Transit** | Encrypting training data, model checkpoints, and EBS volumes at rest; securing API payloads in transit via TLS 1.3.                              | **AWS KMS** & **Amazon VPC PrivateLink**                                |
+
+---
+
+### Model Performance & Operational Monitoring Metrics
+
+Continuous production monitoring evaluates both algorithmic accuracy and compute infrastructure health:
+
+```mermaid
+mindmap
+  root((AI Monitoring Dimensions))
+    Algorithmic Health
+      Accuracy (Overall correct prediction ratio)
+      Precision (True Positives / All Predicted Positives)
+      Recall (True Positives / All Actual Positives)
+      F1-Score (Harmonic mean of Precision and Recall)
+      Data & Concept Drift (Statistical distribution shifts)
+    Infrastructure Health
+      Inference Latency (p50 / p90 / p99 response times)
+      Compute Utilization (vCPU / GPU load & memory headroom)
+      Network Throughput & Storage I/O
+```
+
+$$\text{Precision} = \frac{\text{True Positives}}{\text{True Positives} + \text{False Positives}}$$
+
+$$\text{Recall} = \frac{\text{True Positives}}{\text{True Positives} + \text{False Negatives}}$$
+
+$$\text{F1-Score} = 2 \times \frac{\text{Precision} \times \text{Recall}}{\text{Precision} + \text{Recall}}$$
+
+- **Precision:** Critical when the cost of a **False Positive** is severe (e.g., spam filtering or fraud flagging where innocent users should not be blocked).
+- **Recall:** Critical when the cost of a **False Negative** is severe (e.g., medical pathology detection or airport threat detection where missing a positive case is catastrophic).
+- **F1-Score:** The harmonic mean of precision and recall, providing a balanced metric on imbalanced datasets.
+
+---
+
+### Enterprise Access Control & Least Privilege
+
+```mermaid
+flowchart TD
+    subgraph AccessHierarchy [IAM & Access Enforcement Layers]
+        SSO["Federated Single Sign-On (SSO / IAM Identity Center)"] --> MFA["Multi-Factor Authentication (MFA) Enforced"]
+        MFA --> RBAC["Role-Based Access Control (RBAC): SageMaker Role Manager personas"]
+        RBAC --> LeastPriv["Fine-Grained IAM Policies: Least privilege resource & action restrictions"]
+        LeastPriv --> AuditLog["Continuous Access Logging: AWS CloudTrail records all API activity"]
+    end
+```
+
+- **Role-Based Access Control (RBAC):** Defining distinct IAM execution roles for each persona (Data Scientists, Data Engineers, MLOps Engineers) using **SageMaker Role Manager**.
+- **Least-Privilege Principle:** Granting users and services only the minimum permissions necessary to perform their specific tasks (e.g., allowing an inference endpoint to read model artifacts from S3, but prohibiting write or delete actions).
+- **Private Connectivity:** Routing traffic privately through **Amazon VPC Endpoints (AWS PrivateLink)** so training and inference traffic never traverses the public internet.
+
+---
+
+## Exam Guide
+
+### Exam Tips
+
+- **Shared Responsibility Model for AI (High Frequency):**
+  - **AWS Responsibility:** Security **OF** the cloud (physical infrastructure, hardware, hypervisors, foundational Bedrock model hosting, managed patching).
+  - **Customer Responsibility:** Security **IN** the cloud (data classification, customer-managed KMS keys, IAM policies, Guardrail setup, training data privacy).
+- **Sensitive Data Discovery vs. PII Masking:**
+  - To scan S3 buckets and identify sensitive data/PII at scale $\rightarrow$ **Amazon Macie**.
+  - To redact PII from real-time text or prompt inputs $\rightarrow$ **Amazon Comprehend** / **Guardrails for Amazon Bedrock**.
+- **Metric Triggers:**
+  - **Precision:** Use when minimizing **False Positives** is the priority.
+  - **Recall:** Use when minimizing **False Negatives** (missing positive cases) is the priority.
+  - **F1-Score:** The metric to optimize when evaluating imbalanced datasets where both precision and recall matter.
+- **Privacy-Enhancing Technologies (PETs):** Look for keywords like **data masking**, **tokenization**, and **anonymization** to protect user privacy without degrading model training capability.
+- **Network Isolation:** Training sensitive models without outbound internet or external VPC access is achieved via **SageMaker Network Isolation Mode**.
+
+---
+
+### Practice Test
+
+#### Question 1
+
+Under the AWS Shared Responsibility Model, which security task is the direct responsibility of the customer when deploying a Generative AI application using foundation models on Amazon Bedrock?
+
+- [ ] A. Applying firmware updates to physical GPU hardware in AWS data centers
+- [ ] B. Configuring Guardrails for Amazon Bedrock and managing IAM access permissions
+- [ ] C. Managing the physical environmental controls of AWS facilities
+- [ ] D. Patching the underlying operating system hosting the managed Bedrock API
+
+<details>
+<summary>Correct Answer</summary>
+
+- [x] B. Configuring Guardrails for Amazon Bedrock and managing IAM access permissions
+  - **Explanation:** In the AWS Shared Responsibility Model for managed services like Amazon Bedrock, the **customer** is responsible for security _in_ the cloud—including configuring application guardrails, defining IAM access policies, managing data classification, and encrypting client data. AWS manages the physical facilities, hardware, and underlying managed service software.
+
+</details>
+
+---
+
+#### Question 2
+
+A healthcare organization is preparing a large corpus of patient consultation transcripts stored in Amazon S3 for an internal machine learning training pipeline. Before training starts, the security lead must ensure that any unprotected Personally Identifiable Information (PII) stored within the S3 buckets is automatically discovered and flagged. Which AWS service should be used?
+
+- [ ] A. AWS Trusted Advisor
+- [ ] B. Amazon Macie
+- [ ] C. Amazon Polly
+- [ ] D. AWS HealthScribe Evidence Mapping
+
+<details>
+<summary>Correct Answer</summary>
+
+- [x] B. Amazon Macie
+  - **Explanation:** **Amazon Macie** is a fully managed data security and privacy service that uses machine learning and pattern matching to discover, monitor, and protect sensitive data (such as PII and financial records) in Amazon S3.
+
+</details>
+
+---
