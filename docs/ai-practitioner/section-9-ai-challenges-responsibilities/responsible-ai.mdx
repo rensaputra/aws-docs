@@ -287,3 +287,29 @@ A developer is evaluating Amazon Rekognition and Amazon Textract for an enterpri
 </details>
 
 ---
+
+#### Question 3
+
+Which of the following explanations BEST describes the differences between Shapley values and Partial Dependence Plots (PDP) in the context of model explainability, and how you might use them for this purpose?
+
+- [ ] A. Shapley values provide a local explanation by quantifying the contribution of each feature to the prediction for a specific instance, while PDP provides a global explanation by showing the marginal effect of a feature on the model’s predictions across the dataset. Use Shapley values to explain individual predictions and PDP to understand the model's behavior at a dataset level
+- [ ] B. Shapley values provide a global view of the model’s behavior by measuring the average effect of each feature across all instances, while PDP offers a local view by showing the effect of a single feature on the model’s prediction for a specific instance. Use Shapley values to understand overall feature importance and PDP to interpret individual predictions
+- [ ] C. Shapley values provide a visual interpretation of feature importance using plots, while PDP provides numeric values indicating the marginal contribution of features to the model's predictions. Use Shapley values for visual analysis and PDP for quantitative analysis
+- [ ] D. Shapley values and PDP are both global explainability methods that show the average effect of features on model predictions. Use either method to understand overall feature importance, but Shapley values are computationally less expensive than PDP
+
+<details>
+<summary>Correct Answer</summary>
+
+- [x] A. Shapley values provide a local explanation by quantifying the contribution of each feature to the prediction for a specific instance, while PDP provides a global explanation by showing the marginal effect of a feature on the model’s predictions across the dataset. Use Shapley values to explain individual predictions and PDP to understand the model's behavior at a dataset level
+  - **Explanation:** This option correctly captures the differences between Shapley values and PDP in the context of model explainability:
+
+    Shapley values are a local interpretability method that explains individual predictions by assigning each feature a contribution score based on its marginal effect on the prediction. This method is useful for understanding the impact of each feature on a specific instance's prediction.
+
+    Partial Dependence Plots (PDP), on the other hand, provide a global view of the model’s behavior by illustrating how the predicted outcome changes as a single feature is varied across its range, holding all other features constant. PDPs help understand the overall relationship between a feature and the model output across the entire dataset.
+
+    Thus, Shapley values are suited for explaining individual decisions, while PDP is used to understand broader trends in model behavior.  
+     ![](./img/model-explanability-shapley-pdp.png)
+
+</details>
+
+---
