@@ -184,3 +184,41 @@ An enterprise is planning to deploy a generative AI service using Amazon Bedrock
   - **Explanation:** **Compliance and Data Sovereignty** regulations dictate that data must remain physically within specific geographical or national boundaries, requiring the enterprise to deploy in the local region.
 
 </details>
+
+---
+
+#### Question 3
+
+A financial services company is deploying a machine learning model to predict stock market trends in real time. The model must generate predictions quickly to provide timely insights for trading decisions. The team wants to evaluate the runtime efficiency of the model to ensure it meets performance requirements.
+
+Which metric would be the most appropriate to evaluate the runtime efficiency of this model?
+
+- [ ] A. Precision-Recall Score
+- [ ] B. Data Throughput
+- [ ] C. Model Accuracy
+- [ ] D. Average Response Time
+
+<details>
+<summary>Correct Answer</summary>
+
+- [x] D. Average Response Time
+  - **Explanation:** Average response time measures how long it takes for the model to process input data and generate an inference. It directly reflects the model's runtime efficiency (latency), which is crucial in real-time trading scenarios where predictions must be returned within strict deadlines to remain actionable.
+
+<details>
+<summary>Incorrect Answers</summary>
+
+- [ ] A. Precision-Recall Score
+  - **Explanation:** Precision and recall evaluate classification accuracy and error trade-offs, especially under class imbalance, rather than execution speed or runtime performance.
+- [ ] B. Data Throughput
+  - **Explanation:** Data throughput measures total data volume or transactions processed over an aggregate time window (system-level bandwidth), which does not directly measure the per-request latency or individual inference speed required for real-time decision-making.
+- [ ] C. Model Accuracy
+  - **Explanation:** Accuracy measures the predictive quality and correctness of model outputs, not the computational speed or runtime efficiency.
+
+</details>
+
+Reference:
+
+- https://aws.amazon.com/blogs/machine-learning/increase-ml-model-performance-and-reduce-training-time-using-amazon-sagemaker-built-in-algorithms-with-pre-trained-models/
+- https://docs.aws.amazon.com/sagemaker/latest/dg/autopilot-metrics-validation.html
+
+</details>
