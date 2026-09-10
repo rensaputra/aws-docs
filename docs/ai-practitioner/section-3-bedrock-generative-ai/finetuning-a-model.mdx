@@ -208,3 +208,153 @@ A fintech organization wants to deploy an AI assistant for mobile users with hig
 </details>
 
 ---
+
+#### Question 3
+
+A financial services company is exploring the use of generative AI to automate report generation and enhance customer insights. As part of this effort, the team is evaluating different AI models and technologies, including Foundation Models (FMs), to understand their capabilities and how they can be applied to improve efficiency. The team needs to clarify key characteristics and features of Foundation Models to determine if they align with the company's objectives.
+
+Which of the following statements is correct regarding Foundation Models (FMs) in the context of generative AI?
+
+- [ ] A. FMs use self-supervised learning to create labels from input data, however, fine-tuning an FM is a supervised learning process
+- [ ] B. FMs use supervised learning to create labels from input data, however, fine-tuning an FM is a self-supervised learning process
+- [ ] C. FMs use self-supervised learning to create labels from input data and fine-tuning an FM is a self-supervised learning process as well
+- [ ] D. FMs use supervised learning to create labels from input data and fine-tuning an FM is a supervised learning process as well
+
+<details>
+<summary>Correct Answer</summary>
+
+- [x] A. FMs use self-supervised learning to create labels from input data, however, fine-tuning an FM is a supervised learning process
+  - **Explanation:** In supervised learning, you train the model with a set of input data and a corresponding set of paired labeled output data. Unsupervised machine learning is when you give the algorithm input data without any labeled output data. Then, on its own, the algorithm identifies patterns and relationships in and between the data. Self-supervised learning is a machine learning approach that applies unsupervised learning methods to tasks usually requiring supervised learning. Instead of using labeled datasets for guidance, self-supervised models create implicit labels from unstructured data.
+
+    Foundation models use self-supervised learning to create labels from input data. This means no one has instructed or trained the model with labeled training data sets.
+
+    Fine-tuning a pre-trained foundation model is an affordable way to take advantage of their broad capabilities while customizing a model on your own small, corpus. Fine-tuning involves further training a pre-trained language model on a specific task or domain-specific dataset, allowing it to address business requirements. Fine-tuning is a customization method that does change the weights of your model.
+
+    Fine-tuning an FM is a supervised learning process.
+
+References:
+
+- https://aws.amazon.com/what-is/foundation-models/
+- https://docs.aws.amazon.com/sagemaker/latest/dg/jumpstart-foundation-models-fine-tuning.html
+- https://aws.amazon.com/compare/the-difference-between-machine-learning-supervised-and-unsupervised/
+
+</details>
+
+---
+
+#### Question 4
+
+A financial services company is exploring Amazon Bedrock to streamline its AI development for use cases such as fraud detection, personalized customer service, and automated reporting. The company is particularly interested in understanding the key features and benefits of Amazon Bedrock, including its ability to simplify access to powerful foundation models, support customizations, and integrate with existing AWS services.
+
+To make an informed decision, the company needs to identify which of the following accurately applies to Amazon Bedrock and its capabilities? (Select two)
+
+- [ ] A. You can use the On-Demand mode only with time-based term commitments
+- [ ] B. You can use a customized model only in the Provisioned Throughput mode
+- [ ] C. Larger models are cheaper to use than smaller models
+- [ ] D. Smaller models are cheaper to use than larger models
+- [ ] E. You can use a customized model in the Provisioned Throughput or On-Demand mode
+
+<details>
+<summary>Correct Answers</summary>
+
+With Amazon Bedrock, you are charged for model inference and customization. You have a choice of pricing plans for inference:
+
+1. **On-Demand and Batch:** Allows you to use foundation models on a pay-as-you-go basis without making time-based term commitments.
+2. **Provisioned Throughput:** Allows you to provision dedicated throughput to meet performance requirements in exchange for a time-based term commitment (or no commitment depending on duration).
+
+- [x] D. Smaller models are cheaper to use than larger models
+  - **Explanation:** The cost of generative AI models varies largely by parameter size and compute requirements. While larger models tend to offer higher capability and accuracy, they carry significantly higher compute costs and token pricing. Smaller models provide lower latency, lower pricing per token, and more cost-effective deployment options.
+- [x] E. You can use a customized model in the Provisioned Throughput or On-Demand mode
+  - **Explanation:** Amazon Bedrock supports the use of customized models through Provisioned Throughput or On-Demand mode. To use a custom model with dedicated capacity, you can purchase Provisioned Throughput. You can also deploy a custom model for on-demand inference, and after the deployment becomes active, use the deployment ARN as the `modelId` for inference requests.  
+    ![](./img/bedrock-inference-options.png)
+
+<details>
+<summary>Incorrect Answers</summary>
+
+- [ ] A. You can use the On-Demand mode only with time-based term commitments
+  - **Explanation:** On-Demand mode is strictly pay-as-you-go based on the number of tokens processed, requiring no time-based term commitments. Time-based term commitments are associated with Provisioned Throughput.
+- [ ] B. You can use a customized model only in the Provisioned Throughput mode
+  - **Explanation:** Amazon Bedrock supports inference for customized models via both Provisioned Throughput and On-Demand deployment.
+- [ ] C. Larger models are cheaper to use than smaller models
+  - **Explanation:** Larger foundation models require substantially more compute and memory to run inference, making them more expensive per token or compute unit than smaller models.
+
+</details>
+
+Reference:
+
+- https://docs.aws.amazon.com/bedrock/latest/userguide/model-customization-use.html
+
+</details>
+
+---
+
+#### Question 5
+
+A healthcare technology company is exploring Amazon Bedrock to develop AI-driven solutions for personalized patient care and predictive diagnostics. The team is particularly interested in customizing Foundation Models (FMs) to align with their proprietary medical data and specific use cases. To make an informed decision, they need to understand the available methods for customizing models within Amazon Bedrock to meet their unique requirements.
+
+Which of the following statements is correct regarding the model customization methods for Amazon Bedrock?
+
+- [ ] A. Continued pre-training uses `labeled` data to pre-train a model, whereas, fine-tuning uses `unlabeled` data to train a model
+- [ ] B. Continued pre-training uses `labeled` data to pre-train a model and fine-tuning also uses `labeled` data to train a model
+- [ ] C. Continued pre-training uses `unlabeled` data to pre-train a model and fine-tuning also uses `unlabeled` data to train a model
+- [ ] D. Continued pre-training uses `unlabeled` data to pre-train a model, whereas, fine-tuning uses `labeled` data to train a model
+
+<details>
+<summary>Correct Answer</summary>
+
+- [x] D. Continued pre-training uses `unlabeled` data to pre-train a model, whereas, fine-tuning uses `labeled` data to train a model
+  - **Explanation:** Model customization involves further training and changing the weights of the model to enhance its performance. You can use continued pre-training or fine-tuning for model customization in Amazon Bedrock.
+
+    In the continued pre-training process, you provide unlabeled data to pre-train a model by familiarizing it with certain types of inputs. You can provide data from specific topics to expose a model to those areas. The Continued Pre-training process will tweak the model parameters to accommodate the input data and improve its domain knowledge.
+
+    For example, you can train a model with private data, such as business documents, that are not publicly available for training large language models. Additionally, you can continue to improve the model by retraining the model with more unlabeled data as it becomes available.
+
+    While fine-tuning a model, you provide labeled data to train a model to improve performance on specific tasks. By providing a training dataset of labeled examples, the model learns to associate what types of outputs should be generated for certain types of inputs. The model parameters are adjusted in the process and the model's performance is improved for the tasks represented by the training dataset.  
+     ![](./img/model-customization.png)
+
+References:
+
+- https://docs.aws.amazon.com/bedrock/latest/userguide/custom-models.html
+- https://aws.amazon.com/blogs/machine-learning/best-practices-to-build-generative-ai-applications-on-aws/
+
+</details>
+
+---
+
+#### Question 6
+
+A technology company is utilizing multiple machine learning models across different departments, such as marketing, customer support, and product development, to address various business needs. To enhance overall performance, the company wants these models to learn from each other by sharing the latest data insights and patterns discovered by each model. The goal is to optimize the models' accuracy and efficiency by effectively using the most up-to-date information available from all sources.
+
+Given this objective, which approach would be the most suitable for achieving cross-model optimization?
+
+- [ ] A. The company should use transfer learning, a method where a model pre-trained on one task is adapted to improve performance on a different but related task by leveraging knowledge from the original task
+- [ ] B. The company should use reinforcement learning, a strategy where an agent learns to make decisions by interacting with an environment and receiving rewards or penalties based on its actions
+- [ ] C. The company should use incremental training, an approach that allows models to be updated incrementally with new data without needing a complete retraining from scratch
+- [ ] D. The company should use self-supervised learning, a technique where the model learns patterns and representations from unlabeled data without relying on explicit supervision or labeled datasets
+
+<details>
+<summary>Correct Answer</summary>
+
+- [x] A. The company should use transfer learning, a method where a model pre-trained on one task is adapted to improve performance on a different but related task by leveraging knowledge from the original task
+  - **Explanation:** Transfer learning is the most suitable approach in this scenario. It allows a model to utilize the knowledge learned from one task or dataset to improve its performance on a new, but related task. For a company using multiple models for different use cases, transfer learning can help optimize performance by adapting insights from the latest data generated by other models. This approach reduces the need for extensive data and computational resources while ensuring that the models benefit from shared knowledge across related domains or tasks.  
+    ![](./img/transfer-learning.png)
+
+<details>
+<summary>Incorrect Answers</summary>
+- [ ] B. The company should use reinforcement learning, a strategy where an agent learns to make decisions by interacting with an environment and receiving rewards or penalties based on its actions
+  - **Explanation:** Reinforcement learning is designed for scenarios where a model needs to learn a sequence of actions to achieve a specific goal by maximizing cumulative rewards. It is primarily used in decision-making problems, such as game playing or robotic control. It is not well-suited for optimizing multiple models by learning from the latest data of other models, as it does not involve leveraging cross-model data or knowledge sharing.
+- [ ] C. The company should use incremental training, an approach that allows models to be updated incrementally with new data without needing a complete retraining from scratch
+  - **Explanation:** While incremental training is useful for updating a model with new data continuously, it focuses on enhancing a single model's performance with its own data rather than learning from the data of other models. This approach is not designed for optimizing multiple models by leveraging knowledge across different use cases, making it less suitable for the company’s objective.
+- [ ] D. The company should use self-supervised learning, a technique where the model learns patterns and representations from unlabeled data without relying on explicit supervision or labeled datasets
+  - **Explanation:** Self-supervised learning is effective for tasks where labeled data is scarce or unavailable, as it allows models to learn useful representations from large amounts of unlabeled data. However, it does not directly address the need to optimize multiple models using the latest data from other models. This approach is more suitable for foundational training rather than model optimization across different use cases.
+
+</details>
+
+References:
+
+- https://aws.amazon.com/what-is/transfer-learning/
+- https://aws.amazon.com/what-is/machine-learning/
+
+</details>
+
+---

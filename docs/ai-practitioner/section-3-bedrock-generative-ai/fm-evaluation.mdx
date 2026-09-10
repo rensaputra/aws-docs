@@ -168,3 +168,40 @@ An AI practitioner needs to compare two foundation models to determine which one
 </details>
 
 ---
+
+#### Question 3
+
+A financial services company is developing a machine-learning model to classify loan applications as either "approved" or "denied." To ensure the model performs effectively, the company wants to evaluate how accurately it predicts these outcomes. Specifically, they are interested in knowing the overall percentage of correct predictions, including both approved and denied applications. The company is considering several metrics to assess the model's performance in terms of the number of correct outcomes.
+
+Which metric would be most appropriate for this purpose?
+
+- [ ] A. The company should use R-squared, a statistical measure that indicates the proportion of variance in the dependent variable explained by the independent variables
+- [ ] B. The company should use Root Mean Squared Error (RMSE), a metric that calculates the square root of the average of the squared differences between predicted and actual values
+- [ ] C. The company should use F1 Score, a metric that considers both precision and recall by calculating their harmonic mean
+- [ ] D. The company should use Accuracy, which measures the proportion of correctly predicted instances (both true positives and true negatives) out of the total number of instances
+
+<details>
+<summary>Correct Answer</summary>
+
+- [x] D. The company should use Accuracy, which measures the proportion of correctly predicted instances (both true positives and true negatives) out of the total number of instances
+  - **Explanation:** Accuracy is the most appropriate metric when the goal is to understand the proportion of correct outcomes in a binary classification problem. It provides a straightforward measure of how often the model correctly predicts the positive and negative classes. Accuracy is a suitable choice when the dataset is balanced (i.e., the number of positive and negative instances is approximately equal) and when the company wants a simple, overall performance measure of the model's correctness.
+
+<details>
+<summary>Incorrect Answers</summary>
+- [ ] A. The company should use R-squared, a statistical measure that indicates the proportion of variance in the dependent variable explained by the independent variables
+  - **Explanation:** R-squared is a metric that measures the goodness of fit in regression models. It shows how well the independent variables explain the variance in the dependent variable. Since R-squared is specific to regression tasks and not applicable to classification problems, it is not a suitable metric for evaluating the correct outcomes in a binary classification scenario.
+- [ ] B. The company should use Root Mean Squared Error (RMSE), a metric that calculates the square root of the average of the squared differences between predicted and actual values
+  - **Explanation:** RMSE is a metric used to measure the average magnitude of errors in a regression model's predictions. It is not appropriate for binary classification tasks because it is designed to assess continuous numeric predictions rather than categorical outcomes. Therefore, RMSE does not provide meaningful insights into the correct or incorrect outcomes in a classification context.
+- [ ] C. The company should use F1 Score, a metric that considers both precision and recall by calculating their harmonic mean
+  - **Explanation:** The F1 Score is a useful metric when dealing with imbalanced datasets in binary classification, as it balances precision (the proportion of true positive predictions among all positive predictions) and recall (the proportion of true positives among all actual positive instances). However, if the primary focus is simply to measure the correct outcomes without concern for the balance between precision and recall, then accuracy is a more straightforward metric. F1 Score is most appropriate when both false positives and false negatives need to be minimized, but it may not be necessary if the dataset is balanced and the company only wants to know the overall proportion of correct predictions.
+
+</details>
+
+Reference:
+
+- https://aws.amazon.com/blogs/big-data/building-a-binary-classification-model-with-amazon-machine-learning-and-amazon-redshift/
+- https://docs.aws.amazon.com/machine-learning/latest/dg/binary-classification.html
+
+</details>
+
+---
