@@ -10,10 +10,13 @@ sidebar_position: 6
 
 Setting up an AWS account establishes your root credentials—the ultimate administrative master key to your entire AWS infrastructure. AWS mandates credit card verification during sign-up to prevent fraud and confirm identity, even for free tiers.
 
-```
-[ Root Email & Account Name ] ---> [ Password Setup ] ---> [ Plan & Contact Info ]
-                                                                          |
-[ Console Dashboard Access ] <--- [ Identity Verification ] <--- [ Payment Details ]
+```mermaid
+flowchart LR
+    A[Root Email & Account Name] --> B[Password Setup]
+    B --> C[Plan & Contact Info]
+    C --> D[Payment Details]
+    D --> E[Identity Verification]
+    E --> F[Console Dashboard Access]
 ```
 
 Starting with the **Free Plan** grants initial credits and sets a safety boundary: if credits run out, the account closes automatically instead of incurring unexpected credit card charges.

@@ -10,18 +10,18 @@ sidebar_position: 5
 
 AWS pioneered modern cloud infrastructure. From its initial internal launch in 2002 to becoming the world’s leading cloud platform, AWS provides global infrastructure that powers everything from early-stage startups to massive enterprise platforms like Netflix, Airbnb, and NASA.
 
-```
-[ Global Users ]
-       |
-       v (Served via 400+ Edge Locations for Ultra-Low Latency)
-[ AWS Global Infrastructure ]
-       |
-       +---> AWS Regions (Geographical clusters: us-east-1, ap-southeast-2)
-               |
-               +---> Availability Zones (3+ isolated physical data center groups)
-                       |
-                       +---> Individual Data Centers
+```mermaid
+flowchart TD
+    Users["Global Users"]
+    GlobalInfra["AWS Global Infrastructure"]
+    Regions["AWS Regions<br/>(Geographical clusters: us-east-1, ap-southeast-2)"]
+    AZs["Availability Zones<br/>(3+ isolated physical data center groups)"]
+    DCs["Individual Data Centers"]
 
+    Users -->|Served via 400+ Edge Locations for Ultra-Low Latency| GlobalInfra
+    GlobalInfra --> Regions
+    Regions --> AZs
+    AZs --> DCs
 ```
 
 To optimize application deployments and AI workloads, you must understand how to navigate **AWS Regions**, **Availability Zones (AZs)**, and **Points of Presence / Edge Locations**, along with the key trade-offs (compliance, latency, pricing, service availability) when selecting deployment targets.
@@ -48,30 +48,22 @@ AWS established the cloud computing industry and continues to lead global market
 
 AWS organizes its physical hardware globally across three primary abstraction layers:
 
-```
-+-------------------------------------------------------------------------------+
-| AWS REGION (e.g., Sydney / ap-southeast-2)                                    |
-|                                                                               |
-|  +-----------------------+  High-Speed Fiber      +-----------------------+   |
-|  | Availability Zone A   | <====================> | Availability Zone B   |   |
-|  | (ap-southeast-2a)     |                        | (ap-southeast-2b)     |   |
-|  +-----------------------+                        +-----------------------+   |
-|              ^                                                ^               |
-|              |               Ultra-Low Latency                |               |
-|              +================================================+               |
-|                                      ^                                        |
-|                                      | Encrypted Metro Fiber                  |
-|                                      v                                        |
-|  +-------------------------------------------------------------------------+  |
-|  | Availability Zone C (ap-southeast-2c)                                   |  |
-|  +-------------------------------------------------------------------------+  |
-+-------------------------------------------------------------------------------+
-                                       ^
-                                       | Fast Content Caching & Routing
-                                       v
-+-------------------------------------------------------------------------------+
-| POINTS OF PRESENCE / EDGE LOCATIONS (400+ worldwide across 90+ cities)        |
-+-------------------------------------------------------------------------------+
+```mermaid
+flowchart TD
+    subgraph Region["AWS REGION (e.g., Sydney / ap-southeast-2)"]
+        direction TB
+        AZa["Availability Zone A<br/>(ap-southeast-2a)"]
+        AZb["Availability Zone B<br/>(ap-southeast-2b)"]
+        AZc["Availability Zone C<br/>(ap-southeast-2c)"]
+
+        AZa <==>|High-Speed Fiber| AZb
+        AZa <==>|Ultra-Low Latency| AZc
+        AZb <==>|Encrypted Metro Fiber| AZc
+    end
+
+    PoP["POINTS OF PRESENCE / EDGE LOCATIONS<br/>(400+ worldwide across 90+ cities)"]
+
+    Region <-->|Fast Content Caching & Routing| PoP
 ```
 
 1. **AWS Regions:** Physical geographical locations worldwide containing a cluster of isolated data centers (e.g., `us-east-1` in N. Virginia, `ap-southeast-2` in Sydney). Most AWS services operate within a regional scope.
@@ -88,19 +80,19 @@ Choosing where to host your application or AI model pipeline involves balancing 
 
 $$\text{Optimal Region} = \min(\text{Latency}) + \max(\text{Compliance}) + \text{Service Availability} + \min(\text{Cost})$$
 
-```
-                  +-----------------------------------+
-                  |      REGION SELECTION DRIVERS     |
-                  +-----------------------------------+
-                                    |
-     +-----------------+------------+------------+-----------------+
-     |                 |                         |                 |
-     v                 v                         v                 v
-[ Compliance ]    [ Latency ]           [ Service Availability ]  [ Pricing ]
-Legal & Data     Deploy close           Verify required AI/ML     Costs vary per
-Sovereignty      to your users          services exist in region  region due to local
-Laws (e.g., GDPR)(e.g., lower lag)      (e.g., Bedrock models)    operating overhead
+```mermaid
+flowchart TD
+    Main["REGION SELECTION DRIVERS"]
 
+    C1["Compliance<br/>Legal & Data Sovereignty Laws (e.g., GDPR)"]
+    C2["Latency<br/>Deploy close to your users (e.g., lower lag)"]
+    C3["Service Availability<br/>Verify required AI/ML services exist in region (e.g., Bedrock models)"]
+    C4["Pricing<br/>Costs vary per region due to local operating overhead"]
+
+    Main --> C1
+    Main --> C2
+    Main --> C3
+    Main --> C4
 ```
 
 - **Compliance & Data Sovereignty:** Legal requirements forcing data to reside within specific national borders (e.g., European data remaining in EU regions).
@@ -114,25 +106,21 @@ Laws (e.g., GDPR)(e.g., lower lag)      (e.g., Bedrock models)    operating over
 
 Understanding service scope determines how resources are accessed and replicated across AWS:
 
-```
-+-------------------------------------------------------------------+
-| GLOBAL SCOPED SERVICES                                            |
-| (Single global endpoint, accessible everywhere identically)        |
-| - AWS IAM                                                         |
-| - Amazon Route 53                                                 |
-| - Amazon CloudFront                                               |
-| - AWS WAF                                                         |
-+-------------------------------------------------------------------+
+```mermaid
+flowchart TD
+    subgraph Global["GLOBAL SCOPED SERVICES"]
+        direction TB
+        GDesc["Single global endpoint, accessible everywhere identically<br/>- AWS IAM<br/>- Amazon Route 53<br/>- Amazon CloudFront<br/>- AWS WAF"]
+    end
 
-+-------------------------------------------------------------------+
-| REGION-SCOPED SERVICES                                            |
-| (Tied to specific Region code; data isolated unless replicated)   |
-| - Amazon EC2                                                      |
-| - Amazon S3 (Buckets are global named, but regionally hosted)    |
-| - AWS Lambda                                                      |
-| - Amazon Rekognition                                              |
-| - Amazon Bedrock                                                  |
-+-------------------------------------------------------------------+
+    subgraph Regional["REGION-SCOPED SERVICES"]
+        direction TB
+        RDesc["Tied to specific Region code; data isolated unless replicated<br/>- Amazon EC2<br/>- Amazon S3 (Buckets are global named, but regionally hosted)<br/>- AWS Lambda<br/>- Amazon Rekognition<br/>- Amazon Bedrock"]
+    end
+
+    Global ~~~ Regional
+    style Global fill:none
+    style Regional fill:none
 ```
 
 ---

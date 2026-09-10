@@ -10,11 +10,14 @@ sidebar_position: 2
 
 Traditional IT relies on physical hardware—servers, networking gear, cooling, and power—managed directly in an on-premises data center or office garage.
 
-```
-[ Client Request ] ---> ( Router ) ---> [ Switch ] ---> [ Physical Server ]
-                                                           |-- CPU (Compute)
-                                                           |-- RAM (Memory)
-                                                           |-- Disk (Storage)
+```mermaid
+flowchart LR
+    A[Client Request] --> B(Router)
+    B --> C[Switch]
+    C --> D[Physical Server]
+    D --> E[CPU Compute]
+    D --> F[RAM Memory]
+    D --> G[Disk Storage]
 ```
 
 While on-prem setups served early tech growth, they introduce heavy operational burdens: high capital expenditure (CapEx), high physical maintenance, static capacity, and single points of failure during power outages or natural disasters.
@@ -48,22 +51,30 @@ When a client browser requests a web page, network devices route traffic via IP 
 
 ![](./img/infra-on-premises.png)
 
-```
-+-----------------------------------------------------------------------+
-|                      ON-PREMISES DATA CENTER                          |
-|                                                                       |
-|  [ Power Grid & Backup ] ---> [ Cooling Systems (HVAC) ]              |
-|                                      |                                |
-|                                      v                                |
-|  [ Server Rack 1 ] ---------> [ Server Rack 2 ] --------> [ Rack N ]  |
-|         |                            |                       |        |
-|         v                            v                       v        |
-|    (Manual HW                   (Manual HW              (Rack Space   |
-|   Maintenance)                 Replacement)              Depleted)    |
-|                                                                       |
-|  -------------------------------------------------------------------  |
-|  Risks: Fire / Power Outage / Slow Provisioning (Weeks) / Fixed Cap   |
-+-----------------------------------------------------------------------+
+```mermaid
+flowchart TD
+    subgraph DataCenter["ON-PREMISES DATA CENTER<br/>Risks: Fire / Power Outage / Slow Provisioning (Weeks) / Fixed Cap"]
+        direction TB
+        Power["Power Grid & Backup"]
+        Cooling["Cooling Systems (HVAC)"]
+
+        Rack1["Server Rack 1"]
+        Rack2["Server Rack 2"]
+        RackN["Rack N"]
+
+        Maint1["Manual HW Maintenance"]
+        Maint2["Manual HW Replacement"]
+        MaintN["Rack Space Depleted"]
+
+        Power --> Cooling
+        Cooling --> Rack1
+        Rack1 --> Rack2
+        Rack2 --> RackN
+
+        Rack1 --> Maint1
+        Rack2 --> Maint2
+        RackN --> MaintN
+    end
 ```
 
 ### Challenges of Traditional On-Premises IT
