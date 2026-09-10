@@ -48,10 +48,6 @@ GIT_USER=<Your GitHub username> npm run deploy
 
 If you are using GitHub pages for hosting, this command is a convenient way to build the website and push to the `gh-pages` branch.
 
-### Wayback Machine Integration
-
-The deployment pipeline automatically submits the website to the [Internet Archive's Wayback Machine](https://web.archive.org/) after a successful deployment. This is done using the [JamieMagee/wayback](https://github.com/JamieMagee/wayback) GitHub Action to ensure older versions of the notes are preserved.
-
 ### IndexNow Integration
 
 The deployment pipeline is configured to automatically submit updated URLs to search engines via the IndexNow protocol whenever a successful deployment occurs.

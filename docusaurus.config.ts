@@ -240,10 +240,6 @@ const config: Config = {
               to: "/docs/intro",
             },
             {
-              label: "AIF-C01",
-              to: "/docs/ai-practitioner/section-1-ai-course-intro/course-structure",
-            },
-            {
               label: "DVA-C02",
               to: "/docs/developer-associate/section-1-course-introduction/course-introduction",
             },
@@ -263,11 +259,7 @@ const config: Config = {
           ],
         },
       ],
-      copyright:
-        `Deployed by Rendy E. Saputra | AWS_REGION=ap-southeast-2` +
-        (process.env.LAST_BUILD_DATE
-          ? `<br/>Last Updated: ${process.env.LAST_BUILD_DATE}`
-          : ""),
+      copyright: `Deployed by Rendy E. Saputra | AWS_REGION=ap-southeast-2` + (process.env.LAST_BUILD_DATE ? `<br/>Last Updated: ${process.env.LAST_BUILD_DATE}` : ''),
     },
     prism: {
       theme: prismThemes.github,
