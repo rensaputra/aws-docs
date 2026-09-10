@@ -202,3 +202,43 @@ An enterprise is evaluating three foundation models to power a corporate custome
 </details>
 
 ---
+
+#### Question 3
+
+A company is building an image recognition model to automate its quality assurance process. High accuracy in image annotation is critical to ensure the model can correctly identify defective products. To minimize the risk of incorrect annotations, the company needs a reliable labeling solution.
+
+What is the best approach to achieve high accuracy and reduce the risk of errors in image annotations?
+
+- [ ] A. Use GroundTruth Plus to label the data
+- [ ] B. Automatically generate labels using an existing pre-trained model
+- [ ] C. Use a simple rule-based algorithm to assign labels based on image characteristics
+- [ ] D. Allow a small team of internal employees to manually label the images
+
+<details>
+<summary>Correct Answer</summary>
+
+- [x] A. Use GroundTruth Plus to label the data
+  - **Explanation:** Amazon SageMaker GroundTruth Plus provides a fully managed data labeling service that helps deliver high-quality annotations. It uses a combination of human labelers and machine learning-assisted labeling to ensure accuracy and consistency in the labels. GroundTruth Plus also offers the ability to monitor labeling workflows and conduct quality assurance checks, significantly reducing the risk of incorrect annotations. It is an ideal solution for businesses looking to create accurate training datasets at scale while minimizing manual errors.
+    ![](./img/sagemaker-ground-truth-plus.png)
+
+<details>
+<summary>Incorrect Answers</summary>
+
+- [ ] B. Automatically generate labels using an existing pre-trained model
+  - **Explanation:** While pre-trained models can be useful in generating labels automatically, they are often not as accurate as human labeling, especially when dealing with domain-specific images or fine-grained details that are critical for the project. Moreover, if the pre-trained model was trained on a different dataset, it may introduce biases or errors, leading to inaccurate annotations.
+- [ ] C. Use a simple rule-based algorithm to assign labels based on image characteristics
+  - **Explanation:** Rule-based algorithms work well for simple, structured data but are generally not suited for complex image annotation tasks. Images can contain varied and nuanced features that require human understanding or sophisticated machine learning techniques to interpret correctly. Using a rule-based system would likely result in inaccurate labels and fail to capture important details in the images.
+- [ ] D. Allow a small team of internal employees to manually label the images
+  - **Explanation:** Relying on a small group of internal employees for manual labeling can introduce a high risk of inconsistency and errors, especially when large volumes of images need to be processed. Additionally, manual labeling by a small team can be time-consuming, and without specialized expertise in labeling, accuracy may be compromised. GroundTruth Plus offers a more scalable and reliable solution.
+
+</details>
+
+Reference:
+
+- https://docs.aws.amazon.com/sagemaker/latest/dg/gtp.html
+
+
+</details>
+
+---
+```
