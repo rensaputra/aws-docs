@@ -26,14 +26,14 @@ Modern AI separates the system lifecycle into two distinct phases: **Training** 
 flowchart TD
     subgraph TP [Training Phase]
         direction LR
-        TD[Training Data<br/>(Labeled/Unseen)] --> DS[Data Scientist / Algorithm<br/>(Statistical Math)]
+        TD["Training Data<br/>(Labeled/Unseen)"] --> DS["Data Scientist / Algorithm<br/>(Statistical Math)"]
         DS --> TM[Trained Model]
     end
 
     subgraph IP [Inference Phase]
         direction LR
-        NUD[New User Data<br/>(Unseen Sample)] --> TM2[Trained Model<br/>(Pattern Matching)]
-        TM2 --> PO[Prediction Output]
+        NUD["New User Data<br/>(Unseen Sample)"] --> TM2["Trained Model<br/>(Pattern Matching)"]
+        TM2 --> PO["Prediction Output"]
     end
 
     TP --> IP
