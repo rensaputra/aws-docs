@@ -66,6 +66,8 @@ flowchart LR
         ContextLeft[Left Context] --> TargetToken((Target Token))
         ContextRight[Right Context] --> TargetToken
     end
+
+    GPT_Arch ~~~ BERT_Arch
 ```
 
 - **GPT:** Autoregressive decoder; excels at generating long-form text and code forward in time.
@@ -87,7 +89,9 @@ flowchart TD
     Disc -->|Prediction: 0=Fake, 1=Real| Output[Evaluator]
 ```
 
-$$\text{Data Augmentation Value: GANs generate realistic minority-class samples to eliminate training dataset imbalance without collecting new field data.}$$
+:::note
+Data Augmentation Value: GANs generate realistic minority-class samples to eliminate training dataset imbalance without collecting new field data.
+:::
 
 ---
 
