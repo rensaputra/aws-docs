@@ -235,3 +235,38 @@ Which approach would you recommend to enhance the accuracy of the company's mach
 </details>
 
 ---
+
+#### Question 4
+
+A healthcare analytics company is using Amazon SageMaker Automatic Model Tuning (AMT) to optimize its machine learning models for predicting patient outcomes. To ensure the models are performing at their best, the data science team is configuring the autotune settings but needs to understand which parameters are mandatory for successful tuning. Properly setting these configurations will allow the team to enhance model accuracy and performance efficiently.
+
+Which of the following options is mandatory for the given use case?
+
+- [ ] A. Number of jobs
+- [ ] B. Hyperparameter ranges
+- [ ] C. None
+- [ ] D. Tuning strategy
+
+<details>
+<summary>Correct Answer</summary>
+
+- [x] C. None
+  - **Explanation:** Choosing the correct hyperparameters requires experience with machine learning techniques and can drastically affect your model performance. Even with hyperparameter tuning, you still need to specify multiple tuning configurations, such as hyperparameter ranges, search strategy, and number of training jobs to launch. Correcting such a setting is intricate and typically requires multiple experiments, which may incur additional training costs.  
+    Amazon SageMaker Automatic Model Tuning can automatically choose hyperparameter ranges, search strategy, maximum runtime of a tuning job, early stopping type for training jobs, number of times to retry a training job, and model convergence flag to stop a tuning job, based on the objective metric you provide. This minimizes the time required for you to kickstart your tuning process and increases the chances of finding more accurate models with a lower budget.
+
+<details>
+<summary>Incorrect Answers:</summary>
+- [ ] A. Number of jobs
+- [ ] B. Hyperparameter ranges
+- [ ] D. Tuning strategy
+  - **Explanation:** None of these entities constitute mandatory configuration for Amazon SageMaker Automatic Model Tuning (AMT).
+
+</details>
+
+Reference:
+
+- https://aws.amazon.com/about-aws/whats-new/2023/06/sagemaker-automatic-model-tuning-configurations/
+
+</details>
+
+---

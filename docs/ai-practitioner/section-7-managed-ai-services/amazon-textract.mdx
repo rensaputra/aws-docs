@@ -200,3 +200,45 @@ A fintech mobile application requires newly registered users to upload a photo o
 </details>
 
 ---
+
+#### Question 3
+
+A legal firm is digitizing a large volume of contracts and other legal documents to streamline document management and analysis. The firm is looking for AWS machine learning services that can automatically detect and extract text from scanned images and photos of these documents. Understanding which services specialize in text extraction from images will help the firm choose the right solution for automating its document processing workflow.
+
+Which AWS ML services will you recommend to the firm? (Select two)
+
+- [ ] A. Amazon Rekognition
+- [ ] B. Amazon Polly
+- [ ] C. Amazon Textract
+- [ ] D. Amazon Lex
+- [ ] E. Amazon Comprehend
+
+Both Rekognition and Textract possess the ability to detect text within images:
+
+<details>
+<summary>Correct Answers</summary>
+
+- [x] A. Amazon Rekognition
+  - **Explanation:** Rekognition specializes in identifying text located spatially within an image, for instance, words displayed on street signs, t-shirts, or license plates. Its typical use cases encompass visual search, content filtering, and deriving insights from content. However, it is not the ideal choice for images containing more than 100 words, as this exceeds its limitation.
+- [x] C. Amazon Textract
+  - **Explanation:** Textract is tailored specifically towards processing documents and PDFs, offering a comprehensive suite for Optical Character Recognition (OCR). It accurately extracts text, forms, and tables from financial reports, medical records, receipts, ID documents, and legal contracts.
+
+<details>
+<summary>Incorrect Answers</summary>
+
+- [ ] B. Amazon Polly
+  - **Explanation:** Amazon Polly uses deep learning technologies to synthesize natural-sounding human speech from text, converting written documents into audio.
+- [ ] D. Amazon Lex
+  - **Explanation:** Amazon Lex is a fully managed artificial intelligence service with advanced natural language models designed to build conversational interfaces (chatbots) and cannot extract text from documents or images.
+- [ ] E. Amazon Comprehend
+  - **Explanation:** Amazon Comprehend is a natural language processing (NLP) service that extracts insights, sentiment, key phrases, and entities from already-extracted text, but it cannot extract text from documents or images directly.
+
+</details>
+
+Reference:
+
+- https://repost.aws/questions/QUsCXe41EtTYq3QDaY18EnSg/textract-vs-rekognition-in-detect-text-in-picture
+
+</details>
+
+---

@@ -196,3 +196,40 @@ A financial institution is deploying a credit evaluation model on AWS. The secur
 </details>
 
 ---
+
+#### Question 3
+
+A social media company is planning to implement a large language model (LLM) for content moderation to automatically flag inappropriate or harmful content. To ensure the model is fair and does not show bias or discrimination against specific groups or individuals, the company needs to evaluate the model's outputs regularly for potential bias. The team is considering different data sources for this evaluation but wants to choose an option that minimizes administrative effort while still providing reliable and comprehensive insights into any biases or discrimination present in the LLM's outputs.
+
+Given these requirements, which data source would be most suitable?
+
+- [ ] A. The company should use randomly selected user-generated data, where random samples from actual user interactions are analyzed to identify potential biases
+- [ ] B. The company should use internally generated synthetic data, which involves creating artificial datasets tailored to specific scenarios
+- [ ] C. The company should use benchmark datasets, which are pre-compiled, standardized datasets specifically designed to test for biases and discrimination in model outputs
+- [ ] D. The company should use human-monitored benchmarking, where human reviewers manually assess the model's outputs for bias and discrimination
+
+<details>
+<summary>Correct Answer</summary>
+
+- [x] C. The company should use benchmark datasets, which are pre-compiled, standardized datasets specifically designed to test for biases and discrimination in model outputs
+  - **Explanation:** Benchmark datasets are pre-existing, standardized, and curated to test for specific model properties like bias, toxicity, and discrimination. Using them requires the least administrative effort because the company does not need to generate, label, or manually curate evaluation data from scratch.
+
+<details>
+<summary>Incorrect Answers</summary>
+- [ ] A. The company should use randomly selected user-generated data, where random samples from actual user interactions are analyzed to identify potential biases
+    - **Explanation:** Random user data lacks standardization, requires ongoing curation, introduces privacy and compliance concerns, and may fail to systematically test diverse or subtle bias edge cases.
+- [ ] B. The company should use internally generated synthetic data, which involves creating artificial datasets tailored to specific scenarios
+  - **Explanation:** Designing and generating realistic synthetic datasets for complex bias testing requires significant time, domain expertise, and ongoing administrative maintenance.
+- [ ] D. The company should use human-monitored benchmarking, where human reviewers manually assess the model's outputs for bias and discrimination
+    - **Explanation:** Human evaluation is labor-intensive, expensive, slower to scale, and subject to personal inconsistencies compared to automated testing against standardized benchmark datasets.
+
+</details>
+
+Reference:
+
+- https://docs.aws.amazon.com/bedrock/latest/userguide/model-evaluation-prompt-datasets-builtin.html
+- https://docs.aws.amazon.com/bedrock/latest/userguide/model-evaluation-prompt-datasets.html
+
+</details>
+
+---
