@@ -25,13 +25,13 @@ Bedrock gives you three distinct architectural paths to adapt models: **Supervis
 
 ### The Three Pillars of Model Customization
 
-### Bedrock Customization Taxonomy
+#### Bedrock Customization Taxonomy
 
-| Customization Method | Input Data Required | Evaluation Driver | Primary Engineering Goal |
-| :--- | :--- | :--- | :--- |
-| Supervised Fine-Tuning (SFT) | Labeled Pairs (Prompt + Completion) | Loss Minimization (Ground Truth) | Domain terminology, tone, and exact output formats |
-| Reinforcement Fine-Tuning (RFT) | Unlabeled Prompts (Inputs only) | External Reward Function / Judge | Complex multi-step logic and open-ended alignment |
-| Model Distillation | Prompts / Unlabeled Inputs | Teacher Model Knowledge Transfer | Up to 75% cost reduction and ultra-low latency |
+| Customization Method            | Input Data Required                 | Evaluation Driver                | Primary Engineering Goal                           |
+| :------------------------------ | :---------------------------------- | :------------------------------- | :------------------------------------------------- |
+| Supervised Fine-Tuning (SFT)    | Labeled Pairs (Prompt + Completion) | Loss Minimization (Ground Truth) | Domain terminology, tone, and exact output formats |
+| Reinforcement Fine-Tuning (RFT) | Unlabeled Prompts (Inputs only)     | External Reward Function / Judge | Complex multi-step logic and open-ended alignment  |
+| Model Distillation              | Prompts / Unlabeled Inputs          | Teacher Model Knowledge Transfer | Up to 75% cost reduction and ultra-low latency     |
 
 ---
 
@@ -118,10 +118,10 @@ $$\text{Efficiency Gain} \approx 75\% \text{ Cost Reduction} + \text{Lower Laten
 
 Running customized models requires choosing between two hosting structures:
 
-### Custom Model Inference Options
+#### Custom Model Inference Options
 
-| On-Demand Pricing | Provisioned Throughput |
-| :--- | :--- |
+| On-Demand Pricing                                                                       | Provisioned Throughput                                                                                                                   |
+| :-------------------------------------------------------------------------------------- | :--------------------------------------------------------------------------------------------------------------------------------------- |
 | Pay per input and output token. Ideal for variable, sporadic, or development workloads. | Reserve dedicated Model Units (MU) on 1-month or 6-month commitments. Required for guaranteed throughput and sustained production scale. |
 
 ---

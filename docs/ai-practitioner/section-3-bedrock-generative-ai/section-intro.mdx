@@ -41,6 +41,8 @@ graph LR
         G_In[Input: Natural Language Prompt] --> G_Model[Foundation Model FM]
         G_Model --> G_Out["Personalized Email"]
     end
+
+    Classical ~~~ Generative
 ```
 
 - **Foundation Models (FMs):** Massive models trained on broad internet-scale data across billions of parameters.
@@ -88,12 +90,12 @@ To tailor foundation models to enterprise workflows, Bedrock incorporates specia
 
 ### Core Bedrock Capabilities
 
-| Feature | Technical Purpose |
-| :--- | :--- |
-| Model Invocations | Query text, image, and multimodal models via SDK/API |
-| Knowledge Bases | Managed Retrieval-Augmented Generation (RAG) using S3 data |
-| Bedrock Agents | Multi-step execution planning & API calling (ReAct logic) |
-| Bedrock Guardrails | Content filtering, safety guardrails, and PII masking |
+| Feature             | Technical Purpose                                          |
+| :------------------ | :--------------------------------------------------------- |
+| Model Invocations   | Query text, image, and multimodal models via SDK/API       |
+| Knowledge Bases     | Managed Retrieval-Augmented Generation (RAG) using S3 data |
+| Bedrock Agents      | Multi-step execution planning & API calling (ReAct logic)  |
+| Bedrock Guardrails  | Content filtering, safety guardrails, and PII masking      |
 | Model Customization | Fine-tuning and Continued Pre-training on proprietary data |
 
 ---

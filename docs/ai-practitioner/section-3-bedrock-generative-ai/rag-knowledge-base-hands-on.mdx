@@ -12,11 +12,10 @@ Amazon Bedrock provides a easy-setup testing playground within Knowledge Bases. 
 
 ```mermaid
 graph TD
-    Upload[Upload Document to S3] --> Embed[Vector Embeddings]
-    Embed --> DB[Vector Database / OpenSearch Serverless]
+    Upload[Upload Document to S3] --> Embed[Vector Embeddings + Vector Database / OpenSearch Serverless]
 
     Query[User Query] --> Search[Search & Retrieve Relevant Chunks]
-    DB --> Search
+    Embed --> Search
     Search --> Assembly[Grounded Prompt Assembly]
     Assembly --> FM[Foundation Model]
     FM --> Answer[In-Context Answer + Source Citations]

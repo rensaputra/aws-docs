@@ -21,7 +21,7 @@ graph TD
     Model --> Engine[Evaluation Engine]
     Responses --> Engine
 
-    Engine --> Auto[Automatic Evaluation<br/>LLM-as-a-Judge / Algo Scoring<br/>ROUGE Summarization n-grams<br/>BLEU Translation Precision<br/>BERTScore Semantic Embeddings]
+    Engine --> Auto["Automatic Evaluation<br/>(LLM-as-a-Judge / Algo Scoring)<br/>ROUGE (Summarization n-grams)<br/>BLEU (Translation Precision)<br/>BERTScore (Semantic Embeddings)"]
     Engine --> Human[Human Evaluation<br/>SMEs / Thumbs Up / Likert Scales<br/>Coherence & Fluency<br/>Tone, Empathy, Brand Alignment<br/>Custom Domain Rubrics]
 ```
 
@@ -37,13 +37,13 @@ Amazon Bedrock categorizes model evaluation workflows into two distinct operatio
 
 ### Bedrock Model Evaluation Workflows
 
-| Dimension | Automatic Evaluation | Human Evaluation |
-| :--- | :--- | :--- |
-| Evaluator | Pre-trained Judge LLM / Code | Internal workforce or SMEs |
-| Evaluation Tasks | Summarization, Q&A, Classification, Generation | Custom, open-ended, and nuanced qualitative tasks |
-| Datasets Used | Built-in curated or custom S3 | Custom business prompt sets |
-| Scoring Mechanism | ROUGE, BLEU, BERTScore, F1 | Thumbs Up/Down, 1-5 Ranking |
-| Speed & Cost | Ultra-fast, highly scalable | Slower, higher resource cost |
+| Dimension         | Automatic Evaluation                           | Human Evaluation                                  |
+| :---------------- | :--------------------------------------------- | :------------------------------------------------ |
+| Evaluator         | Pre-trained Judge LLM / Code                   | Internal workforce or SMEs                        |
+| Evaluation Tasks  | Summarization, Q&A, Classification, Generation | Custom, open-ended, and nuanced qualitative tasks |
+| Datasets Used     | Built-in curated or custom S3                  | Custom business prompt sets                       |
+| Scoring Mechanism | ROUGE, BLEU, BERTScore, F1                     | Thumbs Up/Down, 1-5 Ranking                       |
+| Speed & Cost      | Ultra-fast, highly scalable                    | Slower, higher resource cost                      |
 
 <ImageRow>
   <img src={automaticEvaluation} alt="Automatic Evaluation" />

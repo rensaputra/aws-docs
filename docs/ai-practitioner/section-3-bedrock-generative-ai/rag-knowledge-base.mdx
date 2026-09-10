@@ -80,13 +80,13 @@ $$\text{Augmented Prompt Payload } \mathcal{P}_{\text{final}} = \text{System Pro
 
 Amazon Bedrock Knowledge Bases connects with multiple native and third-party vector store backends depending on workload requirements:
 
-| Vector Database Engine | Latency Profile | Ideal Workload Archetype |
-| :--- | :--- | :--- |
-| Amazon OpenSearch Serverless / Managed | Sub-10ms | Production RAG default; high QPS, hybrid keyword + k-NN search |
-| Amazon Aurora PostgreSQL (with pgvector extension) | 10-100ms | Hybrid SQL relational transactional data stored alongside vectors |
-| Amazon Neptune Analytics | Sub-second | GraphRAG; relationship traversal & multi-hop entity reasoning |
-| Amazon S3 Vectors | Sub-100ms | Cost-optimized cold/warm tier; zero idle capacity charges |
-| Third-Party Managed (Pinecone, Redis, Mongo) | Variable | Multi-cloud ecosystems (Pinecone, MongoDB Atlas, Redis Enterprise) |
+| Vector Database Engine                             | Latency Profile | Ideal Workload Archetype                                           |
+| :------------------------------------------------- | :-------------- | :----------------------------------------------------------------- |
+| Amazon OpenSearch Serverless / Managed             | Sub-10ms        | Production RAG default; high QPS, hybrid keyword + k-NN search     |
+| Amazon Aurora PostgreSQL (with pgvector extension) | 10-100ms        | Hybrid SQL relational transactional data stored alongside vectors  |
+| Amazon Neptune Analytics                           | Sub-second      | GraphRAG; relationship traversal & multi-hop entity reasoning      |
+| Amazon S3 Vectors                                  | Sub-100ms       | Cost-optimized cold/warm tier; zero idle capacity charges          |
+| Third-Party Managed (Pinecone, Redis, Mongo)       | Variable        | Multi-cloud ecosystems (Pinecone, MongoDB Atlas, Redis Enterprise) |
 
 - **Amazon OpenSearch Serverless:** The default managed vector engine for Bedrock Knowledge Bases. Automatically provisions compute units (OCUs) and indexes high-volume vector embeddings.
 - **Amazon Aurora PostgreSQL (`pgvector`):** Combines standard structured relational queries and ACID transactions with vector similarity searches within the same database engine.
@@ -99,7 +99,7 @@ Amazon Bedrock Knowledge Bases connects with multiple native and third-party vec
 
 Bedrock Knowledge Bases supports direct synchronization from native and enterprise SaaS data sources:
 
-### Supported Data Source Connectors
+#### Supported Data Source Connectors
 
 - Amazon S3 (PDF, CSV, JSON, TXT, DOCX, HTML)
 - Confluence Cloud
@@ -155,10 +155,10 @@ A financial institution wants to build an internal generative AI chatbot that an
 
 In an Amazon Bedrock Knowledge Base RAG pipeline, which component is responsible for converting ingested document chunks into multi-dimensional numerical arrays for similarity indexing?
 
-- A. Bedrock Guardrails
-- B. Text Generation Foundation Model (e.g., Anthropic Claude)
-- C. Text Embeddings Model (e.g., Amazon Titan Embeddings)
-- D. AWS IAM Service Role
+- [ ] A. Bedrock Guardrails
+- [ ] B. Text Generation Foundation Model (e.g., Anthropic Claude)
+- [ ] C. Text Embeddings Model (e.g., Amazon Titan Embeddings)
+- [ ] D. AWS IAM Service Role
 
 <details>
 <summary>Correct Answer</summary>

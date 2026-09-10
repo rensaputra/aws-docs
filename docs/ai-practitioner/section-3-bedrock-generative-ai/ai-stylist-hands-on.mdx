@@ -22,14 +22,14 @@ The system combines **Multimodal Image Generation** (visualizing outfits), **RAG
 
 The AI Stylist partitions enterprise knowledge into distinct Knowledge Bases stored across private Amazon S3 buckets and public feeds:
 
-### AI Stylist Knowledge Base Landscape
+#### AI Stylist Knowledge Base Landscape
 
-| Knowledge Base | Data Access Level | Role in Generative Pipeline |
-| :--- | :--- | :--- |
-| Product Catalog | Private Enterprise | SKU matching, apparel dimensions, stock inventory |
-| Fashion Trends | Public Industry | Style alignment (Business Formal vs. Casual) |
-| Customer Reviews | Private Enterprise | Summarizing feedback (fabric, comfort, fit) |
-| Customer Order History | Private Enterprise | Personalized size recommendations (e.g., Size M) |
+| Knowledge Base         | Data Access Level  | Role in Generative Pipeline                       |
+| :--------------------- | :----------------- | :------------------------------------------------ |
+| Product Catalog        | Private Enterprise | SKU matching, apparel dimensions, stock inventory |
+| Fashion Trends         | Public Industry    | Style alignment (Business Formal vs. Casual)      |
+| Customer Reviews       | Private Enterprise | Summarizing feedback (fabric, comfort, fit)       |
+| Customer Order History | Private Enterprise | Personalized size recommendations (e.g., Size M)  |
 
 $$\text{Style Recommendation Context} = \text{User Prompt} + \text{Catalog Embeddings} + \text{Trend Vectors} + \text{Past Order History}$$
 
@@ -37,7 +37,7 @@ $$\text{Style Recommendation Context} = \text{User Prompt} + \text{Catalog Embed
 
 ### Step-by-Step Production Interaction Pipeline
 
-### End-to-End Workflow: Prompt to Checkout
+#### End-to-End Workflow: Prompt to Checkout
 
 1. **INTENT & STYLE SYNTHESIS:**
    - User Prompt: "Consultant traveling to NY next week... outfit for first day"
@@ -63,14 +63,14 @@ $$\text{Style Recommendation Context} = \text{User Prompt} + \text{Catalog Embed
 
 In enterprise production architectures, developers do not use the AWS Management Console; they integrate via AWS SDKs (e.g., `boto3`, Node.js SDK, LangChain):
 
-### Console Playground vs. Production Application Architecture
+#### Console Playground vs. Production Application Architecture
 
-| Console Playgrounds (Prototype) | Production Applications (Bedrock) |
-| :--- | :--- |
-| Manual prompt entry via UI | Automated SDK/API calls (`boto3`) |
-| Static single-turn evaluations | Stateful multi-turn agent sessions |
-| Manual model parameter tweaks | Dynamic programmatic tuning |
-| Isolated test documents | Automated S3 sync & Vector DB RAG |
+| Console Playgrounds (Prototype) | Production Applications (Bedrock)  |
+| :------------------------------ | :--------------------------------- |
+| Manual prompt entry via UI      | Automated SDK/API calls (`boto3`)  |
+| Static single-turn evaluations  | Stateful multi-turn agent sessions |
+| Manual model parameter tweaks   | Dynamic programmatic tuning        |
+| Isolated test documents         | Automated S3 sync & Vector DB RAG  |
 
 ---
 
