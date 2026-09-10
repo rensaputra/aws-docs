@@ -26,20 +26,14 @@ $$\text{Exam Architecture} = 65 \text{ Questions} \quad \Big\vert{} \quad 90 \te
 
 ## Certification Hierarchy & Service Mapping Matrix
 
-```
-                      ┌─────────────────────────────────────────┐
-                      │    AWS Certification Hierarchy          │
-                      └─────────────────────────────────────────┘
-                                           │
-         ┌─────────────────────────────────┴─────────────────────────────────┐
-         ▼                                                                   ▼
-┌─────────────────────────────────┐                         ┌─────────────────────────────────┐
-│ Cloud Practitioner (CLF-C02)    │                         │  AI Practitioner (AIF-C01)      │
-│ Focus: Core Cloud Infrastructure│                         │  Focus: AI / ML / GenAI Services│
-└─────────────────────────────────┘                         └─────────────────────────────────┘
-         │                                                                   │
-         ▼                                                                   ▼
-[Associate Level: SAA, DVA, SOA]                          [Specialty / Associate: MLA, AIP]
+```mermaid
+flowchart TD
+    Hierarchy["AWS Certification Hierarchy"]
+    Hierarchy --> CP["Cloud Practitioner (CLF-C02)<br/>Focus: Core Cloud Infrastructure"]
+    Hierarchy --> AIP["AI Practitioner (AIF-C01)<br/>Focus: AI / ML / GenAI Services"]
+
+    CP --> Assoc["[Associate Level: SAA, DVA, SOA]"]
+    AIP --> Spec["[Specialty / Associate: MLA, AIP]"]
 ```
 
 - **Service Scope Blueprint:** The course bridges foundational AI concepts with practical service usage. You will learn to map specific business requirements to native AWS AI services (e.g., text-to-speech, computer vision, natural language processing, and foundation model orchestration).
