@@ -50,7 +50,9 @@ If you are using GitHub pages for hosting, this command is a convenient way to b
 
 ### Wayback Machine Integration
 
-The deployment pipeline automatically submits the website to the [Internet Archive's Wayback Machine](https://web.archive.org/) after a successful deployment. This is done using the [JamieMagee/wayback](https://github.com/JamieMagee/wayback) GitHub Action to ensure older versions of the notes are preserved.
+The deployment pipeline automatically submits the website to the [Internet Archive's Wayback Machine](https://web.archive.org/) after a successful deployment to ensure older versions of the notes are preserved.
+
+This is performed asynchronously via a fire-and-forget `curl` request to the [Wayback Machine Save Page API](https://docs.google.com/document/d/1N0pCsahegAWe0kKxOAMQ4aY1H4gA75GqYkON8G1x2c4/edit?tab=t.0#heading=h.n1m2dyt3y5v3) to prevent the deployment workflow from blocking or failing due to rate limits.
 
 ### IndexNow Integration
 
