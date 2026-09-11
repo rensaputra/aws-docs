@@ -90,10 +90,11 @@ jobs:
           lastmod-required: false
 
       - name: Archive to Wayback Machine
-        uses: JamieMagee/wayback@v2
-        with:
-          url: 'https://res.id.au'
-          saveOutlinks: true
-          saveScreenshot: true
-          skipFirstArchive: true
-          ifNotArchivedWithin: '1d'
+        continue-on-error: true
+        run: |
+          curl -s -X POST "https://web.archive.org/save" \
+            -d "url=https://res.id.au" \
+            -d "capture_outlinks=1" \
+            -d "capture_screenshot=1" \
+            -d "skip_first_archive=1" \
+            -d "if_not_archived_within=1d" || true
