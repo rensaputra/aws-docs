@@ -22,51 +22,41 @@ Guardrails enforces **Denied Topics**, **Content Filters** (Hate, Violence, Sexu
 
 Guardrails operates as a multi-stage security pipeline inspecting incoming prompt payloads and outgoing generation streams:
 
-```
-+-----------------------------------------------------------------------------------------------------+
-|                               BEDROCK GUARDRAILS SAFEGUARD MATRIX                                   |
-+--------------------------+--------------------------------------------------------------------------+
-| Safeguard Layer          | Technical Purpose & Operational Scope                                    |
-+--------------------------+--------------------------------------------------------------------------+
-| 1. Denied Topics         | Blocks domain-specific topics via natural language definitions & examples|
-| 2. Content Filters       | Detects harmful content across 6 categories with configurable strengths  |
-| 3. Sensitive Info (PII)  | Redacts, masks, or blocks Personally Identifiable Information / RegEx    |
-| 4. Word Filters          | Blocks custom profanity lists, competitor mentions, or standard files    |
-| 5. Contextual Grounding  | Calculates hallucination & relevance scores against RAG source context   |
-+--------------------------+--------------------------------------------------------------------------+
-```
+| Safeguard Layer | Technical Purpose & Operational Scope |
+| :--- | :--- |
+| 1. Denied Topics | Blocks domain-specific topics via natural language definitions & examples |
+| 2. Content Filters | Detects harmful content across 6 categories with configurable strengths |
+| 3. Sensitive Info (PII) | Redacts, masks, or blocks Personally Identifiable Information / RegEx |
+| 4. Word Filters | Blocks custom profanity lists, competitor mentions, or standard files |
+| 5. Contextual Grounding | Calculates hallucination & relevance scores against RAG source context |
 
-```
-+---------------------------------------------------------------------------------------+
-| BEDROCK GUARDRAILS INTERCEPTION ARCHITECTURE                                          |
-|                                                                                       |
-|  [ Inbound User Prompt ]                                                              |
-|            |                                                                          |
-|            v                                                                          |
-|  +---------------------------------------------------------------------------------+  |
-|  | GUARDRAIL EVALUATION ENGINE (Input Validation)                                  |  |
-|  | * Prompt Attack / Jailbreak Detection                                           |  |
-|  | * Denied Topics Filter (e.g., Financial Advice, Cooking Recipes)                |  |
-|  | * Content Filters (Toxicity, Hate, Violence)                                    |  |
-|  | * PII Anonymization / Masking (SSN, Credit Cards, Custom RegEx)                 |  |
-|  +---------------------------------------------------------------------------------+  |
-|            |                                                 |                        |
-|   (Passes Filters)                                  (Violation Detected)              |
-|            |                                                 |                        |
-|            v                                                 v                        |
-|  [ Foundation Model Inference ]                     [ Return Blocked Message ]        |
-|            |                                        "Sorry, this is a restricted..."  |
-|            v                                                                          |
-|  +---------------------------------------------------------------------------------+  |
-|  | GUARDRAIL EVALUATION ENGINE (Output Validation)                                 |  |
-|  | * Contextual Grounding Check (Factuality vs. RAG Source Chunks)                 |  |
-|  | * Output PII Masking & Word Filter Validation                                   |  |
-|  +---------------------------------------------------------------------------------+  |
-|            |                                                 |                        |
-|      (Valid Output)                                 (Ungrounded / Unsafe)             |
-|            v                                                 v                        |
-|  [ Final Delivered Response ]                       [ Return Blocked Message ]        |
-+---------------------------------------------------------------------------------------+
+```mermaid
+graph TD
+    subgraph Architecture[BEDROCK GUARDRAILS INTERCEPTION ARCHITECTURE]
+        Prompt[Inbound User Prompt]
+
+        subgraph EngineIn[GUARDRAIL EVALUATION ENGINE Input Validation]
+            ChecksIn[Prompt Attack / Jailbreak Detection<br/>Denied Topics Filter<br/>Content Filters<br/>PII Anonymization / Masking]
+        end
+
+        FM[Foundation Model Inference]
+        Block1[Return Blocked Message<br/>Sorry, this is a restricted...]
+
+        subgraph EngineOut[GUARDRAIL EVALUATION ENGINE Output Validation]
+            ChecksOut[Contextual Grounding Check<br/>Output PII Masking & Word Filter Validation]
+        end
+
+        Response[Final Delivered Response]
+        Block2[Return Blocked Message]
+
+        Prompt --> EngineIn
+        EngineIn -->|Passes Filters| FM
+        EngineIn -->|Violation Detected| Block1
+
+        FM --> EngineOut
+        EngineOut -->|Valid Output| Response
+        EngineOut -->|Ungrounded / Unsafe| Block2
+    end
 ```
 
 ---
@@ -150,6 +140,44 @@ An AI engineer observes that an LLM-based customer service agent occasionally fa
 
 - [x] B. Enable Contextual Grounding Checks and define a Grounding threshold
   - **Explanation:** **Contextual Grounding Checks** in Amazon Bedrock Guardrails evaluate whether model responses are factually grounded in reference source data retrieved from the knowledge base. If the grounding score falls below the configured threshold, Guardrails blocks the hallucinated response.
+
+</details>
+
+---
+
+#### Question 3
+
+A global e-commerce company is utilizing a foundation model through Amazon Bedrock to enhance its customer service chatbot, providing automated support and answering user queries. However, the company is concerned about the potential for the model to generate inappropriate, sensitive, or malicious content that could harm its reputation or negatively impact customer experience. To mitigate these risks, the company seeks to implement safety measures that ensure the model consistently produces safe, relevant, and context-appropriate responses.
+
+Given this goal, what would be the most effective approach to control these risks and maintain model safety?
+
+- [ ] A. The company should retrain the underlying foundation model (FM) from scratch to prevent exposure
+- [ ] B. The company should adjust the model hyperparameters to safeguard the output
+- [ ] C. The company should instruct the model to stick to the prompt by adding explicit instructions to ignore any unrelated or potentially malicious content
+- [ ] D. The company should develop an API that processes all responses from the model and checks for any risks of exposure, which involves creating a custom layer that monitors and filters all model outputs, scanning them for inappropriate or unsafe content before they are delivered to the end-user
+
+<details>
+<summary>Correct Answer</summary>
+
+- [x] C. The company should instruct the model to stick to the prompt by adding explicit instructions to ignore any unrelated or potentially malicious content
+  - **Explanation:** Providing explicit instructions within system prompts guides the model's behavior directly at generation time, establishing strict boundaries to ignore prompt injection attempts or off-topic prompts and reducing the likelihood of producing inappropriate or harmful content. This is a straightforward, low-overhead prompt engineering mechanism to enforce safety standards.
+
+<details>
+<summary>Incorrect Answers</summary>
+
+- [ ] A. The company should retrain the underlying foundation model (FM) from scratch to prevent exposure
+  - **Explanation:** Training a foundation model from scratch is prohibitively expensive, time-consuming, requires massive compute clusters, and cannot be done directly within Amazon Bedrock (where you can only customize pre-existing models).
+- [ ] B. The company should adjust the model hyperparameters to safeguard the output
+  - **Explanation:** Hyperparameters (such as temperature, top-p, or top-k) regulate randomness and token selection diversity, but they do not filter toxic concepts or enforce content moderation guidelines.
+- [ ] D. The company should develop an API that processes all responses from the model and checks for any risks of exposure, which involves creating a custom layer that monitors and filters all model outputs, scanning them for inappropriate or unsafe content before they are delivered to the end-user
+  - **Explanation:** Building a bespoke custom API layer introduces significant architectural complexity, latency, and maintenance burden. Instead of writing custom filtering microservices from scratch, native managed mechanisms (such as prompt guidance and Guardrails for Amazon Bedrock) are standard best practices.
+
+</details>
+
+Reference:
+
+- https://aws.amazon.com/bedrock/guardrails/
+- https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-bedrock-guardrail.html
 
 </details>
 

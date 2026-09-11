@@ -311,8 +311,12 @@ End-to-end managed ML platform: data prep, training, deployment, monitoring, gov
 | **Perplexity** | How uncertain the model is predicting the next token. Lower is better. | Language modelling.                                       |
 
 :::tip
-ROUGE is recall-weighted (did we capture the reference?). BLEU is precision-weighted (is what we produced in the reference?). BERTScore captures meaning — our output can have zero word overlap yet still score high if it's semantically equivalent. Accuracy lies when classes are imbalanced $\rightarrow$ switch to F1 or AUC-ROC.
-:::
+
+- ROUGE is recall-weighted (did we capture the reference?).
+- BLEU is precision-weighted (is what we produced in the reference?).
+- BERTScore captures meaning — our output can have zero word overlap yet still score high if it's semantically equivalent.
+- Accuracy lies when classes are imbalanced $\rightarrow$ switch to F1 or AUC-ROC.
+  :::
 
 ---
 

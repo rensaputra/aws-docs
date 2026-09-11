@@ -257,7 +257,7 @@ const config: Config = {
               to: "/docs/intro",
             },
             {
-              label: "AIF-C01 (In Progress)",
+              label: "AIF-C01",
               to: "/docs/ai-practitioner/section-1-ai-course-intro/course-structure",
             },
             {

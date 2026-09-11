@@ -10,12 +10,10 @@ sidebar_position: 7
 
 The AWS Management Console is your web command center for managing cloud and AI services. Every action you take in the console is governed by your active **Region context**, with the exception of a few distinct **Global Services** like Route 53 and IAM.
 
-```
-[ AWS Management Console ]
-       |
-       +---> Global Services (e.g., Route 53, IAM) -> Scope applies globally
-       |
-       +---> Regional Services (e.g., EC2, Bedrock) -> Scope applies per selected Region
+```mermaid
+flowchart LR
+    A[AWS Management Console] --> B[Global Services<br/>e.g., Route 53, IAM<br/>Scope applies globally]
+    A --> C[Regional Services<br/>e.g., EC2, Bedrock<br/>Scope applies per selected Region]
 ```
 
 Selecting the closest geographical region keeps network latency low. If a specific service or foundation model does not appear in your view, checking the **AWS Regional Services Table** ensures you switch to a region where that capability is actively deployed.

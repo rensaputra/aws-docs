@@ -14,24 +14,15 @@ import humanEvaluation from "./img/human-evaluation.png";
 
 Model selection isn't just about picking the biggest LLM; it requires empirical benchmarking against quality, safety, and operational criteria. Amazon Bedrock provides built-in **Automatic Evaluation** (via curated datasets and judge models) and **Human Evaluation** (via internal teams or subject matter experts) to grade candidate models objectively before deploying them into production.
 
-```
-[ Benchmark Questions + Reference Answers ]
-                 |
-                 v
-   +---------------------------+
-   |   Model Under Evaluation  | ---> Generates Model Responses
-   +---------------------------+                |
-                 |                              v
-                 +-------------------> [ Evaluation Engine ]
-                                                |
-                         +----------------------+----------------------+
-                         |                                             |
-                         v                                             v
-           [ Automatic Evaluation ]                          [ Human Evaluation ]
-        (LLM-as-a-Judge / Algo Scoring)               (SMEs / Thumbs Up / Likert Scales)
-        * ROUGE (Summarization n-grams)               * Coherence & Fluency
-        * BLEU (Translation Precision)                * Tone, Empathy, Brand Alignment
-        * BERTScore (Semantic Embeddings)             * Custom Domain Rubrics
+```mermaid
+graph TD
+    Benchmark[Benchmark Questions + Reference Answers] --> Model[Model Under Evaluation]
+    Model --> Responses[Generates Model Responses]
+    Model --> Engine[Evaluation Engine]
+    Responses --> Engine
+
+    Engine --> Auto["Automatic Evaluation<br/>(LLM-as-a-Judge / Algo Scoring)<br/>ROUGE (Summarization n-grams)<br/>BLEU (Translation Precision)<br/>BERTScore (Semantic Embeddings)"]
+    Engine --> Human[Human Evaluation<br/>SMEs / Thumbs Up / Likert Scales<br/>Coherence & Fluency<br/>Tone, Empathy, Brand Alignment<br/>Custom Domain Rubrics]
 ```
 
 Evaluating models with standard benchmark metrics—such as **ROUGE**, **BLEU**, **BERTScore**, and **Perplexity**—enables rapid identification of model bias, hallucination rates, and performance regressions with low administrative overhead.
@@ -44,20 +35,15 @@ Evaluating models with standard benchmark metrics—such as **ROUGE**, **BLEU**,
 
 Amazon Bedrock categorizes model evaluation workflows into two distinct operational paradigms:
 
-```
-+----------------------------------------------------------------------------------------+
-|                          BEDROCK MODEL EVALUATION WORKFLOWS                            |
-+--------------------------+------------------------------+------------------------------+
-| Dimension                | Automatic Evaluation         | Human Evaluation             |
-+--------------------------+------------------------------+------------------------------+
-| Evaluator                | Pre-trained Judge LLM / Code | Internal workforce or SMEs   |
-| Evaluation Tasks         | Summarization, Q&A,          | Custom, open-ended, and      |
-|                          | Classification, Generation   | nuanced qualitative tasks    |
-| Datasets Used            | Built-in curated or custom S3| Custom business prompt sets  |
-| Scoring Mechanism        | ROUGE, BLEU, BERTScore, F1   | Thumbs Up/Down, 1-5 Ranking  |
-| Speed & Cost             | Ultra-fast, highly scalable  | Slower, higher resource cost |
-+--------------------------+------------------------------+------------------------------+
-```
+### Bedrock Model Evaluation Workflows
+
+| Dimension         | Automatic Evaluation                           | Human Evaluation                                  |
+| :---------------- | :--------------------------------------------- | :------------------------------------------------ |
+| Evaluator         | Pre-trained Judge LLM / Code                   | Internal workforce or SMEs                        |
+| Evaluation Tasks  | Summarization, Q&A, Classification, Generation | Custom, open-ended, and nuanced qualitative tasks |
+| Datasets Used     | Built-in curated or custom S3                  | Custom business prompt sets                       |
+| Scoring Mechanism | ROUGE, BLEU, BERTScore, F1                     | Thumbs Up/Down, 1-5 Ranking                       |
+| Speed & Cost      | Ultra-fast, highly scalable                    | Slower, higher resource cost                      |
 
 <ImageRow>
   <img src={automaticEvaluation} alt="Automatic Evaluation" />
@@ -164,6 +150,43 @@ An AI practitioner needs to compare two foundation models to determine which one
 
 - [x] C. Perplexity; a lower score indicates higher confidence and predictive accuracy
   - **Explanation:** **Perplexity** measures a language model's uncertainty when predicting subsequent tokens. A **lower perplexity score** indicates the model is less "perplexed," reflecting higher confidence and tighter predictive alignment with the evaluation text.
+
+</details>
+
+---
+
+#### Question 3
+
+A financial services company is developing a machine-learning model to classify loan applications as either "approved" or "denied." To ensure the model performs effectively, the company wants to evaluate how accurately it predicts these outcomes. Specifically, they are interested in knowing the overall percentage of correct predictions, including both approved and denied applications. The company is considering several metrics to assess the model's performance in terms of the number of correct outcomes.
+
+Which metric would be most appropriate for this purpose?
+
+- [ ] A. The company should use R-squared, a statistical measure that indicates the proportion of variance in the dependent variable explained by the independent variables
+- [ ] B. The company should use Root Mean Squared Error (RMSE), a metric that calculates the square root of the average of the squared differences between predicted and actual values
+- [ ] C. The company should use F1 Score, a metric that considers both precision and recall by calculating their harmonic mean
+- [ ] D. The company should use Accuracy, which measures the proportion of correctly predicted instances (both true positives and true negatives) out of the total number of instances
+
+<details>
+<summary>Correct Answer</summary>
+
+- [x] D. The company should use Accuracy, which measures the proportion of correctly predicted instances (both true positives and true negatives) out of the total number of instances
+  - **Explanation:** Accuracy is the most appropriate metric when the goal is to understand the proportion of correct outcomes in a binary classification problem. It provides a straightforward measure of how often the model correctly predicts the positive and negative classes. Accuracy is a suitable choice when the dataset is balanced (i.e., the number of positive and negative instances is approximately equal) and when the company wants a simple, overall performance measure of the model's correctness.
+
+<details>
+<summary>Incorrect Answers</summary>
+- [ ] A. The company should use R-squared, a statistical measure that indicates the proportion of variance in the dependent variable explained by the independent variables
+  - **Explanation:** R-squared is a metric that measures the goodness of fit in regression models. It shows how well the independent variables explain the variance in the dependent variable. Since R-squared is specific to regression tasks and not applicable to classification problems, it is not a suitable metric for evaluating the correct outcomes in a binary classification scenario.
+- [ ] B. The company should use Root Mean Squared Error (RMSE), a metric that calculates the square root of the average of the squared differences between predicted and actual values
+  - **Explanation:** RMSE is a metric used to measure the average magnitude of errors in a regression model's predictions. It is not appropriate for binary classification tasks because it is designed to assess continuous numeric predictions rather than categorical outcomes. Therefore, RMSE does not provide meaningful insights into the correct or incorrect outcomes in a classification context.
+- [ ] C. The company should use F1 Score, a metric that considers both precision and recall by calculating their harmonic mean
+  - **Explanation:** The F1 Score is a useful metric when dealing with imbalanced datasets in binary classification, as it balances precision (the proportion of true positive predictions among all positive predictions) and recall (the proportion of true positives among all actual positive instances). However, if the primary focus is simply to measure the correct outcomes without concern for the balance between precision and recall, then accuracy is a more straightforward metric. F1 Score is most appropriate when both false positives and false negatives need to be minimized, but it may not be necessary if the dataset is balanced and the company only wants to know the overall proportion of correct predictions.
+
+</details>
+
+Reference:
+
+- https://aws.amazon.com/blogs/big-data/building-a-binary-classification-model-with-amazon-machine-learning-and-amazon-redshift/
+- https://docs.aws.amazon.com/machine-learning/latest/dg/binary-classification.html
 
 </details>
 

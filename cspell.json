@@ -157,6 +157,7 @@
     "NTTS",
     "Nami",
     "OCSP",
+    "OLTP",
     "OOTB",
     "PITR",
     "Petstore",
@@ -241,6 +242,9 @@
     "texttt",
     "vous",
     "yourdomain",
-    "yourname"
+    "yourname",
+    "HCTA",
+    "Imam",
+    "Shafi'i"
   ]
 }

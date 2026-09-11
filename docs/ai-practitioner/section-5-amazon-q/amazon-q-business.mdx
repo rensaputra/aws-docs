@@ -153,3 +153,41 @@ A human resources department is concerned that deploying Amazon Q Business acros
 </details>
 
 ---
+
+#### Question 3
+
+A financial services firm is adopting Amazon Q Business to streamline its data-driven decision-making processes. As part of the implementation, the company needs a robust solution for managing user access, ensuring that employees across various departments have appropriate permissions to interact with dashboards and reports. The team is evaluating options for user management that offer secure, scalable, and easy-to-administer controls within Amazon Q Business.
+
+Which of the following would you recommend for user management in Amazon Q Business?
+
+- [ ] A. AWS Account
+- [ ] B. IAM user
+- [ ] C. IAM Identity Center
+- [ ] D. AWS IAM service
+
+<details>
+<summary>Correct Answer</summary>
+
+- [x] C. IAM Identity Center
+  - **Explanation:** With IAM Identity Center, you can create or connect workforce users and centrally manage their access across all their AWS accounts and applications. You configure an IAM Identity Center instance for your Amazon Q Business application environment with users and groups added, making it the recommended approach for workforce user management.
+
+<details>
+<summary>Incorrect Answers</summary>
+
+- [ ] A. AWS Account
+  - **Explanation:** An AWS account acts as a resource container and billing boundary rather than a granular workforce user management mechanism for applications like Amazon Q Business.
+- [ ] B. IAM user
+  - **Explanation:** IAM users represent individual human users or workloads interacting directly with AWS infrastructure management, rather than managing enterprise workforce identities for end-user business applications.
+- [ ] D. AWS IAM service
+  - **Explanation:** While IAM provides backend access permissions and policies for AWS resources, user management and single sign-on for workforce applications are handled via IAM Identity Center.
+
+</details>
+
+Reference:
+
+- https://docs.aws.amazon.com/amazonq/latest/qbusiness-ug/how-it-works.html
+- https://docs.aws.amazon.com/singlesignon/latest/userguide/what-is.html
+
+</details>
+
+---
