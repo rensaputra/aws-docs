@@ -54,6 +54,10 @@ The deployment pipeline automatically submits the website to the [Internet Archi
 
 This is performed asynchronously via a fire-and-forget `curl` request to the [Wayback Machine Save Page API](https://docs.google.com/document/d/1N0pCsahegAWe0kKxOAMQ4aY1H4gA75GqYkON8G1x2c4/edit?tab=t.0#heading=h.n1m2dyt3y5v3) to prevent the deployment workflow from blocking or failing due to rate limits.
 
+To avoid heavy rate limiting from the Internet Archive, the request will conditionally authenticate using the [SPN2 API](https://archive.org/account/s3.php) if keys are provided. To enable this, add the following secrets to your GitHub repository:
+- `IA_ACCESS_KEY`
+- `IA_SECRET_KEY`
+
 ### IndexNow Integration
 
 The deployment pipeline is configured to automatically submit updated URLs to search engines via the IndexNow protocol whenever a successful deployment occurs.
