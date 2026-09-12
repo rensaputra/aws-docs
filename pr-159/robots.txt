@@ -1,5 +1,0 @@
-User-agent: *
-Allow: /
-Allow: /img/
-
-Sitemap: https://res.id.au/sitemap.xml
