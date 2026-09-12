@@ -1,0 +1,1 @@
+"use strict";(globalThis.webpackChunkaws_docs||=[]).push([[67101],{81857(a){a.exports=JSON.parse('{"metadata":{"permalink":"/pr-135/blog","page":1,"postsPerPage":10,"totalPages":1,"totalCount":0,"blogDescription":"Blog","blogTitle":"Blog"}}')}}]);
